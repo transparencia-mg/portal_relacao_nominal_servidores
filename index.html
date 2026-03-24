@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servidores MG - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px; padding: 25px; margin-bottom: 20px; }
+        .header h1 { font-size: 28px; margin-bottom: 8px; }
+        .filters-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+        .filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; }
+        .filter-group label { font-weight: 600; color: #2c3e50; }
+        .filter-group select, .filter-group input { padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+        .btn-buscar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn-voltar { background: #95a5a6; color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; margin-bottom: 15px; }
+        .stats-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; display: none; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .stat-item { text-align: center; padding: 20px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 10px; }
+        .stat-number { font-size: 32px; font-weight: bold; color: #667eea; }
+        .orgaos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 15px; margin-top: 20px; }
+        .orgao-card { background: white; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; border-left: 4px solid #667eea; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .orgao-card:hover { transform: translateX(5px); background: #f8f9fa; }
+        .orgao-nome { font-size: 16px; font-weight: 600; color: #2c3e50; margin-bottom: 10px; }
+        .orgao-quantidade { font-size: 24px; font-weight: bold; color: #667eea; }
+        .table-card { background: white; border-radius: 15px; padding: 20px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: #34495e; color: white; padding: 12px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #ecf0f1; }
+        .pagination { display: flex; justify-content: center; gap: 15px; margin-top: 20px; align-items: center; }
+        .pagination button { background: #667eea; color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; }
+        .pagination button:disabled { background: #bdc3c7; cursor: not-allowed; }
+        .info { text-align: center; margin-bottom: 15px; padding: 10px; background: #ecf0f1; border-radius: 8px; }
+        .loading { text-align: center; padding: 40px; color: #667eea; }
+        .error { text-align: center; padding: 40px; color: #e74c3c; }
+        .status-ativo { background: #27ae60; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; }
+        .status-outro { background: #e67e22; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; }
+        @media (max-width: 768px) { .orgaos-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-chart-pie"></i> Servidores Públicos - Minas Gerais</h1>
+            <p>Clique em qualquer órgão para ver a lista de servidores</p>
+        </div>
+        
+        <div class="filters-card">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label><i class="fas fa-calendar"></i> Mês/Ano</label>
+                    <select id="anoMes">
+                        <option value="202602">Fevereiro/2026</option>
+                        <option value="202601">Janeiro/2026</option>
+                        <option value="202512">Dezembro/2025</option>
+                        <option value="202511">Novembro/2025</option>
+                        <option value="202510">Outubro/2025</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label><i class="fas fa-search"></i> Buscar Órgão</label>
+                    <input type="text" id="buscaOrgao" placeholder="Digite o nome do órgão...">
+                </div>
+            </div>
+            <button class="btn-buscar" onclick="carregarOrgaos()">
+                <i class="fas fa-chart-bar"></i> Carregar Órgãos
+            </button>
+        </div>
+        
+        <div class="stats-card" id="statsCard">
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-number" id="totalServidores">0</div><div class="stat-label">Total de Servidores</div></div>
+                <div class="stat-item"><div class="stat-number" id="totalOrgaos">0</div><div class="stat-label">Total de Órgãos</div></div>
+                <div class="stat-item"><div class="stat-number" id="mediaServidores">0</div><div class="stat-label">Média por Órgão</div></div>
+            </div>
+        </div>
+        
+        <div id="viewOrgaos"><div id="orgaosContainer" class="orgaos-grid"></div></div>
+        
+        <div id="viewServidores" style="display: none;">
+            <button class="btn-voltar" onclick="voltarParaOrgaos()"><i class="fas fa-arrow-left"></i> Voltar para Órgãos</button>
+            <h3 id="orgaoSelecionadoNome" style="margin-bottom: 15px;"></h3>
+            <div class="table-card">
+                <div id="infoServidores" class="info"></div>
+                <div style="overflow-x: auto;">
+                     <table>
+                        <thead>
+                            <tr><th>MASP</th><th>Nome</th><th>Instituição</th><th>Cargo</th><th>Carga</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="tbodyServidores">
+                            <tr><td colspan="6" class="loading">Selecione um órgão</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <button onclick="paginaAnterior()" id="btnPrev" disabled>Anterior</button>
+                    <span id="paginaInfo">Página 0 de 0</span>
+                    <button onclick="proximaPagina()" id="btnNext" disabled>Próxima</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // COLOQUE A URL DO SEU BACKEND AQUI
+        // ============================================
+        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwAZw1_95azmAwytR7zN_LMsjgLZpfqYNa97JD0OdfbzPGEdWRaZGcD0MsJRhQogkWq/exec";
+        const API_KEY = "servidores_mg_2024";
+        
+        let orgaos = [];
+        let currentOrgao = null;
+        let totalServidoresOrgao = 0;
+        let currentPage = 1;
+        let currentAnoMes = "202602";
+        const limit = 20;
+        
+        async function chamarAPI(acao, params = {}) {
+            const url = new URL(BACKEND_URL);
+            url.searchParams.append("key", API_KEY);
+            url.searchParams.append("acao", acao);
+            
+            for (let [key, value] of Object.entries(params)) {
+                url.searchParams.append(key, value);
+            }
+            
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (!data.success) {
+                throw new Error(data.error || "Erro na consulta");
+            }
+            
+            return data.data;
+        }
+        
+        async function carregarOrgaos() {
+            try {
+                document.getElementById("orgaosContainer").innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando órgãos...</div>';
+                
+                currentAnoMes = document.getElementById("anoMes").value;
+                const result = await chamarAPI("orgaos", { anoMes: currentAnoMes });
+                
+                orgaos = result.orgaos;
+                document.getElementById("totalServidores").innerHTML = result.total_servidores.toLocaleString();
+                document.getElementById("totalOrgaos").innerHTML = result.total_orgaos;
+                document.getElementById("mediaServidores").innerHTML = result.media_servidores.toLocaleString();
+                document.getElementById("statsCard").style.display = "block";
+                
+                renderOrgaos(orgaos);
+                
+            } catch (error) {
+                document.getElementById("orgaosContainer").innerHTML = `<div class="error">❌ Erro: ${error.message}</div>`;
+            }
+        }
+        
+        function renderOrgaos(lista) {
+            const busca = document.getElementById("buscaOrgao").value.toLowerCase();
+            const filtrados = busca ? lista.filter(o => o.orgao.toLowerCase().includes(busca)) : lista;
+            const container = document.getElementById("orgaosContainer");
+            
+            if (filtrados.length === 0) {
+                container.innerHTML = '<div class="loading">Nenhum órgão encontrado</div>';
+                return;
+            }
+            
+            container.innerHTML = filtrados.map(o => `
+                <div class="orgao-card" onclick="carregarServidores('${o.orgao.replace(/'/g, "\\'")}', ${o.total_servidores})">
+                    <div class="orgao-nome"><i class="fas fa-building"></i> ${o.orgao}</div>
+                    <div class="orgao-stats">
+                        <div class="orgao-quantidade">${o.total_servidores.toLocaleString()}</div>
+                        <div><i class="fas fa-users"></i> servidores</div>
+                    </div>
+                </div>
+            `).join("");
+        }
+        
+        async function carregarServidores(orgao, total) {
+            try {
+                currentOrgao = orgao;
+                totalServidoresOrgao = total;
+                currentPage = 1;
+                
+                document.getElementById("viewOrgaos").style.display = "none";
+                document.getElementById("viewServidores").style.display = "block";
+                document.getElementById("orgaoSelecionadoNome").innerHTML = `<i class="fas fa-building"></i> ${orgao} <span style="font-size:14px;">(${total.toLocaleString()} servidores)</span>`;
+                
+                await carregarPaginaServidores(1);
+                
+            } catch (error) {
+                alert("Erro: " + error.message);
+            }
+        }
+        
+        async function carregarPaginaServidores(page) {
+            try {
+                currentPage = page;
+                document.getElementById("tbodyServidores").innerHTML = '<tr><td colspan="6" class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr>';
+                
+                const result = await chamarAPI("servidores", {
+                    anoMes: currentAnoMes,
+                    orgao: currentOrgao,
+                    pagina: page,
+                    limite: limit
+                });
+                
+                const servidores = result.servidores;
+                const totalPaginas = result.total_paginas;
+                
+                const tbody = document.getElementById("tbodyServidores");
+                if (servidores.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="loading">Nenhum servidor encontrado</td></tr>';
+                } else {
+                    tbody.innerHTML = servidores.map(s => `
+                        <tr>
+                            <td>${s.masp || "-"}</td>
+                            <td><strong>${s.nome || "-"}</strong></td>
+                            <td>${s.desc_instituicao_lotacao || "-"}</td>
+                            <td>${s.cargo || "-"}</td>
+                            <td>${s.carga_horaria || 0}h</td>
+                            <td><span class="${s.status === 'ATIVO' ? 'status-ativo' : 'status-outro'}">${s.status || "-"}</span></td>
+                        </tr>
+                    `).join("");
+                }
+                
+                document.getElementById("infoServidores").innerHTML = `Mostrando ${servidores.length} de ${totalServidoresOrgao.toLocaleString()} servidores`;
+                document.getElementById("paginaInfo").innerHTML = `Página ${page} de ${totalPaginas}`;
+                document.getElementById("btnPrev").disabled = page <= 1;
+                document.getElementById("btnNext").disabled = page >= totalPaginas;
+                
+            } catch (error) {
+                document.getElementById("tbodyServidores").innerHTML = `<tr><td colspan="6" class="error">❌ Erro: ${error.message}</td></tr>`;
+            }
+        }
+        
+        function proximaPagina() { carregarPaginaServidores(currentPage + 1); }
+        function paginaAnterior() { carregarPaginaServidores(currentPage - 1); }
+        function voltarParaOrgaos() {
+            document.getElementById("viewServidores").style.display = "none";
+            document.getElementById("viewOrgaos").style.display = "block";
+        }
+        
+        document.getElementById("buscaOrgao").addEventListener("keyup", () => { if(orgaos.length) renderOrgaos(orgaos); });
+        document.addEventListener("DOMContentLoaded", () => carregarOrgaos());
+    </script>
+</body>
+</html>
