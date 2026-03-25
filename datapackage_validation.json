@@ -1,0 +1,2796 @@
+{
+  "version": "4.16.6",
+  "time": 27.321,
+  "errors": [],
+  "tasks": [
+    {
+      "resource": {
+        "description": "Insira a descrição/explicação detalhada deste recurso.",
+        "dialect": {
+          "delimiter": ";"
+        },
+        "encoding": "utf-8-sig",
+        "format": "csv",
+        "hashing": "md5",
+        "name": "dados_serv_202201_1",
+        "path": "data/dados_serv_202201_1.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+          "fields": [
+            {
+              "name": "ano_mes",
+              "type": "integer"
+            },
+            {
+              "name": "masp",
+              "type": "integer"
+            },
+            {
+              "name": "adm",
+              "type": "integer"
+            },
+            {
+              "name": "nome",
+              "type": "string"
+            },
+            {
+              "name": "siglaefetivo",
+              "type": "string"
+            },
+            {
+              "name": "nmefetivo",
+              "type": "string"
+            },
+            {
+              "name": "cdcomi",
+              "type": "any"
+            },
+            {
+              "name": "desccomi",
+              "type": "any"
+            },
+            {
+              "name": "cd_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "desc_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "carga_horaria",
+              "type": "integer"
+            },
+            {
+              "name": "cd_instituicao_dotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "cd_instituicao_lotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "descsitserv",
+              "type": "string"
+            },
+            {
+              "name": "id_data_inicio",
+              "type": "datetime"
+            },
+            {
+              "name": "id_data_aposentadoria",
+              "type": "datetime"
+            },
+            {
+              "name": "id_data_desligamento",
+              "type": "any"
+            }
+          ]
+        },
+        "scheme": "file",
+        "title": "Insira um título humanamente legível para este recurso.",
+        "stats": {
+          "hash": "ec620016e1ba8a5620664f8969580e08",
+          "bytes": 9996232,
+          "fields": 21,
+          "rows": 49999
+        }
+      },
+      "time": 2.445,
+      "scope": [
+        "hash-count-error",
+        "byte-count-error",
+        "field-count-error",
+        "row-count-error",
+        "blank-header",
+        "extra-label",
+        "missing-label",
+        "blank-label",
+        "duplicate-label",
+        "incorrect-label",
+        "blank-row",
+        "primary-key-error",
+        "foreign-key-error",
+        "extra-cell",
+        "missing-cell",
+        "type-error",
+        "constraint-error",
+        "unique-error"
+      ],
+      "partial": false,
+      "errors": [
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "158444",
+            "1",
+            "JACIRA ALBUQUERQUE DA CUNHA",
+            "Sigla_nao_enquadrada",
+            "NAO INFORMADO",
+            "",
+            "",
+            "",
+            "",
+            "30",
+            "1321",
+            "SES",
+            "SECRETARIA DE SAUDE",
+            "1321",
+            "SES",
+            "SECRETARIA DE SAUDE",
+            "APOSENTADO",
+            "00/01/1900",
+            "1964-02-18 00:00:00",
+            ""
+          ],
+          "rowNumber": 102,
+          "rowPosition": 103,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"103\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "416420",
+            "1",
+            "MARIA DO CARMO COSTA ALVES DE OLIVEIRA",
+            "PEB",
+            "PROFESSOR DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "18",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1985-09-23 00:00:00",
+            ""
+          ],
+          "rowNumber": 1863,
+          "rowPosition": 1864,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"1864\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "461632",
+            "1",
+            "CACILDA GENEROSO DE MATTOS",
+            "ANE",
+            "ANALISTA EDUCACIONAL",
+            "",
+            "",
+            "",
+            "",
+            "40",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1988-09-13 00:00:00",
+            ""
+          ],
+          "rowNumber": 2558,
+          "rowPosition": 2559,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"2559\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "622787",
+            "1",
+            "JOSE ANTONINO LOURES",
+            "AEB",
+            "ANALISTA DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "30",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1992-06-14 00:00:00",
+            ""
+          ],
+          "rowNumber": 5899,
+          "rowPosition": 5900,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"5900\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "736827",
+            "1",
+            "ETELVINA VIEIRA TORRES BITARAES",
+            "PEB",
+            "PROFESSOR DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "18",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1961-05-22 00:00:00",
+            ""
+          ],
+          "rowNumber": 8340,
+          "rowPosition": 8341,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"8341\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "791327",
+            "1",
+            "JOSE ROSA CHAVES",
+            "ASB",
+            "AUXILIAR DE SERVICOS DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "30",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1997-06-25 00:00:00",
+            ""
+          ],
+          "rowNumber": 9378,
+          "rowPosition": 9379,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"9379\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "811232",
+            "1",
+            "MARIA AUXILIADORA GUEDES",
+            "PEB",
+            "PROFESSOR DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "18",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1961-12-21 00:00:00",
+            ""
+          ],
+          "rowNumber": 9783,
+          "rowPosition": 9784,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"9784\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "811273",
+            "1",
+            "MARIA DO CARMO GARCIA",
+            "PEB",
+            "PROFESSOR DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "18",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1962-09-05 00:00:00",
+            ""
+          ],
+          "rowNumber": 9784,
+          "rowPosition": 9785,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"9785\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "824771",
+            "1",
+            "ELZA CARVALHO VEIGA",
+            "PEB",
+            "PROFESSOR DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "18",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1986-10-31 00:00:00",
+            ""
+          ],
+          "rowNumber": 10150,
+          "rowPosition": 10151,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"10151\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "896191",
+            "1",
+            "MARIA APARECIDA RODARTE CATERMOL WERNE",
+            "PEB",
+            "PROFESSOR DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "18",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1971-08-16 00:00:00",
+            ""
+          ],
+          "rowNumber": 11766,
+          "rowPosition": 11767,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"11767\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "896969",
+            "1",
+            "NEIDA GUERRA DE CARVALHO",
+            "PEB",
+            "PROFESSOR DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "18",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1975-03-21 00:00:00",
+            ""
+          ],
+          "rowNumber": 11786,
+          "rowPosition": 11787,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"11787\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "897512",
+            "1",
+            "SONIA ROMANIELLO",
+            "PEB",
+            "PROFESSOR DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "18",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1992-04-21 00:00:00",
+            ""
+          ],
+          "rowNumber": 11790,
+          "rowPosition": 11791,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"11791\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "907204",
+            "1",
+            "ZELIA MAHMUD NEDIR ESTEVES",
+            "PEB",
+            "PROFESSOR DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "40",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1993-04-14 00:00:00",
+            ""
+          ],
+          "rowNumber": 11975,
+          "rowPosition": 11976,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"11976\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "987537",
+            "1",
+            "EDITE BARBOSA OLIVEIRA",
+            "PEB",
+            "PROFESSOR DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "18",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1990-06-29 00:00:00",
+            ""
+          ],
+          "rowNumber": 13731,
+          "rowPosition": 13732,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"13732\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "989087",
+            "1",
+            "INES DIAS",
+            "PEB",
+            "PROFESSOR DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "40",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1965-12-28 00:00:00",
+            ""
+          ],
+          "rowNumber": 13775,
+          "rowPosition": 13776,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"13776\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "1057488",
+            "1",
+            "RUTH DE PAIVA AVELAR",
+            "PEB",
+            "PROFESSOR DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "18",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1974-12-10 00:00:00",
+            ""
+          ],
+          "rowNumber": 15339,
+          "rowPosition": 15340,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"15340\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_aposentadoria",
+          "fieldNumber": 20,
+          "fieldPosition": 20,
+          "cells": [
+            "202201",
+            "1074012",
+            "1",
+            "JOSE PENHA VILELA",
+            "Sigla_nao_enquadrada",
+            "NAO SE APLICA",
+            "",
+            "",
+            "",
+            "",
+            "30",
+            "1321",
+            "SES",
+            "SECRETARIA DE SAUDE",
+            "1321",
+            "SES",
+            "SECRETARIA DE SAUDE",
+            "APOSENTADO",
+            "1964-12-19 00:00:00",
+            "00/01/1900",
+            "1995-06-01"
+          ],
+          "rowNumber": 15681,
+          "rowPosition": 15682,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"15682\" and field \"id_data_aposentadoria\" at position \"20\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "1696301",
+            "1",
+            "ANA MARIA MAGALHAES GANEM",
+            "PEB",
+            "PROFESSOR DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "18",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1994-07-07 00:00:00",
+            ""
+          ],
+          "rowNumber": 38575,
+          "rowPosition": 38576,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"38576\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_aposentadoria",
+          "fieldNumber": 20,
+          "fieldPosition": 20,
+          "cells": [
+            "202201",
+            "1730704",
+            "1",
+            "GIRONDA DAS GRACAS E SILVA ARAUJO",
+            "EEB",
+            "ESPECIALISTA EM EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "40",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "1971-06-24 00:00:00",
+            "00/01/1900",
+            "1996-01-28"
+          ],
+          "rowNumber": 40103,
+          "rowPosition": 40104,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"40104\" and field \"id_data_aposentadoria\" at position \"20\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        }
+      ],
+      "stats": {
+        "errors": 19
+      },
+      "valid": false
+    },
+    {
+      "resource": {
+        "description": "Insira a descrição/explicação detalhada deste recurso.",
+        "dialect": {
+          "delimiter": ";"
+        },
+        "encoding": "utf-8-sig",
+        "format": "csv",
+        "hashing": "md5",
+        "name": "dados_serv_202201_2",
+        "path": "data/dados_serv_202201_2.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+          "fields": [
+            {
+              "name": "ano_mes",
+              "type": "integer"
+            },
+            {
+              "name": "masp",
+              "type": "integer"
+            },
+            {
+              "name": "adm",
+              "type": "integer"
+            },
+            {
+              "name": "nome",
+              "type": "string"
+            },
+            {
+              "name": "siglaefetivo",
+              "type": "string"
+            },
+            {
+              "name": "nmefetivo",
+              "type": "string"
+            },
+            {
+              "name": "cdcomi",
+              "type": "any"
+            },
+            {
+              "name": "desccomi",
+              "type": "any"
+            },
+            {
+              "name": "cd_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "desc_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "carga_horaria",
+              "type": "integer"
+            },
+            {
+              "name": "cd_instituicao_dotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "cd_instituicao_lotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "descsitserv",
+              "type": "string"
+            },
+            {
+              "name": "id_data_inicio",
+              "type": "datetime"
+            },
+            {
+              "name": "id_data_aposentadoria",
+              "type": "date"
+            },
+            {
+              "name": "id_data_desligamento",
+              "type": "any"
+            }
+          ]
+        },
+        "scheme": "file",
+        "title": "Insira um título humanamente legível para este recurso.",
+        "stats": {
+          "hash": "7248d26752a5e6f764652de3d0e01cc4",
+          "bytes": 9604829,
+          "fields": 21,
+          "rows": 49999
+        }
+      },
+      "time": 2.812,
+      "scope": [
+        "hash-count-error",
+        "byte-count-error",
+        "field-count-error",
+        "row-count-error",
+        "blank-header",
+        "extra-label",
+        "missing-label",
+        "blank-label",
+        "duplicate-label",
+        "incorrect-label",
+        "blank-row",
+        "primary-key-error",
+        "foreign-key-error",
+        "extra-cell",
+        "missing-cell",
+        "type-error",
+        "constraint-error",
+        "unique-error"
+      ],
+      "partial": false,
+      "errors": [
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "2747970",
+            "1",
+            "NIOSETE MARIA DOS SANTOS CAMPOS",
+            "Sigla_nao_enquadrada",
+            "NAO INFORMADO",
+            "",
+            "",
+            "",
+            "",
+            "18",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1990-12-16",
+            ""
+          ],
+          "rowNumber": 47161,
+          "rowPosition": 47162,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"47162\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        }
+      ],
+      "stats": {
+        "errors": 1
+      },
+      "valid": false
+    },
+    {
+      "resource": {
+        "description": "Insira a descrição/explicação detalhada deste recurso.",
+        "dialect": {
+          "delimiter": ";"
+        },
+        "encoding": "utf-8-sig",
+        "format": "csv",
+        "hashing": "md5",
+        "name": "dados_serv_202201_3",
+        "path": "data/dados_serv_202201_3.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+          "fields": [
+            {
+              "name": "ano_mes",
+              "type": "integer"
+            },
+            {
+              "name": "masp",
+              "type": "integer"
+            },
+            {
+              "name": "adm",
+              "type": "integer"
+            },
+            {
+              "name": "nome",
+              "type": "string"
+            },
+            {
+              "name": "siglaefetivo",
+              "type": "string"
+            },
+            {
+              "name": "nmefetivo",
+              "type": "string"
+            },
+            {
+              "name": "cdcomi",
+              "type": "any"
+            },
+            {
+              "name": "desccomi",
+              "type": "any"
+            },
+            {
+              "name": "cd_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "desc_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "carga_horaria",
+              "type": "integer"
+            },
+            {
+              "name": "cd_instituicao_dotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "cd_instituicao_lotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "descsitserv",
+              "type": "string"
+            },
+            {
+              "name": "id_data_inicio",
+              "type": "datetime"
+            },
+            {
+              "name": "id_data_aposentadoria",
+              "type": "datetime"
+            },
+            {
+              "name": "id_data_desligamento",
+              "type": "any"
+            }
+          ]
+        },
+        "scheme": "file",
+        "title": "Insira um título humanamente legível para este recurso.",
+        "stats": {
+          "hash": "f6edf5db2508d76028589bc40efd641f",
+          "bytes": 10049944,
+          "fields": 21,
+          "rows": 49999
+        }
+      },
+      "time": 2.505,
+      "scope": [
+        "hash-count-error",
+        "byte-count-error",
+        "field-count-error",
+        "row-count-error",
+        "blank-header",
+        "extra-label",
+        "missing-label",
+        "blank-label",
+        "duplicate-label",
+        "incorrect-label",
+        "blank-row",
+        "primary-key-error",
+        "foreign-key-error",
+        "extra-cell",
+        "missing-cell",
+        "type-error",
+        "constraint-error",
+        "unique-error"
+      ],
+      "partial": false,
+      "errors": [
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "2904241",
+            "1",
+            "MARIA JOSE DOS SANTOS",
+            "Sigla_nao_enquadrada",
+            "NAO INFORMADO",
+            "",
+            "",
+            "",
+            "",
+            "30",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1993-04-07 00:00:00",
+            ""
+          ],
+          "rowNumber": 11455,
+          "rowPosition": 11456,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"11456\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "3265527",
+            "1",
+            "ANTONIO RODRIGUES DE OLIVEIRA",
+            "Sigla_nao_enquadrada",
+            "NAO INFORMADO",
+            "",
+            "",
+            "",
+            "",
+            "30",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "00/01/1900",
+            "1984-11-28 00:00:00",
+            ""
+          ],
+          "rowNumber": 38627,
+          "rowPosition": 38628,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"38628\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_aposentadoria",
+          "fieldNumber": 20,
+          "fieldPosition": 20,
+          "cells": [
+            "202201",
+            "3265865",
+            "1",
+            "JAIR FERRAZ BRUGGER",
+            "GTEL",
+            "GESTOR DE TELECOMUNICACOES",
+            "",
+            "",
+            "",
+            "",
+            "30",
+            "1501",
+            "SEPLAG",
+            "SEC DE PLANEJAMENTO E GESTAO",
+            "2211",
+            "TV MINAS",
+            "FUNDACAO TV MINAS",
+            "APOSENTADO",
+            "1991-03-24 00:00:00",
+            "00/01/1900",
+            "2006-03-28"
+          ],
+          "rowNumber": 38642,
+          "rowPosition": 38643,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"38643\" and field \"id_data_aposentadoria\" at position \"20\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        }
+      ],
+      "stats": {
+        "errors": 3
+      },
+      "valid": false
+    },
+    {
+      "resource": {
+        "description": "Insira a descrição/explicação detalhada deste recurso.",
+        "dialect": {
+          "delimiter": ";"
+        },
+        "encoding": "utf-8-sig",
+        "format": "csv",
+        "hashing": "md5",
+        "name": "dados_serv_202201_4",
+        "path": "data/dados_serv_202201_4.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+          "fields": [
+            {
+              "name": "ano_mes",
+              "type": "integer"
+            },
+            {
+              "name": "masp",
+              "type": "integer"
+            },
+            {
+              "name": "adm",
+              "type": "integer"
+            },
+            {
+              "name": "nome",
+              "type": "string"
+            },
+            {
+              "name": "siglaefetivo",
+              "type": "string"
+            },
+            {
+              "name": "nmefetivo",
+              "type": "string"
+            },
+            {
+              "name": "cdcomi",
+              "type": "any"
+            },
+            {
+              "name": "desccomi",
+              "type": "any"
+            },
+            {
+              "name": "cd_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "desc_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "carga_horaria",
+              "type": "integer"
+            },
+            {
+              "name": "cd_instituicao_dotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "cd_instituicao_lotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "descsitserv",
+              "type": "string"
+            },
+            {
+              "name": "id_data_inicio",
+              "type": "date"
+            },
+            {
+              "name": "id_data_aposentadoria",
+              "type": "datetime"
+            },
+            {
+              "name": "id_data_desligamento",
+              "type": "any"
+            }
+          ]
+        },
+        "scheme": "file",
+        "title": "Insira um título humanamente legível para este recurso.",
+        "stats": {
+          "hash": "23fb9f4539427c41d96b742de6714c49",
+          "bytes": 9508499,
+          "fields": 21,
+          "rows": 49999
+        }
+      },
+      "time": 2.685,
+      "scope": [
+        "hash-count-error",
+        "byte-count-error",
+        "field-count-error",
+        "row-count-error",
+        "blank-header",
+        "extra-label",
+        "missing-label",
+        "blank-label",
+        "duplicate-label",
+        "incorrect-label",
+        "blank-row",
+        "primary-key-error",
+        "foreign-key-error",
+        "extra-cell",
+        "missing-cell",
+        "type-error",
+        "constraint-error",
+        "unique-error"
+      ],
+      "partial": false,
+      "errors": [
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_aposentadoria",
+          "fieldNumber": 20,
+          "fieldPosition": 20,
+          "cells": [
+            "202201",
+            "3399680",
+            "1",
+            "OLAVO JUNQUEIRA JUNIOR",
+            "GTEL",
+            "GESTOR DE TELECOMUNICACOES",
+            "",
+            "",
+            "",
+            "",
+            "30",
+            "1501",
+            "SEPLAG",
+            "SEC DE PLANEJAMENTO E GESTAO",
+            "2211",
+            "TV MINAS",
+            "FUNDACAO TV MINAS",
+            "APOSENTADO",
+            "1991-03-24",
+            "00/01/1900",
+            "2010-01-16"
+          ],
+          "rowNumber": 273,
+          "rowPosition": 274,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"274\" and field \"id_data_aposentadoria\" at position \"20\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_aposentadoria",
+          "fieldNumber": 20,
+          "fieldPosition": 20,
+          "cells": [
+            "202201",
+            "3418084",
+            "2",
+            "MARIA CELIA FERREIRA LEITE",
+            "PEB",
+            "PROFESSOR DE EDUCACAO BASICA",
+            "",
+            "",
+            "",
+            "",
+            "24",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "1981-07-04",
+            "00/01/1900",
+            "2017-06-09"
+          ],
+          "rowNumber": 1586,
+          "rowPosition": 1587,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"1587\" and field \"id_data_aposentadoria\" at position \"20\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_aposentadoria",
+          "fieldNumber": 20,
+          "fieldPosition": 20,
+          "cells": [
+            "202201",
+            "3477619",
+            "1",
+            "ISMAEL CAMPOS TISO",
+            "ASTEL",
+            "ASSISTENTE ADMINISTRATIVO DE TELECOMUNICACOES",
+            "",
+            "",
+            "",
+            "",
+            "30",
+            "1501",
+            "SEPLAG",
+            "SEC DE PLANEJAMENTO E GESTAO",
+            "2211",
+            "TV MINAS",
+            "FUNDACAO TV MINAS",
+            "APOSENTADO",
+            "1991-03-24",
+            "00/01/1900",
+            "2013-11-17"
+          ],
+          "rowNumber": 6179,
+          "rowPosition": 6180,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"6180\" and field \"id_data_aposentadoria\" at position \"20\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_aposentadoria",
+          "fieldNumber": 20,
+          "fieldPosition": 20,
+          "cells": [
+            "202201",
+            "3631702",
+            "1",
+            "TAMARA CRISTIAN PEIFER VIEIRA",
+            "AATEL",
+            "AUXILIAR ADMINISTRATIVO DE TELECOMUNICACOES",
+            "",
+            "",
+            "",
+            "",
+            "30",
+            "1501",
+            "SEPLAG",
+            "SEC DE PLANEJAMENTO E GESTAO",
+            "2211",
+            "TV MINAS",
+            "FUNDACAO TV MINAS",
+            "APOSENTADO",
+            "1991-03-24",
+            "00/01/1900",
+            "2016-05-11"
+          ],
+          "rowNumber": 16116,
+          "rowPosition": 16117,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"16117\" and field \"id_data_aposentadoria\" at position \"20\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_aposentadoria",
+          "fieldNumber": 20,
+          "fieldPosition": 20,
+          "cells": [
+            "202201",
+            "4193249",
+            "1",
+            "IRACEMA LOURES",
+            "Sigla_nao_enquadrada",
+            "NAO INFORMADO",
+            "",
+            "",
+            "",
+            "",
+            "0",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "1261",
+            "SEE",
+            "SECRETARIA DE EDUCACAO",
+            "APOSENTADO",
+            "1997-06-04",
+            "00/01/1900",
+            ""
+          ],
+          "rowNumber": 37145,
+          "rowPosition": 37146,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"37146\" and field \"id_data_aposentadoria\" at position \"20\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        }
+      ],
+      "stats": {
+        "errors": 5
+      },
+      "valid": false
+    },
+    {
+      "resource": {
+        "description": "Insira a descrição/explicação detalhada deste recurso.",
+        "dialect": {
+          "delimiter": ";"
+        },
+        "encoding": "utf-8-sig",
+        "format": "csv",
+        "hashing": "md5",
+        "name": "dados_serv_202201_5",
+        "path": "data/dados_serv_202201_5.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+          "fields": [
+            {
+              "name": "ano_mes",
+              "type": "integer"
+            },
+            {
+              "name": "masp",
+              "type": "integer"
+            },
+            {
+              "name": "adm",
+              "type": "integer"
+            },
+            {
+              "name": "nome",
+              "type": "string"
+            },
+            {
+              "name": "siglaefetivo",
+              "type": "string"
+            },
+            {
+              "name": "nmefetivo",
+              "type": "string"
+            },
+            {
+              "name": "cdcomi",
+              "type": "string"
+            },
+            {
+              "name": "desccomi",
+              "type": "string"
+            },
+            {
+              "name": "cd_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "desc_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "carga_horaria",
+              "type": "integer"
+            },
+            {
+              "name": "cd_instituicao_dotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "cd_instituicao_lotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "descsitserv",
+              "type": "string"
+            },
+            {
+              "name": "id_data_inicio",
+              "type": "date"
+            },
+            {
+              "name": "id_data_aposentadoria",
+              "type": "datetime"
+            },
+            {
+              "name": "id_data_desligamento",
+              "type": "any"
+            }
+          ]
+        },
+        "scheme": "file",
+        "title": "Insira um título humanamente legível para este recurso.",
+        "stats": {
+          "hash": "974a8ca6cce4a139e5f36f8bb8fcf5af",
+          "bytes": 9634529,
+          "fields": 21,
+          "rows": 49999
+        }
+      },
+      "time": 2.583,
+      "scope": [
+        "hash-count-error",
+        "byte-count-error",
+        "field-count-error",
+        "row-count-error",
+        "blank-header",
+        "extra-label",
+        "missing-label",
+        "blank-label",
+        "duplicate-label",
+        "incorrect-label",
+        "blank-row",
+        "primary-key-error",
+        "foreign-key-error",
+        "extra-cell",
+        "missing-cell",
+        "type-error",
+        "constraint-error",
+        "unique-error"
+      ],
+      "partial": false,
+      "errors": [
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_aposentadoria",
+          "fieldNumber": 20,
+          "fieldPosition": 20,
+          "cells": [
+            "202201",
+            "9046327",
+            "1",
+            "VERONICA BAUMECKER COELHO",
+            "ASTEL",
+            "ASSISTENTE ADMINISTRATIVO DE TELECOMUNICACOES",
+            "",
+            "",
+            "",
+            "",
+            "30",
+            "1501",
+            "SEPLAG",
+            "SEC DE PLANEJAMENTO E GESTAO",
+            "2211",
+            "TV MINAS",
+            "FUNDACAO TV MINAS",
+            "APOSENTADO",
+            "1991-03-24",
+            "00/01/1900",
+            "2006-04-02"
+          ],
+          "rowNumber": 49876,
+          "rowPosition": 49877,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"49877\" and field \"id_data_aposentadoria\" at position \"20\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        }
+      ],
+      "stats": {
+        "errors": 1
+      },
+      "valid": false
+    },
+    {
+      "resource": {
+        "description": "Insira a descrição/explicação detalhada deste recurso.",
+        "dialect": {
+          "delimiter": ";"
+        },
+        "encoding": "utf-8-sig",
+        "format": "csv",
+        "hashing": "md5",
+        "name": "dados_serv_202201_6",
+        "path": "data/dados_serv_202201_6.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+          "fields": [
+            {
+              "name": "ano_mes",
+              "type": "integer"
+            },
+            {
+              "name": "masp",
+              "type": "integer"
+            },
+            {
+              "name": "adm",
+              "type": "integer"
+            },
+            {
+              "name": "nome",
+              "type": "string"
+            },
+            {
+              "name": "siglaefetivo",
+              "type": "string"
+            },
+            {
+              "name": "nmefetivo",
+              "type": "string"
+            },
+            {
+              "name": "cdcomi",
+              "type": "any"
+            },
+            {
+              "name": "desccomi",
+              "type": "any"
+            },
+            {
+              "name": "cd_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "desc_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "carga_horaria",
+              "type": "integer"
+            },
+            {
+              "name": "cd_instituicao_dotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "cd_instituicao_lotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "descsitserv",
+              "type": "string"
+            },
+            {
+              "name": "id_data_inicio",
+              "type": "datetime"
+            },
+            {
+              "name": "id_data_aposentadoria",
+              "type": "datetime"
+            },
+            {
+              "name": "id_data_desligamento",
+              "type": "any"
+            }
+          ]
+        },
+        "scheme": "file",
+        "title": "Insira um título humanamente legível para este recurso.",
+        "stats": {
+          "hash": "0f829caffc177830ba1afbcfe1dab25c",
+          "bytes": 10564376,
+          "fields": 21,
+          "rows": 49999
+        }
+      },
+      "time": 2.291,
+      "scope": [
+        "hash-count-error",
+        "byte-count-error",
+        "field-count-error",
+        "row-count-error",
+        "blank-header",
+        "extra-label",
+        "missing-label",
+        "blank-label",
+        "duplicate-label",
+        "incorrect-label",
+        "blank-row",
+        "primary-key-error",
+        "foreign-key-error",
+        "extra-cell",
+        "missing-cell",
+        "type-error",
+        "constraint-error",
+        "unique-error"
+      ],
+      "partial": false,
+      "errors": [
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_aposentadoria",
+          "fieldNumber": 20,
+          "fieldPosition": 20,
+          "cells": [
+            "202201",
+            "9066747",
+            "1",
+            "GLORIA MARIA CARVALHO CHAVES SAMPAIO",
+            "ASTEL",
+            "ASSISTENTE ADMINISTRATIVO DE TELECOMUNICACOES",
+            "",
+            "",
+            "",
+            "",
+            "30",
+            "1501",
+            "SEPLAG",
+            "SEC DE PLANEJAMENTO E GESTAO",
+            "2211",
+            "TV MINAS",
+            "FUNDACAO TV MINAS",
+            "APOSENTADO",
+            "1991-03-24 00:00:00",
+            "00/01/1900",
+            "2006-04-21"
+          ],
+          "rowNumber": 625,
+          "rowPosition": 626,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"626\" and field \"id_data_aposentadoria\" at position \"20\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        },
+        {
+          "cell": "00/01/1900",
+          "fieldName": "id_data_inicio",
+          "fieldNumber": 19,
+          "fieldPosition": 19,
+          "cells": [
+            "202201",
+            "10395895",
+            "1",
+            "CLIO MIRIAM FERREIRA DA COSTA",
+            "TOS",
+            "TECNICO OPERACIONAL DA SAUDE",
+            "",
+            "",
+            "",
+            "",
+            "30",
+            "2271",
+            "FHEMIG",
+            "FHEMIG FUND HOSPITALAR EST MG",
+            "2271",
+            "FHEMIG",
+            "FHEMIG FUND HOSPITALAR EST MG",
+            "APOSENTADO",
+            "00/01/1900",
+            "1987-11-01 00:00:00",
+            ""
+          ],
+          "rowNumber": 34814,
+          "rowPosition": 34815,
+          "code": "type-error",
+          "name": "Type Error",
+          "tags": [
+            "#table",
+            "#row",
+            "#cell"
+          ],
+          "note": "type is \"datetime/default\"",
+          "message": "Type error in the cell \"00/01/1900\" in row \"34815\" and field \"id_data_inicio\" at position \"19\": type is \"datetime/default\"",
+          "description": "The value does not match the schema type and format for this field."
+        }
+      ],
+      "stats": {
+        "errors": 2
+      },
+      "valid": false
+    },
+    {
+      "resource": {
+        "description": "Insira a descrição/explicação detalhada deste recurso.",
+        "dialect": {
+          "delimiter": ";"
+        },
+        "encoding": "utf-8-sig",
+        "format": "csv",
+        "hashing": "md5",
+        "name": "dados_serv_202201_7",
+        "path": "data/dados_serv_202201_7.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+          "fields": [
+            {
+              "name": "ano_mes",
+              "type": "integer"
+            },
+            {
+              "name": "masp",
+              "type": "integer"
+            },
+            {
+              "name": "adm",
+              "type": "integer"
+            },
+            {
+              "name": "nome",
+              "type": "string"
+            },
+            {
+              "name": "siglaefetivo",
+              "type": "string"
+            },
+            {
+              "name": "nmefetivo",
+              "type": "string"
+            },
+            {
+              "name": "cdcomi",
+              "type": "any"
+            },
+            {
+              "name": "desccomi",
+              "type": "any"
+            },
+            {
+              "name": "cd_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "desc_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "carga_horaria",
+              "type": "integer"
+            },
+            {
+              "name": "cd_instituicao_dotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "cd_instituicao_lotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "descsitserv",
+              "type": "string"
+            },
+            {
+              "name": "id_data_inicio",
+              "type": "date"
+            },
+            {
+              "name": "id_data_aposentadoria",
+              "type": "any"
+            },
+            {
+              "name": "id_data_desligamento",
+              "type": "any"
+            }
+          ]
+        },
+        "scheme": "file",
+        "title": "Insira um título humanamente legível para este recurso.",
+        "stats": {
+          "hash": "01d3dafbc684ad94be7419db10cb355e",
+          "bytes": 9656978,
+          "fields": 21,
+          "rows": 49999
+        }
+      },
+      "time": 2.261,
+      "scope": [
+        "hash-count-error",
+        "byte-count-error",
+        "field-count-error",
+        "row-count-error",
+        "blank-header",
+        "extra-label",
+        "missing-label",
+        "blank-label",
+        "duplicate-label",
+        "incorrect-label",
+        "blank-row",
+        "primary-key-error",
+        "foreign-key-error",
+        "extra-cell",
+        "missing-cell",
+        "type-error",
+        "constraint-error",
+        "unique-error"
+      ],
+      "partial": false,
+      "errors": [],
+      "stats": {
+        "errors": 0
+      },
+      "valid": true
+    },
+    {
+      "resource": {
+        "description": "Insira a descrição/explicação detalhada deste recurso.",
+        "dialect": {
+          "delimiter": ";"
+        },
+        "encoding": "utf-8-sig",
+        "format": "csv",
+        "hashing": "md5",
+        "name": "dados_serv_202201_8",
+        "path": "data/dados_serv_202201_8.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+          "fields": [
+            {
+              "name": "ano_mes",
+              "type": "integer"
+            },
+            {
+              "name": "masp",
+              "type": "integer"
+            },
+            {
+              "name": "adm",
+              "type": "integer"
+            },
+            {
+              "name": "nome",
+              "type": "string"
+            },
+            {
+              "name": "siglaefetivo",
+              "type": "string"
+            },
+            {
+              "name": "nmefetivo",
+              "type": "string"
+            },
+            {
+              "name": "cdcomi",
+              "type": "any"
+            },
+            {
+              "name": "desccomi",
+              "type": "any"
+            },
+            {
+              "name": "cd_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "desc_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "carga_horaria",
+              "type": "integer"
+            },
+            {
+              "name": "cd_instituicao_dotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "cd_instituicao_lotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "descsitserv",
+              "type": "string"
+            },
+            {
+              "name": "id_data_inicio",
+              "type": "date"
+            },
+            {
+              "name": "id_data_aposentadoria",
+              "type": "any"
+            },
+            {
+              "name": "id_data_desligamento",
+              "type": "any"
+            }
+          ]
+        },
+        "scheme": "file",
+        "title": "Insira um título humanamente legível para este recurso.",
+        "stats": {
+          "hash": "00bd3233ea6136370c9f606fc63bf784",
+          "bytes": 9880959,
+          "fields": 21,
+          "rows": 49999
+        }
+      },
+      "time": 2.261,
+      "scope": [
+        "hash-count-error",
+        "byte-count-error",
+        "field-count-error",
+        "row-count-error",
+        "blank-header",
+        "extra-label",
+        "missing-label",
+        "blank-label",
+        "duplicate-label",
+        "incorrect-label",
+        "blank-row",
+        "primary-key-error",
+        "foreign-key-error",
+        "extra-cell",
+        "missing-cell",
+        "type-error",
+        "constraint-error",
+        "unique-error"
+      ],
+      "partial": false,
+      "errors": [],
+      "stats": {
+        "errors": 0
+      },
+      "valid": true
+    },
+    {
+      "resource": {
+        "description": "Insira a descrição/explicação detalhada deste recurso.",
+        "dialect": {
+          "delimiter": ";"
+        },
+        "encoding": "utf-8-sig",
+        "format": "csv",
+        "hashing": "md5",
+        "name": "dados_serv_202201_9",
+        "path": "data/dados_serv_202201_9.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+          "fields": [
+            {
+              "name": "ano_mes",
+              "type": "integer"
+            },
+            {
+              "name": "masp",
+              "type": "integer"
+            },
+            {
+              "name": "adm",
+              "type": "integer"
+            },
+            {
+              "name": "nome",
+              "type": "string"
+            },
+            {
+              "name": "siglaefetivo",
+              "type": "string"
+            },
+            {
+              "name": "nmefetivo",
+              "type": "string"
+            },
+            {
+              "name": "cdcomi",
+              "type": "any"
+            },
+            {
+              "name": "desccomi",
+              "type": "any"
+            },
+            {
+              "name": "cd_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "desc_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "carga_horaria",
+              "type": "integer"
+            },
+            {
+              "name": "cd_instituicao_dotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "cd_instituicao_lotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "descsitserv",
+              "type": "string"
+            },
+            {
+              "name": "id_data_inicio",
+              "type": "date"
+            },
+            {
+              "name": "id_data_aposentadoria",
+              "type": "any"
+            },
+            {
+              "name": "id_data_desligamento",
+              "type": "any"
+            }
+          ]
+        },
+        "scheme": "file",
+        "title": "Insira um título humanamente legível para este recurso.",
+        "stats": {
+          "hash": "b37e42b140ba570c86d1b724ba0da2d8",
+          "bytes": 7015671,
+          "fields": 21,
+          "rows": 33677
+        }
+      },
+      "time": 1.52,
+      "scope": [
+        "hash-count-error",
+        "byte-count-error",
+        "field-count-error",
+        "row-count-error",
+        "blank-header",
+        "extra-label",
+        "missing-label",
+        "blank-label",
+        "duplicate-label",
+        "incorrect-label",
+        "blank-row",
+        "primary-key-error",
+        "foreign-key-error",
+        "extra-cell",
+        "missing-cell",
+        "type-error",
+        "constraint-error",
+        "unique-error"
+      ],
+      "partial": false,
+      "errors": [],
+      "stats": {
+        "errors": 0
+      },
+      "valid": true
+    },
+    {
+      "resource": {
+        "description": "Insira a descrição/explicação detalhada deste recurso.",
+        "dialect": {
+          "delimiter": ";"
+        },
+        "encoding": "utf-8-sig",
+        "format": "csv",
+        "hashing": "md5",
+        "name": "dados_serv_202202",
+        "path": "data/dados_serv_202202.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+          "fields": [
+            {
+              "name": "ano_mes",
+              "type": "integer"
+            },
+            {
+              "name": "masp",
+              "type": "integer"
+            },
+            {
+              "name": "adm",
+              "type": "integer"
+            },
+            {
+              "name": "nome",
+              "type": "string"
+            },
+            {
+              "name": "siglaefetivo",
+              "type": "string"
+            },
+            {
+              "name": "nmefetivo",
+              "type": "string"
+            },
+            {
+              "name": "cdcomi",
+              "type": "any"
+            },
+            {
+              "name": "desccomi",
+              "type": "any"
+            },
+            {
+              "name": "cd_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "desc_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "carga_horaria",
+              "type": "integer"
+            },
+            {
+              "name": "cd_instituicao_dotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "cd_instituicao_lotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "descsitserv",
+              "type": "string"
+            },
+            {
+              "name": "id_data_inicio",
+              "type": "date"
+            },
+            {
+              "name": "id_data_aposentadoria",
+              "type": "any"
+            },
+            {
+              "name": "id_data_desligamento",
+              "type": "any"
+            }
+          ]
+        },
+        "scheme": "file",
+        "title": "Insira um título humanamente legível para este recurso.",
+        "stats": {
+          "hash": "cda1590cbc4930d57518179868dab5ea",
+          "bytes": 13122847,
+          "fields": 21,
+          "rows": 64322
+        }
+      },
+      "time": 2.881,
+      "scope": [
+        "hash-count-error",
+        "byte-count-error",
+        "field-count-error",
+        "row-count-error",
+        "blank-header",
+        "extra-label",
+        "missing-label",
+        "blank-label",
+        "duplicate-label",
+        "incorrect-label",
+        "blank-row",
+        "primary-key-error",
+        "foreign-key-error",
+        "extra-cell",
+        "missing-cell",
+        "type-error",
+        "constraint-error",
+        "unique-error"
+      ],
+      "partial": false,
+      "errors": [],
+      "stats": {
+        "errors": 0
+      },
+      "valid": true
+    },
+    {
+      "resource": {
+        "description": "Insira a descrição/explicação detalhada deste recurso.",
+        "dialect": {
+          "delimiter": ";"
+        },
+        "encoding": "utf-8-sig",
+        "format": "csv",
+        "hashing": "md5",
+        "name": "dados_serv_202203",
+        "path": "data/dados_serv_202203.csv",
+        "profile": "tabular-data-resource",
+        "schema": {
+          "fields": [
+            {
+              "name": "ano_mes",
+              "type": "integer"
+            },
+            {
+              "name": "masp",
+              "type": "integer"
+            },
+            {
+              "name": "adm",
+              "type": "integer"
+            },
+            {
+              "name": "nome",
+              "type": "string"
+            },
+            {
+              "name": "siglaefetivo",
+              "type": "string"
+            },
+            {
+              "name": "nmefetivo",
+              "type": "string"
+            },
+            {
+              "name": "cdcomi",
+              "type": "any"
+            },
+            {
+              "name": "desccomi",
+              "type": "any"
+            },
+            {
+              "name": "cd_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "desc_funcao_gratif_gte",
+              "type": "any"
+            },
+            {
+              "name": "carga_horaria",
+              "type": "integer"
+            },
+            {
+              "name": "cd_instituicao_dotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_dotacao",
+              "type": "string"
+            },
+            {
+              "name": "cd_instituicao_lotacao",
+              "type": "integer"
+            },
+            {
+              "name": "sigla_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "desc_instituicao_lotacao",
+              "type": "string"
+            },
+            {
+              "name": "descsitserv",
+              "type": "string"
+            },
+            {
+              "name": "id_data_inicio",
+              "type": "date"
+            },
+            {
+              "name": "id_data_aposentadoria",
+              "type": "any"
+            },
+            {
+              "name": "id_data_desligamento",
+              "type": "any"
+            }
+          ]
+        },
+        "scheme": "file",
+        "title": "Insira um título humanamente legível para este recurso.",
+        "stats": {
+          "hash": "7676aa45d23b5d32942be48a81f8b3f5",
+          "bytes": 12164274,
+          "fields": 21,
+          "rows": 64558
+        }
+      },
+      "time": 2.867,
+      "scope": [
+        "hash-count-error",
+        "byte-count-error",
+        "field-count-error",
+        "row-count-error",
+        "blank-header",
+        "extra-label",
+        "missing-label",
+        "blank-label",
+        "duplicate-label",
+        "incorrect-label",
+        "blank-row",
+        "primary-key-error",
+        "foreign-key-error",
+        "extra-cell",
+        "missing-cell",
+        "type-error",
+        "constraint-error",
+        "unique-error"
+      ],
+      "partial": false,
+      "errors": [],
+      "stats": {
+        "errors": 0
+      },
+      "valid": true
+    }
+  ],
+  "stats": {
+    "errors": 31,
+    "tasks": 11
+  },
+  "valid": false
+}
