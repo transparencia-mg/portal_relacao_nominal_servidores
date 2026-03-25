@@ -1,0 +1,1130 @@
+{
+  "name": "portal_relacao_nominal_servidores",
+  "owner_org": "",
+  "profile": "data-package",
+  "resources": [
+    {
+      "description": "Insira a descrição/explicação detalhada deste recurso.",
+      "dialect": {
+        "delimiter": ";"
+      },
+      "encoding": "utf-8-sig",
+      "format": "csv",
+      "hashing": "md5",
+      "name": "dados_serv_202201_1",
+      "path": "data/dados_serv_202201_1.csv",
+      "profile": "tabular-data-resource",
+      "schema": {
+        "fields": [
+          {
+            "name": "ano_mes",
+            "type": "integer"
+          },
+          {
+            "name": "masp",
+            "type": "integer"
+          },
+          {
+            "name": "adm",
+            "type": "integer"
+          },
+          {
+            "name": "nome",
+            "type": "string"
+          },
+          {
+            "name": "siglaefetivo",
+            "type": "string"
+          },
+          {
+            "name": "nmefetivo",
+            "type": "string"
+          },
+          {
+            "name": "cdcomi",
+            "type": "any"
+          },
+          {
+            "name": "desccomi",
+            "type": "any"
+          },
+          {
+            "name": "cd_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "desc_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "carga_horaria",
+            "type": "integer"
+          },
+          {
+            "name": "cd_instituicao_dotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "cd_instituicao_lotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "descsitserv",
+            "type": "string"
+          },
+          {
+            "name": "id_data_inicio",
+            "type": "datetime"
+          },
+          {
+            "name": "id_data_aposentadoria",
+            "type": "datetime"
+          },
+          {
+            "name": "id_data_desligamento",
+            "type": "any"
+          }
+        ]
+      },
+      "scheme": "file",
+      "title": "Insira um título humanamente legível para este recurso."
+    },
+    {
+      "description": "Insira a descrição/explicação detalhada deste recurso.",
+      "dialect": {
+        "delimiter": ";"
+      },
+      "encoding": "utf-8-sig",
+      "format": "csv",
+      "hashing": "md5",
+      "name": "dados_serv_202201_2",
+      "path": "data/dados_serv_202201_2.csv",
+      "profile": "tabular-data-resource",
+      "schema": {
+        "fields": [
+          {
+            "name": "ano_mes",
+            "type": "integer"
+          },
+          {
+            "name": "masp",
+            "type": "integer"
+          },
+          {
+            "name": "adm",
+            "type": "integer"
+          },
+          {
+            "name": "nome",
+            "type": "string"
+          },
+          {
+            "name": "siglaefetivo",
+            "type": "string"
+          },
+          {
+            "name": "nmefetivo",
+            "type": "string"
+          },
+          {
+            "name": "cdcomi",
+            "type": "any"
+          },
+          {
+            "name": "desccomi",
+            "type": "any"
+          },
+          {
+            "name": "cd_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "desc_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "carga_horaria",
+            "type": "integer"
+          },
+          {
+            "name": "cd_instituicao_dotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "cd_instituicao_lotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "descsitserv",
+            "type": "string"
+          },
+          {
+            "name": "id_data_inicio",
+            "type": "datetime"
+          },
+          {
+            "name": "id_data_aposentadoria",
+            "type": "date"
+          },
+          {
+            "name": "id_data_desligamento",
+            "type": "any"
+          }
+        ]
+      },
+      "scheme": "file",
+      "title": "Insira um título humanamente legível para este recurso."
+    },
+    {
+      "description": "Insira a descrição/explicação detalhada deste recurso.",
+      "dialect": {
+        "delimiter": ";"
+      },
+      "encoding": "utf-8-sig",
+      "format": "csv",
+      "hashing": "md5",
+      "name": "dados_serv_202201_3",
+      "path": "data/dados_serv_202201_3.csv",
+      "profile": "tabular-data-resource",
+      "schema": {
+        "fields": [
+          {
+            "name": "ano_mes",
+            "type": "integer"
+          },
+          {
+            "name": "masp",
+            "type": "integer"
+          },
+          {
+            "name": "adm",
+            "type": "integer"
+          },
+          {
+            "name": "nome",
+            "type": "string"
+          },
+          {
+            "name": "siglaefetivo",
+            "type": "string"
+          },
+          {
+            "name": "nmefetivo",
+            "type": "string"
+          },
+          {
+            "name": "cdcomi",
+            "type": "any"
+          },
+          {
+            "name": "desccomi",
+            "type": "any"
+          },
+          {
+            "name": "cd_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "desc_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "carga_horaria",
+            "type": "integer"
+          },
+          {
+            "name": "cd_instituicao_dotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "cd_instituicao_lotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "descsitserv",
+            "type": "string"
+          },
+          {
+            "name": "id_data_inicio",
+            "type": "datetime"
+          },
+          {
+            "name": "id_data_aposentadoria",
+            "type": "datetime"
+          },
+          {
+            "name": "id_data_desligamento",
+            "type": "any"
+          }
+        ]
+      },
+      "scheme": "file",
+      "title": "Insira um título humanamente legível para este recurso."
+    },
+    {
+      "description": "Insira a descrição/explicação detalhada deste recurso.",
+      "dialect": {
+        "delimiter": ";"
+      },
+      "encoding": "utf-8-sig",
+      "format": "csv",
+      "hashing": "md5",
+      "name": "dados_serv_202201_4",
+      "path": "data/dados_serv_202201_4.csv",
+      "profile": "tabular-data-resource",
+      "schema": {
+        "fields": [
+          {
+            "name": "ano_mes",
+            "type": "integer"
+          },
+          {
+            "name": "masp",
+            "type": "integer"
+          },
+          {
+            "name": "adm",
+            "type": "integer"
+          },
+          {
+            "name": "nome",
+            "type": "string"
+          },
+          {
+            "name": "siglaefetivo",
+            "type": "string"
+          },
+          {
+            "name": "nmefetivo",
+            "type": "string"
+          },
+          {
+            "name": "cdcomi",
+            "type": "any"
+          },
+          {
+            "name": "desccomi",
+            "type": "any"
+          },
+          {
+            "name": "cd_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "desc_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "carga_horaria",
+            "type": "integer"
+          },
+          {
+            "name": "cd_instituicao_dotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "cd_instituicao_lotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "descsitserv",
+            "type": "string"
+          },
+          {
+            "name": "id_data_inicio",
+            "type": "date"
+          },
+          {
+            "name": "id_data_aposentadoria",
+            "type": "datetime"
+          },
+          {
+            "name": "id_data_desligamento",
+            "type": "any"
+          }
+        ]
+      },
+      "scheme": "file",
+      "title": "Insira um título humanamente legível para este recurso."
+    },
+    {
+      "description": "Insira a descrição/explicação detalhada deste recurso.",
+      "dialect": {
+        "delimiter": ";"
+      },
+      "encoding": "utf-8-sig",
+      "format": "csv",
+      "hashing": "md5",
+      "name": "dados_serv_202201_5",
+      "path": "data/dados_serv_202201_5.csv",
+      "profile": "tabular-data-resource",
+      "schema": {
+        "fields": [
+          {
+            "name": "ano_mes",
+            "type": "integer"
+          },
+          {
+            "name": "masp",
+            "type": "integer"
+          },
+          {
+            "name": "adm",
+            "type": "integer"
+          },
+          {
+            "name": "nome",
+            "type": "string"
+          },
+          {
+            "name": "siglaefetivo",
+            "type": "string"
+          },
+          {
+            "name": "nmefetivo",
+            "type": "string"
+          },
+          {
+            "name": "cdcomi",
+            "type": "string"
+          },
+          {
+            "name": "desccomi",
+            "type": "string"
+          },
+          {
+            "name": "cd_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "desc_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "carga_horaria",
+            "type": "integer"
+          },
+          {
+            "name": "cd_instituicao_dotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "cd_instituicao_lotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "descsitserv",
+            "type": "string"
+          },
+          {
+            "name": "id_data_inicio",
+            "type": "date"
+          },
+          {
+            "name": "id_data_aposentadoria",
+            "type": "datetime"
+          },
+          {
+            "name": "id_data_desligamento",
+            "type": "any"
+          }
+        ]
+      },
+      "scheme": "file",
+      "title": "Insira um título humanamente legível para este recurso."
+    },
+    {
+      "description": "Insira a descrição/explicação detalhada deste recurso.",
+      "dialect": {
+        "delimiter": ";"
+      },
+      "encoding": "utf-8-sig",
+      "format": "csv",
+      "hashing": "md5",
+      "name": "dados_serv_202201_6",
+      "path": "data/dados_serv_202201_6.csv",
+      "profile": "tabular-data-resource",
+      "schema": {
+        "fields": [
+          {
+            "name": "ano_mes",
+            "type": "integer"
+          },
+          {
+            "name": "masp",
+            "type": "integer"
+          },
+          {
+            "name": "adm",
+            "type": "integer"
+          },
+          {
+            "name": "nome",
+            "type": "string"
+          },
+          {
+            "name": "siglaefetivo",
+            "type": "string"
+          },
+          {
+            "name": "nmefetivo",
+            "type": "string"
+          },
+          {
+            "name": "cdcomi",
+            "type": "any"
+          },
+          {
+            "name": "desccomi",
+            "type": "any"
+          },
+          {
+            "name": "cd_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "desc_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "carga_horaria",
+            "type": "integer"
+          },
+          {
+            "name": "cd_instituicao_dotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "cd_instituicao_lotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "descsitserv",
+            "type": "string"
+          },
+          {
+            "name": "id_data_inicio",
+            "type": "datetime"
+          },
+          {
+            "name": "id_data_aposentadoria",
+            "type": "datetime"
+          },
+          {
+            "name": "id_data_desligamento",
+            "type": "any"
+          }
+        ]
+      },
+      "scheme": "file",
+      "title": "Insira um título humanamente legível para este recurso."
+    },
+    {
+      "description": "Insira a descrição/explicação detalhada deste recurso.",
+      "dialect": {
+        "delimiter": ";"
+      },
+      "encoding": "utf-8-sig",
+      "format": "csv",
+      "hashing": "md5",
+      "name": "dados_serv_202201_7",
+      "path": "data/dados_serv_202201_7.csv",
+      "profile": "tabular-data-resource",
+      "schema": {
+        "fields": [
+          {
+            "name": "ano_mes",
+            "type": "integer"
+          },
+          {
+            "name": "masp",
+            "type": "integer"
+          },
+          {
+            "name": "adm",
+            "type": "integer"
+          },
+          {
+            "name": "nome",
+            "type": "string"
+          },
+          {
+            "name": "siglaefetivo",
+            "type": "string"
+          },
+          {
+            "name": "nmefetivo",
+            "type": "string"
+          },
+          {
+            "name": "cdcomi",
+            "type": "any"
+          },
+          {
+            "name": "desccomi",
+            "type": "any"
+          },
+          {
+            "name": "cd_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "desc_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "carga_horaria",
+            "type": "integer"
+          },
+          {
+            "name": "cd_instituicao_dotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "cd_instituicao_lotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "descsitserv",
+            "type": "string"
+          },
+          {
+            "name": "id_data_inicio",
+            "type": "date"
+          },
+          {
+            "name": "id_data_aposentadoria",
+            "type": "any"
+          },
+          {
+            "name": "id_data_desligamento",
+            "type": "any"
+          }
+        ]
+      },
+      "scheme": "file",
+      "title": "Insira um título humanamente legível para este recurso."
+    },
+    {
+      "description": "Insira a descrição/explicação detalhada deste recurso.",
+      "dialect": {
+        "delimiter": ";"
+      },
+      "encoding": "utf-8-sig",
+      "format": "csv",
+      "hashing": "md5",
+      "name": "dados_serv_202201_8",
+      "path": "data/dados_serv_202201_8.csv",
+      "profile": "tabular-data-resource",
+      "schema": {
+        "fields": [
+          {
+            "name": "ano_mes",
+            "type": "integer"
+          },
+          {
+            "name": "masp",
+            "type": "integer"
+          },
+          {
+            "name": "adm",
+            "type": "integer"
+          },
+          {
+            "name": "nome",
+            "type": "string"
+          },
+          {
+            "name": "siglaefetivo",
+            "type": "string"
+          },
+          {
+            "name": "nmefetivo",
+            "type": "string"
+          },
+          {
+            "name": "cdcomi",
+            "type": "any"
+          },
+          {
+            "name": "desccomi",
+            "type": "any"
+          },
+          {
+            "name": "cd_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "desc_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "carga_horaria",
+            "type": "integer"
+          },
+          {
+            "name": "cd_instituicao_dotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "cd_instituicao_lotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "descsitserv",
+            "type": "string"
+          },
+          {
+            "name": "id_data_inicio",
+            "type": "date"
+          },
+          {
+            "name": "id_data_aposentadoria",
+            "type": "any"
+          },
+          {
+            "name": "id_data_desligamento",
+            "type": "any"
+          }
+        ]
+      },
+      "scheme": "file",
+      "title": "Insira um título humanamente legível para este recurso."
+    },
+    {
+      "description": "Insira a descrição/explicação detalhada deste recurso.",
+      "dialect": {
+        "delimiter": ";"
+      },
+      "encoding": "utf-8-sig",
+      "format": "csv",
+      "hashing": "md5",
+      "name": "dados_serv_202201_9",
+      "path": "data/dados_serv_202201_9.csv",
+      "profile": "tabular-data-resource",
+      "schema": {
+        "fields": [
+          {
+            "name": "ano_mes",
+            "type": "integer"
+          },
+          {
+            "name": "masp",
+            "type": "integer"
+          },
+          {
+            "name": "adm",
+            "type": "integer"
+          },
+          {
+            "name": "nome",
+            "type": "string"
+          },
+          {
+            "name": "siglaefetivo",
+            "type": "string"
+          },
+          {
+            "name": "nmefetivo",
+            "type": "string"
+          },
+          {
+            "name": "cdcomi",
+            "type": "any"
+          },
+          {
+            "name": "desccomi",
+            "type": "any"
+          },
+          {
+            "name": "cd_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "desc_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "carga_horaria",
+            "type": "integer"
+          },
+          {
+            "name": "cd_instituicao_dotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "cd_instituicao_lotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "descsitserv",
+            "type": "string"
+          },
+          {
+            "name": "id_data_inicio",
+            "type": "date"
+          },
+          {
+            "name": "id_data_aposentadoria",
+            "type": "any"
+          },
+          {
+            "name": "id_data_desligamento",
+            "type": "any"
+          }
+        ]
+      },
+      "scheme": "file",
+      "title": "Insira um título humanamente legível para este recurso."
+    },
+    {
+      "description": "Insira a descrição/explicação detalhada deste recurso.",
+      "dialect": {
+        "delimiter": ";"
+      },
+      "encoding": "utf-8-sig",
+      "format": "csv",
+      "hashing": "md5",
+      "name": "dados_serv_202202",
+      "path": "data/dados_serv_202202.csv",
+      "profile": "tabular-data-resource",
+      "schema": {
+        "fields": [
+          {
+            "name": "ano_mes",
+            "type": "integer"
+          },
+          {
+            "name": "masp",
+            "type": "integer"
+          },
+          {
+            "name": "adm",
+            "type": "integer"
+          },
+          {
+            "name": "nome",
+            "type": "string"
+          },
+          {
+            "name": "siglaefetivo",
+            "type": "string"
+          },
+          {
+            "name": "nmefetivo",
+            "type": "string"
+          },
+          {
+            "name": "cdcomi",
+            "type": "any"
+          },
+          {
+            "name": "desccomi",
+            "type": "any"
+          },
+          {
+            "name": "cd_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "desc_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "carga_horaria",
+            "type": "integer"
+          },
+          {
+            "name": "cd_instituicao_dotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "cd_instituicao_lotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "descsitserv",
+            "type": "string"
+          },
+          {
+            "name": "id_data_inicio",
+            "type": "date"
+          },
+          {
+            "name": "id_data_aposentadoria",
+            "type": "any"
+          },
+          {
+            "name": "id_data_desligamento",
+            "type": "any"
+          }
+        ]
+      },
+      "scheme": "file",
+      "title": "Insira um título humanamente legível para este recurso."
+    },
+    {
+      "description": "Insira a descrição/explicação detalhada deste recurso.",
+      "dialect": {
+        "delimiter": ";"
+      },
+      "encoding": "utf-8-sig",
+      "format": "csv",
+      "hashing": "md5",
+      "name": "dados_serv_202203",
+      "path": "data/dados_serv_202203.csv",
+      "profile": "tabular-data-resource",
+      "schema": {
+        "fields": [
+          {
+            "name": "ano_mes",
+            "type": "integer"
+          },
+          {
+            "name": "masp",
+            "type": "integer"
+          },
+          {
+            "name": "adm",
+            "type": "integer"
+          },
+          {
+            "name": "nome",
+            "type": "string"
+          },
+          {
+            "name": "siglaefetivo",
+            "type": "string"
+          },
+          {
+            "name": "nmefetivo",
+            "type": "string"
+          },
+          {
+            "name": "cdcomi",
+            "type": "any"
+          },
+          {
+            "name": "desccomi",
+            "type": "any"
+          },
+          {
+            "name": "cd_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "desc_funcao_gratif_gte",
+            "type": "any"
+          },
+          {
+            "name": "carga_horaria",
+            "type": "integer"
+          },
+          {
+            "name": "cd_instituicao_dotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_dotacao",
+            "type": "string"
+          },
+          {
+            "name": "cd_instituicao_lotacao",
+            "type": "integer"
+          },
+          {
+            "name": "sigla_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "desc_instituicao_lotacao",
+            "type": "string"
+          },
+          {
+            "name": "descsitserv",
+            "type": "string"
+          },
+          {
+            "name": "id_data_inicio",
+            "type": "date"
+          },
+          {
+            "name": "id_data_aposentadoria",
+            "type": "any"
+          },
+          {
+            "name": "id_data_desligamento",
+            "type": "any"
+          }
+        ]
+      },
+      "scheme": "file",
+      "title": "Insira um título humanamente legível para este recurso."
+    }
+  ],
+  "title": "Portal_relacao_nominal_servidores"
+}
