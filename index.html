@@ -2,250 +2,1144 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Servidores MG - Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Relação Nominal de Servidores - Transparência MG</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
     <style>
+        :root {
+            --primary-dark: #1a3a5c;
+            --primary-darker: #0f2a44;
+            --accent-red: #b93c42;
+            --background-light: #f5f7fa;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px; padding: 25px; margin-bottom: 20px; }
-        .header h1 { font-size: 28px; margin-bottom: 8px; }
-        .filters-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
-        .filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .filter-group { display: flex; flex-direction: column; gap: 5px; }
-        .filter-group label { font-weight: 600; color: #2c3e50; }
-        .filter-group select, .filter-group input { padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
-        .btn-buscar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .btn-voltar { background: #95a5a6; color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; margin-bottom: 15px; }
-        .stats-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; display: none; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .stat-item { text-align: center; padding: 20px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 10px; }
-        .stat-number { font-size: 32px; font-weight: bold; color: #667eea; }
-        .orgaos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 15px; margin-top: 20px; }
-        .orgao-card { background: white; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; border-left: 4px solid #667eea; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .orgao-card:hover { transform: translateX(5px); background: #f8f9fa; }
-        .orgao-nome { font-size: 16px; font-weight: 600; color: #2c3e50; margin-bottom: 10px; }
-        .orgao-quantidade { font-size: 24px; font-weight: bold; color: #667eea; }
-        .table-card { background: white; border-radius: 15px; padding: 20px; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { background: #34495e; color: white; padding: 12px; text-align: left; }
-        td { padding: 10px; border-bottom: 1px solid #ecf0f1; }
-        .pagination { display: flex; justify-content: center; gap: 15px; margin-top: 20px; align-items: center; }
-        .pagination button { background: #667eea; color: white; border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; }
-        .pagination button:disabled { background: #bdc3c7; cursor: not-allowed; }
-        .info { text-align: center; margin-bottom: 15px; padding: 10px; background: #ecf0f1; border-radius: 8px; }
-        .loading { text-align: center; padding: 40px; color: #667eea; }
-        .error { text-align: center; padding: 40px; color: #e74c3c; }
-        .status-ativo { background: #27ae60; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; }
-        .status-outro { background: #e67e22; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; }
-        @media (max-width: 768px) { .orgaos-grid { grid-template-columns: 1fr; } }
+        body { font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--background-light); padding-bottom: 15px; }
+        html, body { overflow: visible !important; height: auto !important; }
+        .dashboard-container { width: 100%; max-width: 98% !important; padding: 0 12px; margin: 0 auto; }
+        .main-container, .container.dashboard-spacing, .tab-content, .table-container { height: auto !important; min-height: auto !important; overflow: visible !important; position: relative; }
+        .table-container { overflow-x: auto !important; border-radius: 10px; background: white; box-shadow: 0 3px 12px rgba(0,0,0,0.06); }
+        .nav-tabs-container { background: transparent; padding: 10px 0; margin: 15px 0; }
+        .nav-tabs { border: none !important; gap: 10px; flex-wrap: wrap; }
+        .nav-tabs .nav-link { border: none !important; background: #ffffff !important; border-radius: 10px !important; padding: 10px 24px !important; font-weight: 600; font-size: 14px; color: #1a3a5c !important; display: inline-flex !important; align-items: center; gap: 8px; }
+        .nav-tabs .nav-link.active { background: #234c63 !important; color: #fff !important; }
+        .filter-container { background: white; border-radius: 10px; box-shadow: 0 3px 12px rgba(0,0,0,0.08); padding: 20px; margin-bottom: 20px; }
+        .filter-label { font-size: 12px; font-weight: 600; color: #1a3a5c; margin-bottom: 4px; text-transform: uppercase; }
+        .form-control, .form-select { border: 2px solid #e9ecef; border-radius: 6px; padding: 6px 10px; font-size: 13px; }
+        .form-control:focus, .form-select:focus { border-color: var(--accent-red); box-shadow: 0 0 0 2px rgba(185,60,66,0.15); }
+        .btn-pesquisa, .btn-limpar { border: none; padding: 8px 20px; font-weight: 600; border-radius: 6px; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; height: 38px; }
+        .btn-pesquisa { background: #20445d; color: white; }
+        .btn-pesquisa:hover { background: var(--accent-red); }
+        .btn-limpar { background: white; border: 2px solid var(--primary-darker); color: var(--primary-darker); }
+        .btn-limpar:hover { background-color: #132837; color: white; border-color: #132837; }
+        .btn-export { background: #eeeff5; border: 1px solid #d6dee6; color: #1a3a5c; padding: 5px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-export:hover { background-color: #1a3a5c; color: white; }
+        .btn-action { padding: 5px; border-radius: 6px; border: 1.5px solid #1a3a5c; background: white; color: #1a3a5c; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+        .btn-action:hover { background-color: #1a3a5c; color: white; }
+        .metric-card { background: white; border-radius: 8px; border: 1px solid #e5e9ef; box-shadow: 0 3px 12px rgba(0,0,0,0.06); margin-bottom: 20px; }
+        .metric-header { background: #20445d; color: white; font-size: 13px; font-weight: 600; padding: 8px 15px; border-radius: 8px 8px 0 0; }
+        .metric-body { padding: 10px 15px; }
+        .metric-value { font-size: 22px; font-weight: 700; color: #1a3a5c; }
+        .metric-sub { font-size: 11px; color: #6c757d; margin-top: 2px; }
+        .summary-card { background: white; border-radius: 10px; border-left: 5px solid #20445d; box-shadow: 0 3px 12px rgba(0,0,0,0.07); padding: 16px 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px; }
+        .summary-card .card-icon { font-size: 32px; color: #20445d; }
+        .summary-card .card-info .card-value { font-size: 26px; font-weight: 700; color: #1a3a5c; }
+        .summary-card .card-info .card-label { font-size: 12px; color: #6c757d; font-weight: 500; text-transform: uppercase; }
+        .summary-card.red { border-left-color: var(--accent-red); }
+        .summary-card.red .card-icon, .summary-card.red .card-info .card-value { color: var(--accent-red); }
+        .summary-card.green { border-left-color: #198754; }
+        .summary-card.green .card-icon, .summary-card.green .card-info .card-value { color: #198754; }
+        .summary-card.orange { border-left-color: #fd7e14; }
+        .summary-card.orange .card-icon, .summary-card.orange .card-info .card-value { color: #fd7e14; }
+        .table { width: 100%; font-size: 12px; border-collapse: collapse; }
+        .table th { background-color: #54697b; color: white; padding: 10px 8px; font-weight: 600; white-space: nowrap; border: 1px solid #d6dee6; cursor: pointer; user-select: none; text-align: center; }
+        .table th:hover { background-color: #6a7f8e; }
+        .table th.asc:after { content: ' ↑'; }
+        .table th.desc:after { content: ' ↓'; }
+        .table td { padding: 8px; border: 1px solid #d6dee6; vertical-align: middle; }
+        .table td.text-center { text-align: center; }
+        .table tbody tr:hover { background-color: rgba(41,67,90,0.04); }
+        .table-footer-total td { background-color: #f8f9fa; font-weight: 700; }
+        .metadata-table th { background-color: #20445d; color: white; font-size: 12px; }
+        .metadata-table td { font-size: 12px; }
+        .pagination-container { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: white; border: 1px solid #dee2e6; border-top: none; border-radius: 0 0 10px 10px; flex-wrap: wrap; gap: 10px; }
+        .items-per-page { height: 32px; min-width: 120px; border-radius: 6px; border: 1px solid #d6dee6; padding: 4px 8px; font-size: 12px; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .toolbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .search-input-small { width: 220px; font-size: 12px; padding: 6px 12px; border-radius: 6px; border: 1px solid #d6dee6; }
+        .orgao-link { color: #006a82; text-decoration: none; font-weight: 600; cursor: pointer; }
+        .orgao-link:hover { color: var(--accent-red); text-decoration: underline; }
+        .select-with-search { position: relative; }
+        .select-with-search input { width: 100%; padding: 6px 10px; border: 2px solid #e9ecef; border-radius: 6px; font-size: 13px; }
+        .select-options { display: none; position: absolute; top: 100%; left: 0; right: 0; max-height: 200px; overflow-y: auto; background: white; border: 1px solid #dee2e6; border-radius: 6px; z-index: 1000; }
+        .select-options.show { display: block; }
+        .select-option { padding: 7px 10px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+        .select-option:hover, .select-option.selected { background-color: #e8f0fe; }
+        .column-selector-icon { cursor: pointer; color: white; font-size: 18px; vertical-align: middle; margin-left: 5px; }
+        .column-selector-popup { display: none; position: absolute; background: white; border: 1px solid #dee2e6; border-radius: 8px; z-index: 2000; padding: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); min-width: 220px; top: 40px; left: 0; }
+        .column-selector-popup.show { display: block; }
+        .column-selector-popup label { display: block; padding: 4px 8px; cursor: pointer; font-size: 13px; border-radius: 4px; }
+        .column-selector-popup label:hover { background: #f0f4f8; }
+        .info-section { background: #f8f9fa; border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+        .info-section h6 { font-weight: 700; color: #1a3a5c; margin-bottom: 10px; font-size: 13px; border-bottom: 2px solid #dee2e6; padding-bottom: 6px; }
+        .info-row { display: flex; padding: 5px 0; border-bottom: 1px solid #e9ecef; }
+        .info-label { width: 42%; font-weight: 600; color: #495057; font-size: 12px; }
+        .info-value { width: 58%; color: #212529; font-size: 12px; }
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.93); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 12px; }
+        .loading-progress { font-size: 13px; color: #20445d; font-weight: 600; }
+        .chart-card { background: white; border-radius: 10px; border: 1px solid #e5e9ef; box-shadow: 0 3px 12px rgba(0,0,0,0.06); padding: 18px; margin-bottom: 20px; }
+        .chart-card h6 { font-weight: 700; color: #1a3a5c; margin-bottom: 14px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .chart-wrapper { position: relative; height: 260px; }
+        .autocomplete-wrapper { position: relative; }
+        .autocomplete-list { display: none; position: absolute; top: 100%; left: 0; right: 0; max-height: 220px; overflow-y: auto; background: white; border: 1px solid #dee2e6; border-radius: 6px; z-index: 1050; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+        .autocomplete-list.show { display: block; }
+        .autocomplete-item { padding: 7px 10px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+        .autocomplete-item:hover, .autocomplete-item.active { background: #e8f0fe; }
+        .badge-sit { padding: 3px 7px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .badge-efetivo { background: #d4edda; color: #155724; }
+        .badge-aposentado { background: #fff3cd; color: #856404; }
+        .badge-desligado { background: #f8d7da; color: #721c24; }
+        .badge-outro { background: #e2e3e5; color: #383d41; }
+        @media (max-width: 768px) { .dashboard-container { padding: 0 8px; } .toolbar { flex-direction: column; align-items: stretch; } .search-input-small { width: 100%; } .info-label { width: 45%; } .info-value { width: 55%; } }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1><i class="fas fa-chart-pie"></i> Servidores Públicos - Minas Gerais</h1>
-            <p>Clique em qualquer órgão para ver a lista de servidores</p>
-        </div>
-        
-        <div class="filters-card">
-            <div class="filters-grid">
-                <div class="filter-group">
-                    <label><i class="fas fa-calendar"></i> Mês/Ano</label>
-                    <select id="anoMes">
-                        <option value="202602">Fevereiro/2026</option>
-                        <option value="202601">Janeiro/2026</option>
-                        <option value="202512">Dezembro/2025</option>
-                        <option value="202511">Novembro/2025</option>
-                        <option value="202510">Outubro/2025</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-search"></i> Buscar Órgão</label>
-                    <input type="text" id="buscaOrgao" placeholder="Digite o nome do órgão...">
-                </div>
+<div class="dashboard-container">
+    <div class="nav-tabs-container">
+        <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+            <li class="nav-item"><button class="nav-link active" id="visao-tab" data-bs-toggle="tab" data-bs-target="#visao"><i class="material-icons">dashboard</i>Visão Geral</button></li>
+            <li class="nav-item"><button class="nav-link" id="consulta-tab" data-bs-toggle="tab" data-bs-target="#consulta"><i class="material-icons">search</i>Consulta Individual</button></li>
+            <li class="nav-item"><button class="nav-link" id="downloads-tab" data-bs-toggle="tab" data-bs-target="#downloads"><i class="material-icons">download</i>Downloads</button></li>
+        </ul>
+    </div>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="visao"><div id="visao-content"></div></div>
+        <div class="tab-pane fade" id="consulta"><div id="consulta-content"></div></div>
+        <div class="tab-pane fade" id="downloads"><div id="downloads-content"></div></div>
+    </div>
+</div>
+
+<!-- Modal Detalhes -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#20445d;color:white;">
+                <h5 class="modal-title"><i class="material-icons me-2">person</i>Ficha do Servidor</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <button class="btn-buscar" onclick="carregarOrgaos()">
-                <i class="fas fa-chart-bar"></i> Carregar Órgãos
-            </button>
-        </div>
-        
-        <div class="stats-card" id="statsCard">
-            <div class="stats-grid">
-                <div class="stat-item"><div class="stat-number" id="totalServidores">0</div><div class="stat-label">Total de Servidores</div></div>
-                <div class="stat-item"><div class="stat-number" id="totalOrgaos">0</div><div class="stat-label">Total de Órgãos</div></div>
-                <div class="stat-item"><div class="stat-number" id="mediaServidores">0</div><div class="stat-label">Média por Órgão</div></div>
-            </div>
-        </div>
-        
-        <div id="viewOrgaos"><div id="orgaosContainer" class="orgaos-grid"></div></div>
-        
-        <div id="viewServidores" style="display: none;">
-            <button class="btn-voltar" onclick="voltarParaOrgaos()"><i class="fas fa-arrow-left"></i> Voltar para Órgãos</button>
-            <h3 id="orgaoSelecionadoNome" style="margin-bottom: 15px;"></h3>
-            <div class="table-card">
-                <div id="infoServidores" class="info"></div>
-                <div style="overflow-x: auto;">
-                     <table>
-                        <thead>
-                            <tr><th>MASP</th><th>Nome</th><th>Instituição</th><th>Cargo</th><th>Carga</th><th>Status</th></tr>
-                        </thead>
-                        <tbody id="tbodyServidores">
-                            <tr><td colspan="6" class="loading">Selecione um órgão</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="pagination">
-                    <button onclick="paginaAnterior()" id="btnPrev" disabled>Anterior</button>
-                    <span id="paginaInfo">Página 0 de 0</span>
-                    <button onclick="proximaPagina()" id="btnNext" disabled>Próxima</button>
-                </div>
-            </div>
+            <div class="modal-body" id="modalContent"></div>
+            <div class="modal-footer"><button type="button" class="btn-limpar" data-bs-dismiss="modal"><i class="material-icons" style="font-size:16px">close</i> Fechar</button></div>
         </div>
     </div>
+</div>
 
-    <script>
-        // ============================================
-        // COLOQUE A URL DO SEU BACKEND AQUI
-        // ============================================
-        const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwAZw1_95azmAwytR7zN_LMsjgLZpfqYNa97JD0OdfbzPGEdWRaZGcD0MsJRhQogkWq/exec";
-        const API_KEY = "servidores_mg_2024";
-        
-        let orgaos = [];
-        let currentOrgao = null;
-        let totalServidoresOrgao = 0;
-        let currentPage = 1;
-        let currentAnoMes = "202602";
-        const limit = 20;
-        
-        async function chamarAPI(acao, params = {}) {
-            const url = new URL(BACKEND_URL);
-            url.searchParams.append("key", API_KEY);
-            url.searchParams.append("acao", acao);
-            
-            for (let [key, value] of Object.entries(params)) {
-                url.searchParams.append(key, value);
-            }
-            
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            if (!data.success) {
-                throw new Error(data.error || "Erro na consulta");
-            }
-            
-            return data.data;
+<!-- Loading -->
+<div class="loading-overlay" id="loadingOverlay" style="display:none;">
+    <div class="spinner-border text-primary" role="status"></div>
+    <div class="loading-progress" id="loadingProgress">Carregando dados...</div>
+</div>
+
+<script>
+// ==================== CONFIGURAÇÃO ====================
+const BASE_URL = 'https://raw.githubusercontent.com/transparencia-mg/portal_relacao_nominal_servidores/refs/heads/main/dataset/data/';
+
+// MES MAIS ATUAL DISPONÍVEL — ajuste aqui quando novos arquivos chegarem
+const MES_MAIS_ATUAL = '202602';
+// MES BASE (jan/2022 — sempre carregado primeiro como snapshot inicial)
+const MES_BASE = '202201';
+
+function getFileUrls(anoMes) {
+    const urls = [];
+    if (anoMes === '202201') {
+        for (let i = 1; i <= 9; i++) urls.push(BASE_URL + `dados_serv_202201_${i}.csv`);
+    } else {
+        urls.push(BASE_URL + `dados_serv_${anoMes}.csv`);
+    }
+    return urls;
+}
+
+function getMesesDisponiveis() {
+    const meses = [];
+    for (let m = 1; m <= 12; m++) meses.push('2022' + String(m).padStart(2,'0'));
+    for (let m = 1; m <= 12; m++) meses.push('2023' + String(m).padStart(2,'0'));
+    for (let m = 1; m <= 12; m++) meses.push('2024' + String(m).padStart(2,'0'));
+    for (let m = 1; m <= 12; m++) meses.push('2025' + String(m).padStart(2,'0'));
+    for (let m = 1; m <= 2;  m++) meses.push('2026' + String(m).padStart(2,'0'));
+    return meses;
+}
+
+// ==================== CACHE DE MESES JÁ LIDOS ====================
+// Guarda os rows brutos de cada mês já baixado para evitar refetch
+const cacheRows = new Map(); // anoMes -> [ rows... ]
+
+// ==================== ESTADO GLOBAL ====================
+let todosServidores = new Map(); // chave: masp|adm -> registro mais recente
+let servidoresFiltrados = [];
+let orgaoSelecionado = '';
+
+// anoMes ativo (referência atual do dashboard)
+let anoMesAtivo = MES_MAIS_ATUAL;
+
+let filtroVisao = { ano: '2026', mes: '02' };
+let filtroConsulta = { nome: '', nmefetivo: '', instDotacao: '', instLotacao: '', situacao: '' };
+let filtroConsultaAnoMes = { ano: '2026', mes: '02' };
+
+let paginaVisao = 1, itensPorPaginaVisao = 25;
+let paginaConsulta = 1, itensPorPaginaConsulta = 50;
+let buscaConsulta = '';
+
+let ordenacaoVisao = { col: 'orgao', dir: 'asc' };
+let ordenacaoConsulta = { col: 'nome', dir: 'asc' };
+
+let colunasConsulta = {
+    masp: true, adm: true, nome: true, siglaefetivo: true, nmefetivo: true,
+    cdcomi: false, desccomi: true, cd_funcao_gratif_gte: false, desc_funcao_gratif_gte: true,
+    carga_horaria: true, cd_instituicao_dotacao: false, sigla_instituicao_dotacao: true,
+    desc_instituicao_dotacao: false, cd_instituicao_lotacao: false, sigla_instituicao_lotacao: true,
+    desc_instituicao_lotacao: false, descsitserv: true,
+    id_data_inicio: true, id_data_aposentadoria: true, id_data_desligamento: true
+};
+const colunasFix = new Set(['masp','adm','id_data_inicio','id_data_aposentadoria','id_data_desligamento']);
+
+let chartSituacao = null, chartOrgao = null;
+
+// ==================== AUXILIARES ====================
+function mostrarLoading(show, msg) {
+    document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+    if (msg) document.getElementById('loadingProgress').textContent = msg;
+}
+
+function nomeMes(m) {
+    const nomes = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    return nomes[parseInt(m)] || m;
+}
+
+function formatarData(v) {
+    if (!v) return '-';
+    const s = String(v).trim();
+    if (s.length >= 10) {
+        const parts = s.substring(0,10).split('-');
+        if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    return s;
+}
+
+function badgeSit(sit) {
+    if (!sit) return '<span class="badge-sit badge-outro">-</span>';
+    const s = sit.toUpperCase();
+    if (s.includes('EFETIVO')) return `<span class="badge-sit badge-efetivo">${sit}</span>`;
+    if (s.includes('APOSENTADO')) return `<span class="badge-sit badge-aposentado">${sit}</span>`;
+    if (s.includes('DESLIGADO') || s.includes('EXONERADO') || s.includes('FALECIDO')) return `<span class="badge-sit badge-desligado">${sit}</span>`;
+    return `<span class="badge-sit badge-outro">${sit}</span>`;
+}
+
+function v(val) { return val || '-'; }
+
+// ==================== CARREGAMENTO LAZY ====================
+async function fetchCSV(url) {
+    try {
+        const resp = await fetch(url);
+        if (!resp.ok) return [];
+        const text = await resp.text();
+        return new Promise(resolve => {
+            Papa.parse(text, { header: true, delimiter: ';', skipEmptyLines: true,
+                complete: r => resolve(r.data) });
+        });
+    } catch(e) { return []; }
+}
+
+// Baixa um mês e salva no cache (se ainda não baixado)
+async function garantirMes(anoMes, label) {
+    if (cacheRows.has(anoMes)) return; // já baixado
+    const urls = getFileUrls(anoMes);
+    const rows = [];
+    for (const url of urls) {
+        const r = await fetchCSV(url);
+        rows.push(...r);
+    }
+    cacheRows.set(anoMes, rows);
+}
+
+
+/**
+ * Regra única para QUALQUER mês selecionado:
+ *   1. Jan/2022 (base completa)  → snapshot de todos os servidores
+ *   2. anoMesAlvo (delta)        → sobrescreve/adiciona registros alterados ou novos
+ * Nunca lê meses intermediários. Cache evita downloads repetidos.
+ */
+async function construirBaseAte(anoMesAlvo) {
+    if (!cacheRows.has(MES_BASE)) {
+        mostrarLoading(true, 'Carregando base (Jan/2022)…');
+        await garantirMes(MES_BASE);
+    }
+    if (!cacheRows.has(anoMesAlvo)) {
+        mostrarLoading(true, `Carregando ${nomeMes(anoMesAlvo.slice(4,6))}/${anoMesAlvo.slice(0,4)}…`);
+        await garantirMes(anoMesAlvo);
+    }
+    mostrarLoading(true, 'Aplicando dados…');
+    todosServidores = new Map();
+    for (const row of (cacheRows.get(MES_BASE) || []))
+        todosServidores.set(`${row.masp}|${row.adm}`, row);
+    for (const row of (cacheRows.get(anoMesAlvo) || []))
+        todosServidores.set(`${row.masp}|${row.adm}`, row);
+    anoMesAtivo = anoMesAlvo;
+    mostrarLoading(false);
+}
+
+/**
+ * Carga inicial rápida: apenas jan/2022 + mês mais atual.
+ * Registros do mês mais atual sobrescrevem jan/2022 → resultado correto para fev/2026.
+ */
+async function cargaInicial() {
+    mostrarLoading(true, `Carregando base (Jan/2022)… 1/2`);
+    await garantirMes(MES_BASE);
+
+    mostrarLoading(true, `Carregando dados mais recentes (${nomeMes(MES_MAIS_ATUAL.slice(4,6))}/${MES_MAIS_ATUAL.slice(0,4)})… 2/2`);
+    await garantirMes(MES_MAIS_ATUAL);
+
+    // Monta o mapa: base primeiro, depois mais atual por cima
+    todosServidores = new Map();
+    for (const row of (cacheRows.get(MES_BASE) || [])) {
+        todosServidores.set(`${row.masp}|${row.adm}`, row);
+    }
+    // Meses intermediários 202202 até MES_MAIS_ATUAL - 1 NÃO são carregados ainda;
+    // para o mês mais atual os deltas são aplicados sobre a base jan/2022
+    for (const row of (cacheRows.get(MES_MAIS_ATUAL) || [])) {
+        todosServidores.set(`${row.masp}|${row.adm}`, row);
+    }
+    anoMesAtivo = MES_MAIS_ATUAL;
+    mostrarLoading(false);
+}
+
+// ==================== VISÃO GERAL ====================
+function renderVisaoGeral() {
+    const dados = Array.from(todosServidores.values());
+
+    // Agrupar por órgão (desc_instituicao_dotacao)
+    const orgaos = {};
+    for (const s of dados) {
+        const orgao = s.desc_instituicao_dotacao || s.sigla_instituicao_dotacao || 'NÃO INFORMADO';
+        if (!orgaos[orgao]) orgaos[orgao] = { total: 0, efetivos: 0, aposentados: 0, outros: 0 };
+        orgaos[orgao].total++;
+        const sit = (s.descsitserv || '').toUpperCase();
+        if (sit.includes('EFETIVO')) orgaos[orgao].efetivos++;
+        else if (sit.includes('APOSENTADO')) orgaos[orgao].aposentados++;
+        else orgaos[orgao].outros++;
+    }
+
+    const totalServs = dados.length;
+    const totalEfetivos = dados.filter(s => (s.descsitserv||'').toUpperCase().includes('EFETIVO')).length;
+    const totalAposentados = dados.filter(s => (s.descsitserv||'').toUpperCase().includes('APOSENTADO')).length;
+    const totalOrgaos = Object.keys(orgaos).length;
+    const situacoes = {};
+    for (const s of dados) { const sit = s.descsitserv || 'Não informado'; situacoes[sit] = (situacoes[sit]||0)+1; }
+
+    const mesAno = `${nomeMes(filtroVisao.mes)}/${filtroVisao.ano}`;
+
+    // Ordenar órgãos
+    let listaOrgaos = Object.entries(orgaos).map(([nome,info]) => ({nome,...info}));
+    listaOrgaos.sort((a,b) => {
+        const col = ordenacaoVisao.col;
+        let va = col==='orgao' ? a.nome : a[col] || 0;
+        let vb = col==='orgao' ? b.nome : b[col] || 0;
+        if (typeof va === 'string') va = va.toLowerCase();
+        if (typeof vb === 'string') vb = vb.toLowerCase();
+        return ordenacaoVisao.dir === 'asc' ? (va>vb?1:-1) : (va<vb?1:-1);
+    });
+
+    // Paginação
+    const totalPags = Math.ceil(listaOrgaos.length / itensPorPaginaVisao);
+    paginaVisao = Math.min(paginaVisao, Math.max(1, totalPags));
+    const inicio = (paginaVisao-1)*itensPorPaginaVisao;
+    const pagina = listaOrgaos.slice(inicio, inicio+itensPorPaginaVisao);
+
+    // Top órgãos para gráfico
+    const topOrgaos = [...listaOrgaos].sort((a,b)=>b.total-a.total).slice(0,10);
+
+    const html = `
+    <!-- FILTROS -->
+    <div class="filter-container">
+      <div class="row g-3 align-items-end">
+        <div class="col-auto">
+          <div class="filter-label">Ano</div>
+          <select class="form-select" id="vg-ano" style="width:110px">
+            ${['2022','2023','2024','2025','2026'].map(a=>`<option value="${a}" ${filtroVisao.ano===a?'selected':''}>${a}</option>`).join('')}
+          </select>
+        </div>
+        <div class="col-auto">
+          <div class="filter-label">Mês</div>
+          <select class="form-select" id="vg-mes" style="width:140px">
+            ${[{v:'01',l:'Janeiro'},{v:'02',l:'Fevereiro'},{v:'03',l:'Março'},{v:'04',l:'Abril'},{v:'05',l:'Maio'},{v:'06',l:'Junho'},{v:'07',l:'Julho'},{v:'08',l:'Agosto'},{v:'09',l:'Setembro'},{v:'10',l:'Outubro'},{v:'11',l:'Novembro'},{v:'12',l:'Dezembro'}]
+              .map(m=>`<option value="${m.v}" ${filtroVisao.mes===m.v?'selected':''}>${m.l}</option>`).join('')}
+          </select>
+        </div>
+        <div class="col-auto d-flex gap-2">
+          <button class="btn-pesquisa" onclick="aplicarFiltroVisao()"><i class="material-icons" style="font-size:16px">search</i> Aplicar</button>
+        </div>
+        <div class="col-auto ms-auto">
+          <small class="text-muted fw-semibold"><i class="material-icons" style="font-size:14px;vertical-align:middle">calendar_today</i> Referência: <strong>${mesAno}</strong></small>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARDS MÉTRICAS -->
+    <div class="row g-3 mb-3">
+      <div class="col-6 col-md-3">
+        <div class="summary-card">
+          <i class="material-icons card-icon">people</i>
+          <div class="card-info">
+            <div class="card-value">${totalServs.toLocaleString('pt-BR')}</div>
+            <div class="card-label">Total de Servidores</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="summary-card green">
+          <i class="material-icons card-icon">verified_user</i>
+          <div class="card-info">
+            <div class="card-value">${totalEfetivos.toLocaleString('pt-BR')}</div>
+            <div class="card-label">Efetivos / Ativos</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="summary-card orange">
+          <i class="material-icons card-icon">elderly</i>
+          <div class="card-info">
+            <div class="card-value">${totalAposentados.toLocaleString('pt-BR')}</div>
+            <div class="card-label">Aposentados</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="summary-card red">
+          <i class="material-icons card-icon">business</i>
+          <div class="card-info">
+            <div class="card-value">${totalOrgaos.toLocaleString('pt-BR')}</div>
+            <div class="card-label">Órgãos / Entidades</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRÁFICOS -->
+    <div class="row g-3 mb-3">
+      <div class="col-md-5">
+        <div class="chart-card">
+          <h6><i class="material-icons" style="font-size:15px;vertical-align:middle">pie_chart</i> Distribuição por Situação</h6>
+          <div class="chart-wrapper"><canvas id="chartSit"></canvas></div>
+        </div>
+      </div>
+      <div class="col-md-7">
+        <div class="chart-card">
+          <h6><i class="material-icons" style="font-size:15px;vertical-align:middle">bar_chart</i> Top 10 Órgãos por Quantidade</h6>
+          <div class="chart-wrapper"><canvas id="chartOrg"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABELA ÓRGÃOS -->
+    <div class="toolbar">
+      <div><strong style="color:#20445d;font-size:14px"><i class="material-icons" style="font-size:16px;vertical-align:middle">table_chart</i> Resumo por Órgão</strong>
+        <span class="text-muted ms-2" style="font-size:12px">${listaOrgaos.length} órgãos encontrados</span></div>
+      <div class="toolbar-right">
+        <input class="search-input-small" id="buscaOrgao" placeholder="Buscar órgão..." oninput="filtrarTabOrgaos(this.value)">
+        <button class="btn-export" onclick="exportarVisaoCSV()"><i class="material-icons" style="font-size:14px">download</i> CSV</button>
+      </div>
+    </div>
+    <div class="table-container">
+      <table class="table" id="tabVisao">
+        <thead>
+          <tr>
+            <th onclick="ordenarVisao('orgao')" class="${ordenacaoVisao.col==='orgao'?ordenacaoVisao.dir:''}">Órgão / Dotação</th>
+            <th onclick="ordenarVisao('total')" class="${ordenacaoVisao.col==='total'?ordenacaoVisao.dir:''}">Total</th>
+            <th onclick="ordenarVisao('efetivos')" class="${ordenacaoVisao.col==='efetivos'?ordenacaoVisao.dir:''}">Efetivos</th>
+            <th onclick="ordenarVisao('aposentados')" class="${ordenacaoVisao.col==='aposentados'?ordenacaoVisao.dir:''}">Aposentados</th>
+            <th onclick="ordenarVisao('outros')" class="${ordenacaoVisao.col==='outros'?ordenacaoVisao.dir:''}">Outros</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyVisao">
+          ${pagina.map(o=>`
+          <tr>
+            <td><a class="orgao-link" onclick="irParaOrgao('${escapar(o.nome)}')">${o.nome}</a></td>
+            <td class="text-center fw-bold">${o.total.toLocaleString('pt-BR')}</td>
+            <td class="text-center"><span class="badge-sit badge-efetivo">${o.efetivos.toLocaleString('pt-BR')}</span></td>
+            <td class="text-center"><span class="badge-sit badge-aposentado">${o.aposentados.toLocaleString('pt-BR')}</span></td>
+            <td class="text-center">${o.outros.toLocaleString('pt-BR')}</td>
+            <td class="text-center"><button class="btn-action" title="Ver servidores" onclick="irParaOrgao('${escapar(o.nome)}')"><i class="material-icons" style="font-size:16px">arrow_forward</i></button></td>
+          </tr>`).join('')}
+        </tbody>
+        <tfoot><tr class="table-footer-total">
+          <td><strong>TOTAL GERAL</strong></td>
+          <td class="text-center fw-bold">${totalServs.toLocaleString('pt-BR')}</td>
+          <td class="text-center fw-bold">${totalEfetivos.toLocaleString('pt-BR')}</td>
+          <td class="text-center fw-bold">${totalAposentados.toLocaleString('pt-BR')}</td>
+          <td class="text-center fw-bold">${(totalServs-totalEfetivos-totalAposentados).toLocaleString('pt-BR')}</td>
+          <td></td>
+        </tr></tfoot>
+      </table>
+    </div>
+    <div class="pagination-container">
+      <div style="font-size:12px;color:#6c757d">Página ${paginaVisao} de ${totalPags} — ${listaOrgaos.length} órgãos</div>
+      <div class="d-flex align-items-center gap-2">
+        <select class="items-per-page" onchange="itensPorPaginaVisao=+this.value;paginaVisao=1;renderVisaoGeral()">
+          ${[10,25,50,100].map(n=>`<option value="${n}" ${itensPorPaginaVisao===n?'selected':''}>${n} por página</option>`).join('')}
+        </select>
+        <button class="btn-export" onclick="if(paginaVisao>1){paginaVisao--;renderVisaoGeral()}">&#8249;</button>
+        ${Array.from({length:Math.min(totalPags,5)},(_,i)=>{const p=Math.max(1,Math.min(paginaVisao-2,totalPags-4))+i;return p<=totalPags?`<button class="btn-export ${p===paginaVisao?'fw-bold':''}" onclick="paginaVisao=${p};renderVisaoGeral()">${p}</button>`:''}).join('')}
+        <button class="btn-export" onclick="if(paginaVisao<${totalPags}){paginaVisao++;renderVisaoGeral()}">&#8250;</button>
+      </div>
+    </div>`;
+
+    document.getElementById('visao-content').innerHTML = html;
+
+    // Gráficos
+    setTimeout(() => {
+        // Chart situação
+        const ctxS = document.getElementById('chartSit');
+        if (ctxS) {
+            if (chartSituacao) chartSituacao.destroy();
+            const labels = Object.keys(situacoes).slice(0,8);
+            const vals = labels.map(l=>situacoes[l]);
+            const cores = ['#198754','#fd7e14','#b93c42','#6c757d','#0d6efd','#20445d','#ffc107','#17a2b8'];
+            chartSituacao = new Chart(ctxS, { type:'doughnut', data:{ labels, datasets:[{data:vals,backgroundColor:cores.slice(0,labels.length),borderWidth:2}]}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11},padding:10}}}}});
         }
-        
-        async function carregarOrgaos() {
-            try {
-                document.getElementById("orgaosContainer").innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando órgãos...</div>';
-                
-                currentAnoMes = document.getElementById("anoMes").value;
-                const result = await chamarAPI("orgaos", { anoMes: currentAnoMes });
-                
-                orgaos = result.orgaos;
-                document.getElementById("totalServidores").innerHTML = result.total_servidores.toLocaleString();
-                document.getElementById("totalOrgaos").innerHTML = result.total_orgaos;
-                document.getElementById("mediaServidores").innerHTML = result.media_servidores.toLocaleString();
-                document.getElementById("statsCard").style.display = "block";
-                
-                renderOrgaos(orgaos);
-                
-            } catch (error) {
-                document.getElementById("orgaosContainer").innerHTML = `<div class="error">❌ Erro: ${error.message}</div>`;
-            }
+        // Chart órgãos
+        const ctxO = document.getElementById('chartOrg');
+        if (ctxO) {
+            if (chartOrgao) chartOrgao.destroy();
+            chartOrgao = new Chart(ctxO, { type:'bar', data:{ labels:topOrgaos.map(o=>o.nome.length>30?o.nome.substring(0,30)+'...':o.nome), datasets:[{label:'Total',data:topOrgaos.map(o=>o.total),backgroundColor:'#20445d'},{label:'Efetivos',data:topOrgaos.map(o=>o.efetivos),backgroundColor:'#198754'},{label:'Aposentados',data:topOrgaos.map(o=>o.aposentados),backgroundColor:'#fd7e14'}]}, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{position:'top'}},scales:{x:{beginAtZero:true}}}});
         }
-        
-        function renderOrgaos(lista) {
-            const busca = document.getElementById("buscaOrgao").value.toLowerCase();
-            const filtrados = busca ? lista.filter(o => o.orgao.toLowerCase().includes(busca)) : lista;
-            const container = document.getElementById("orgaosContainer");
-            
-            if (filtrados.length === 0) {
-                container.innerHTML = '<div class="loading">Nenhum órgão encontrado</div>';
-                return;
-            }
-            
-            container.innerHTML = filtrados.map(o => `
-                <div class="orgao-card" onclick="carregarServidores('${o.orgao.replace(/'/g, "\\'")}', ${o.total_servidores})">
-                    <div class="orgao-nome"><i class="fas fa-building"></i> ${o.orgao}</div>
-                    <div class="orgao-stats">
-                        <div class="orgao-quantidade">${o.total_servidores.toLocaleString()}</div>
-                        <div><i class="fas fa-users"></i> servidores</div>
-                    </div>
-                </div>
-            `).join("");
+    }, 100);
+}
+
+function escapar(s) { return (s||'').replace(/'/g,"\\'"); }
+
+function filtrarTabOrgaos(busca) {
+    const rows = document.querySelectorAll('#tbodyVisao tr');
+    rows.forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(busca.toLowerCase()) ? '' : 'none';
+    });
+}
+
+function ordenarVisao(col) {
+    ordenacaoVisao = { col, dir: ordenacaoVisao.col===col && ordenacaoVisao.dir==='asc' ? 'desc' : 'asc' };
+    renderVisaoGeral();
+}
+
+async function aplicarFiltroVisao() {
+    filtroVisao.ano = document.getElementById('vg-ano').value;
+    filtroVisao.mes = document.getElementById('vg-mes').value;
+    const anoMes = filtroVisao.ano + filtroVisao.mes;
+    if (anoMes === anoMesAtivo) { renderVisaoGeral(); return; }
+    await construirBaseAte(anoMes);
+    paginaVisao = 1;
+    renderVisaoGeral();
+}
+
+function exportarVisaoCSV() {
+    const dados = Array.from(todosServidores.values());
+    const csv = Papa.unparse(dados, {delimiter:';'});
+    const blob = new Blob(['\uFEFF'+csv], {type:'text/csv'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = `servidores_${filtroVisao.ano}${filtroVisao.mes}.csv`; a.click();
+}
+
+function irParaOrgao(orgao) {
+    orgaoSelecionado = orgao;
+    filtroConsulta = { nome:'', nmefetivo:'', instDotacao: orgao, instLotacao:'', situacao:'' };
+    filtroConsultaAnoMes = { ...filtroVisao };
+    paginaConsulta = 1;
+    document.querySelector('[data-bs-target="#consulta"]').click();
+    renderConsulta();
+}
+
+// ==================== CONSULTA INDIVIDUAL ====================
+function renderConsulta() {
+    const dados = Array.from(todosServidores.values());
+
+    // Aplicar filtros
+    let filtrado = dados.filter(s => {
+        if (filtroConsulta.nome && !(s.nome||'').toLowerCase().includes(filtroConsulta.nome.toLowerCase())) return false;
+        if (filtroConsulta.nmefetivo && !(s.nmefetivo||'').toLowerCase().includes(filtroConsulta.nmefetivo.toLowerCase())) return false;
+        if (filtroConsulta.instDotacao && !(s.desc_instituicao_dotacao||'').toLowerCase().includes(filtroConsulta.instDotacao.toLowerCase()) &&
+            !(s.sigla_instituicao_dotacao||'').toLowerCase().includes(filtroConsulta.instDotacao.toLowerCase())) return false;
+        if (filtroConsulta.instLotacao && !(s.desc_instituicao_lotacao||'').toLowerCase().includes(filtroConsulta.instLotacao.toLowerCase()) &&
+            !(s.sigla_instituicao_lotacao||'').toLowerCase().includes(filtroConsulta.instLotacao.toLowerCase())) return false;
+        if (filtroConsulta.situacao && !(s.descsitserv||'').toLowerCase().includes(filtroConsulta.situacao.toLowerCase())) return false;
+        if (buscaConsulta) {
+            const busca = buscaConsulta.toLowerCase();
+            const campos = [s.masp,s.nome,s.nmefetivo,s.desccomi,s.desc_funcao_gratif_gte,s.descsitserv,s.sigla_instituicao_dotacao,s.sigla_instituicao_lotacao];
+            if (!campos.some(c=>(c||'').toLowerCase().includes(busca))) return false;
         }
-        
-        async function carregarServidores(orgao, total) {
-            try {
-                currentOrgao = orgao;
-                totalServidoresOrgao = total;
-                currentPage = 1;
-                
-                document.getElementById("viewOrgaos").style.display = "none";
-                document.getElementById("viewServidores").style.display = "block";
-                document.getElementById("orgaoSelecionadoNome").innerHTML = `<i class="fas fa-building"></i> ${orgao} <span style="font-size:14px;">(${total.toLocaleString()} servidores)</span>`;
-                
-                await carregarPaginaServidores(1);
-                
-            } catch (error) {
-                alert("Erro: " + error.message);
-            }
+        return true;
+    });
+
+    // Ordenação
+    filtrado.sort((a,b) => {
+        let va = a[ordenacaoConsulta.col]||''; let vb = b[ordenacaoConsulta.col]||'';
+        if (typeof va === 'string') va = va.toLowerCase(); if (typeof vb === 'string') vb = vb.toLowerCase();
+        return ordenacaoConsulta.dir==='asc'?(va>vb?1:-1):(va<vb?1:-1);
+    });
+
+    servidoresFiltrados = filtrado;
+    const total = filtrado.length;
+    const totalPags = Math.ceil(total/itensPorPaginaConsulta);
+    paginaConsulta = Math.min(paginaConsulta, Math.max(1,totalPags));
+    const inicio = (paginaConsulta-1)*itensPorPaginaConsulta;
+    const pagina = filtrado.slice(inicio, inicio+itensPorPaginaConsulta);
+
+    // Opções para filtros
+    const situacoes = [...new Set(dados.map(s=>s.descsitserv).filter(Boolean))].sort();
+    const dotacoes = [...new Set(dados.map(s=>s.desc_instituicao_dotacao).filter(Boolean))].sort();
+    const lotacoes = [...new Set(dados.map(s=>s.desc_instituicao_lotacao).filter(Boolean))].sort();
+
+    // Colunas visíveis
+    const colsOrdem = ['masp','adm','nome','siglaefetivo','nmefetivo','cdcomi','desccomi','cd_funcao_gratif_gte','desc_funcao_gratif_gte','carga_horaria','cd_instituicao_dotacao','sigla_instituicao_dotacao','desc_instituicao_dotacao','cd_instituicao_lotacao','sigla_instituicao_lotacao','desc_instituicao_lotacao','descsitserv','id_data_inicio','id_data_aposentadoria','id_data_desligamento'];
+    const colLabels = {masp:'MASP',adm:'ADM',nome:'Nome',siglaefetivo:'Sigla Efetivo',nmefetivo:'Cargo Efetivo',cdcomi:'Cód. Comissão',desccomi:'Cargo Comissão',cd_funcao_gratif_gte:'Cód. Função',desc_funcao_gratif_gte:'Função Gratificada',carga_horaria:'C.H.',cd_instituicao_dotacao:'Cód. Inst. Dotação',sigla_instituicao_dotacao:'Inst. Dotação',desc_instituicao_dotacao:'Desc. Inst. Dotação',cd_instituicao_lotacao:'Cód. Inst. Lotação',sigla_instituicao_lotacao:'Inst. Lotação',desc_instituicao_lotacao:'Desc. Inst. Lotação',descsitserv:'Situação',id_data_inicio:'Data Início',id_data_aposentadoria:'Data Aposent.',id_data_desligamento:'Data Deslig.'};
+    const colsVis = colsOrdem.filter(c=>colunasConsulta[c]);
+
+    const html = `
+    <!-- FILTROS CONSULTA -->
+    <div class="filter-container">
+      <div class="row g-3 align-items-end mb-3">
+        <div class="col-auto">
+          <div class="filter-label">Ano</div>
+          <select class="form-select" id="ci-ano" style="width:110px">
+            ${['2022','2023','2024','2025','2026'].map(a=>`<option value="${a}" ${filtroConsultaAnoMes.ano===a?'selected':''}>${a}</option>`).join('')}
+          </select>
+        </div>
+        <div class="col-auto">
+          <div class="filter-label">Mês</div>
+          <select class="form-select" id="ci-mes" style="width:140px">
+            ${[{v:'01',l:'Janeiro'},{v:'02',l:'Fevereiro'},{v:'03',l:'Março'},{v:'04',l:'Abril'},{v:'05',l:'Maio'},{v:'06',l:'Junho'},{v:'07',l:'Julho'},{v:'08',l:'Agosto'},{v:'09',l:'Setembro'},{v:'10',l:'Outubro'},{v:'11',l:'Novembro'},{v:'12',l:'Dezembro'}]
+              .map(m=>`<option value="${m.v}" ${filtroConsultaAnoMes.mes===m.v?'selected':''}>${m.l}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <div class="filter-label">Nome</div>
+          <input class="form-control" id="ci-nome" placeholder="Buscar por nome..." value="${filtroConsulta.nome}">
+        </div>
+        <div class="col-md-3">
+          <div class="filter-label">Cargo Efetivo</div>
+          <input class="form-control" id="ci-nmefetivo" placeholder="Cargo efetivo..." value="${filtroConsulta.nmefetivo}">
+        </div>
+        <div class="col-md-3">
+          <div class="filter-label">Inst. Dotação</div>
+          <input class="form-control" id="ci-dotacao" placeholder="Órgão dotação..." value="${filtroConsulta.instDotacao}">
+        </div>
+        <div class="col-md-3">
+          <div class="filter-label">Inst. Lotação</div>
+          <input class="form-control" id="ci-lotacao" placeholder="Órgão lotação..." value="${filtroConsulta.instLotacao}">
+        </div>
+        <div class="col-md-3">
+          <div class="filter-label">Situação</div>
+          <select class="form-select" id="ci-situacao">
+            <option value="">Todas</option>
+            ${situacoes.map(s=>`<option value="${s}" ${filtroConsulta.situacao===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+        <div class="col-auto d-flex gap-2">
+          <button class="btn-pesquisa" onclick="aplicarFiltroConsulta()"><i class="material-icons" style="font-size:16px">search</i> Pesquisar</button>
+          <button class="btn-limpar" onclick="limparFiltroConsulta()"><i class="material-icons" style="font-size:16px">clear</i> Limpar</button>
+        </div>
+        ${orgaoSelecionado ? `<div class="col-auto ms-auto"><small class="text-muted"><i class="material-icons" style="font-size:13px;vertical-align:middle">business</i> <strong>${orgaoSelecionado}</strong></small></div>` : ''}
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <div>
+        <strong style="color:#20445d;font-size:14px"><i class="material-icons" style="font-size:16px;vertical-align:middle">list</i> Lista de Servidores</strong>
+        <span class="text-muted ms-2" style="font-size:12px">${total.toLocaleString('pt-BR')} registros</span>
+      </div>
+      <div class="toolbar-right">
+        <input class="search-input-small" placeholder="Busca rápida..." value="${buscaConsulta}" oninput="buscaConsulta=this.value;paginaConsulta=1;renderConsulta()">
+        <button class="btn-export" onclick="exportarConsultaCSV()"><i class="material-icons" style="font-size:14px">download</i> CSV</button>
+        <button class="btn-export" onclick="exportarConsultaPDF()"><i class="material-icons" style="font-size:14px">picture_as_pdf</i> PDF</button>
+        <div style="position:relative">
+          <button class="btn-export" onclick="toggleColSelector()"><i class="material-icons" style="font-size:14px">view_column</i> Colunas</button>
+          <div class="column-selector-popup" id="colSelectorPopup" style="right:0;left:auto;max-height:300px;overflow-y:auto">
+            <div style="font-size:11px;font-weight:700;color:#20445d;padding:4px 8px 8px;border-bottom:1px solid #eee;margin-bottom:4px">Exibir colunas:</div>
+            ${colsOrdem.filter(c=>!colunasFix.has(c)).map(c=>`
+            <label><input type="checkbox" ${colunasConsulta[c]?'checked':''} onchange="toggleCol('${c}',this.checked)"> ${colLabels[c]}</label>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABELA -->
+    <div class="table-container">
+      <table class="table" id="tabConsulta">
+        <thead>
+          <tr>
+            ${colsVis.map(c=>`<th onclick="${colunasFix.has(c)?'':`ordenarConsulta('${c}')`}" class="${ordenacaoConsulta.col===c?ordenacaoConsulta.dir:''}">${colLabels[c]}</th>`).join('')}
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${pagina.map((s,idx)=>`
+          <tr>
+            ${colsVis.map(c=>{
+              let val = s[c] || '-';
+              if (c==='descsitserv') val = badgeSit(s[c]);
+              else if (c.includes('data') || c.includes('id_data')) val = formatarData(s[c]);
+              return `<td class="text-center">${val}</td>`;
+            }).join('')}
+            <td class="text-center">
+              <button class="btn-action" title="Ver detalhes" onclick="abrirModal(${inicio+idx})"><i class="material-icons" style="font-size:16px">info</i></button>
+            </td>
+          </tr>`).join('')}
+          ${pagina.length===0?`<tr><td colspan="${colsVis.length+1}" class="text-center text-muted py-4">Nenhum servidor encontrado.</td></tr>`:''}
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination-container">
+      <div style="font-size:12px;color:#6c757d">Página ${paginaConsulta} de ${totalPags||1} — ${total.toLocaleString('pt-BR')} servidores</div>
+      <div class="d-flex align-items-center gap-2">
+        <select class="items-per-page" onchange="itensPorPaginaConsulta=+this.value;paginaConsulta=1;renderConsulta()">
+          ${[25,50,100,200].map(n=>`<option value="${n}" ${itensPorPaginaConsulta===n?'selected':''}>${n} por página</option>`).join('')}
+        </select>
+        <button class="btn-export" onclick="if(paginaConsulta>1){paginaConsulta--;renderConsulta()}">&#8249;</button>
+        ${Array.from({length:Math.min(totalPags,5)},(_,i)=>{const p=Math.max(1,Math.min(paginaConsulta-2,Math.max(1,totalPags-4)))+i;return p<=totalPags?`<button class="btn-export ${p===paginaConsulta?'fw-bold':''}" onclick="paginaConsulta=${p};renderConsulta()">${p}</button>`:''}).join('')}
+        <button class="btn-export" onclick="if(paginaConsulta<${totalPags}){paginaConsulta++;renderConsulta()}">&#8250;</button>
+      </div>
+    </div>`;
+
+    document.getElementById('consulta-content').innerHTML = html;
+}
+
+function toggleColSelector() {
+    document.getElementById('colSelectorPopup').classList.toggle('show');
+}
+
+function toggleCol(col, val) {
+    if (!colunasFix.has(col)) {
+        colunasConsulta[col] = val;
+        renderConsulta();
+    }
+}
+
+async function aplicarFiltroConsulta() {
+    const novoAno = document.getElementById('ci-ano').value;
+    const novoMes = document.getElementById('ci-mes').value;
+    const novoAnoMes = novoAno + novoMes;
+
+    filtroConsulta.nome = document.getElementById('ci-nome').value;
+    filtroConsulta.nmefetivo = document.getElementById('ci-nmefetivo').value;
+    filtroConsulta.instDotacao = document.getElementById('ci-dotacao').value;
+    filtroConsulta.instLotacao = document.getElementById('ci-lotacao').value;
+    filtroConsulta.situacao = document.getElementById('ci-situacao').value;
+    filtroConsultaAnoMes = { ano: novoAno, mes: novoMes };
+
+    if (novoAnoMes !== anoMesAtivo) {
+        filtroVisao = { ano: novoAno, mes: novoMes };
+        await construirBaseAte(novoAnoMes);
+    }
+    paginaConsulta = 1;
+    renderConsulta();
+}
+
+function limparFiltroConsulta() {
+    filtroConsulta = { nome:'', nmefetivo:'', instDotacao:'', instLotacao:'', situacao:'' };
+    orgaoSelecionado = '';
+    buscaConsulta = '';
+    paginaConsulta = 1;
+    renderConsulta();
+}
+
+function ordenarConsulta(col) {
+    ordenacaoConsulta = { col, dir: ordenacaoConsulta.col===col && ordenacaoConsulta.dir==='asc' ? 'desc' : 'asc' };
+    renderConsulta();
+}
+
+function diffCampos(anterior, atual) {
+    const campos = ['siglaefetivo','nmefetivo','cdcomi','desccomi','cd_funcao_gratif_gte','desc_funcao_gratif_gte',
+        'carga_horaria','cd_instituicao_dotacao','sigla_instituicao_dotacao','desc_instituicao_dotacao',
+        'cd_instituicao_lotacao','sigla_instituicao_lotacao','desc_instituicao_lotacao','descsitserv'];
+    return campos.filter(c => (anterior[c]||'') !== (atual[c]||''));
+}
+
+// Cache exclusivo para deltas do histórico (arquivos mensais, muito menores que Jan/2022)
+// Guarda apenas os MASPs/ADMs presentes em cada mês delta — não os rows completos
+const cacheDeltaHistorico = new Map(); // anoMes -> Map(masp|adm -> row)
+
+async function garantirDeltaHistorico(anoMes) {
+    if (cacheDeltaHistorico.has(anoMes)) return;
+    // Jan/2022 já está no cacheRows principal — não precisa de delta separado
+    if (anoMes === MES_BASE) { cacheDeltaHistorico.set(anoMes, null); return; }
+    // Reutiliza o cache principal se já baixado
+    if (cacheRows.has(anoMes)) {
+        const idx = new Map();
+        for (const r of cacheRows.get(anoMes)) idx.set(`${r.masp}|${r.adm}`, r);
+        cacheDeltaHistorico.set(anoMes, idx);
+        return;
+    }
+    // Baixa apenas o arquivo delta (1 arquivo pequeno por mês)
+    const url = BASE_URL + `dados_serv_${anoMes}.csv`;
+    try {
+        const resp = await fetch(url);
+        if (!resp.ok) { cacheDeltaHistorico.set(anoMes, new Map()); return; }
+        const text = await resp.text();
+        await new Promise(resolve => {
+            Papa.parse(text, { header:true, delimiter:';', skipEmptyLines:true, complete: r => {
+                const idx = new Map();
+                for (const row of r.data) idx.set(`${row.masp}|${row.adm}`, row);
+                cacheDeltaHistorico.set(anoMes, idx);
+                // Aproveita e salva no cache principal também
+                if (!cacheRows.has(anoMes)) cacheRows.set(anoMes, r.data);
+                resolve();
+            }});
+        });
+    } catch(e) { cacheDeltaHistorico.set(anoMes, new Map()); }
+}
+
+// Monta o histórico do servidor:
+// - Jan/2022: ponto de partida (registro inicial)
+// - Cada mês delta subsequente: se aparece → houve alteração; se não → propaga anterior
+// Só carrega deltas já no cache (sem novos downloads aqui)
+function expandirHistorico(masp, adm) {
+    const chave = `${masp}|${adm}`;
+    const meses = getMesesDisponiveis();
+    const resultado = [];
+    let ultimoReg = null;
+
+    // Ponto inicial: Jan/2022
+    const baseRows = cacheRows.get(MES_BASE) || [];
+    const regBase = baseRows.find(r => String(r.masp)===String(masp) && String(r.adm)===String(adm));
+    if (regBase) {
+        ultimoReg = regBase;
+        resultado.push({ ...regBase, _am: MES_BASE, _alterou: false });
+    }
+
+    // Percorre os meses delta (202202 em diante)
+    for (const am of meses) {
+        if (am === MES_BASE) continue;
+        if (!cacheDeltaHistorico.has(am)) continue; // delta não baixado ainda — pula
+
+        const delta = cacheDeltaHistorico.get(am);
+        const reg   = delta ? delta.get(chave) : null;
+
+        if (reg) {
+            // Apareceu no delta → houve alteração ou é novo servidor neste mês
+            ultimoReg = reg;
+            resultado.push({ ...reg, _am: am, _alterou: true });
+        } else if (ultimoReg) {
+            // Não apareceu → sem alteração, propaga o último registro
+            resultado.push({ ...ultimoReg, _am: am, _alterou: false });
         }
-        
-        async function carregarPaginaServidores(page) {
-            try {
-                currentPage = page;
-                document.getElementById("tbodyServidores").innerHTML = '<tr><td colspan="6" class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr>';
-                
-                const result = await chamarAPI("servidores", {
-                    anoMes: currentAnoMes,
-                    orgao: currentOrgao,
-                    pagina: page,
-                    limite: limit
-                });
-                
-                const servidores = result.servidores;
-                const totalPaginas = result.total_paginas;
-                
-                const tbody = document.getElementById("tbodyServidores");
-                if (servidores.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="loading">Nenhum servidor encontrado</td></tr>';
-                } else {
-                    tbody.innerHTML = servidores.map(s => `
-                        <tr>
-                            <td>${s.masp || "-"}</td>
-                            <td><strong>${s.nome || "-"}</strong></td>
-                            <td>${s.desc_instituicao_lotacao || "-"}</td>
-                            <td>${s.cargo || "-"}</td>
-                            <td>${s.carga_horaria || 0}h</td>
-                            <td><span class="${s.status === 'ATIVO' ? 'status-ativo' : 'status-outro'}">${s.status || "-"}</span></td>
-                        </tr>
-                    `).join("");
-                }
-                
-                document.getElementById("infoServidores").innerHTML = `Mostrando ${servidores.length} de ${totalServidoresOrgao.toLocaleString()} servidores`;
-                document.getElementById("paginaInfo").innerHTML = `Página ${page} de ${totalPaginas}`;
-                document.getElementById("btnPrev").disabled = page <= 1;
-                document.getElementById("btnNext").disabled = page >= totalPaginas;
-                
-            } catch (error) {
-                document.getElementById("tbodyServidores").innerHTML = `<tr><td colspan="6" class="error">❌ Erro: ${error.message}</td></tr>`;
-            }
+    }
+    return resultado;
+}
+
+// Carrega os deltas de todos os meses em background, bem mais rápido
+// pois cada arquivo tem apenas as linhas alteradas naquele mês
+async function carregarTodosMesesHistorico(masp, adm, onProgress) {
+    const meses = getMesesDisponiveis().filter(am => am !== MES_BASE);
+    const faltando = meses.filter(am => !cacheDeltaHistorico.has(am));
+    if (faltando.length === 0) { onProgress(100); return; }
+
+    // Baixa em paralelo em lotes de 5 para máxima velocidade
+    const LOTE = 5;
+    let feitos = 0;
+    for (let i = 0; i < faltando.length; i += LOTE) {
+        const lote = faltando.slice(i, i + LOTE);
+        await Promise.all(lote.map(am => garantirDeltaHistorico(am)));
+        feitos += lote.length;
+        onProgress(Math.round((feitos / faltando.length) * 100));
+    }
+}
+
+function renderHistoricoTabela(masp, adm) {
+    const historico = expandirHistorico(masp, adm);
+    if (historico.length === 0) {
+        return '<p class="text-muted text-center py-3">Servidor não encontrado em Jan/2022. Histórico indisponível.</p>';
+    }
+
+    const linhas = [...historico].reverse().map((reg, i, arr) => {
+        const isAtual    = i === 0;
+        const anterior   = arr[i + 1];
+        const mudou      = (reg._alterou && anterior) ? diffCampos(anterior, reg) : [];
+        const temMudanca = mudou.length > 0;
+
+        const tooltipMudancas = mudou.map(c => {
+            return `${c}: ${anterior[c]||'-'} → ${reg[c]||'-'}`;
+        }).join(' | ');
+
+        const estilo = [
+            isAtual    ? 'background:#eaf4fb;font-weight:600;' : '',
+            temMudanca ? 'border-left:4px solid #fd7e14;' : 'border-left:4px solid transparent;'
+        ].join('');
+
+        return `<tr style="${estilo}">
+            <td class="text-center" style="white-space:nowrap">
+                ${isAtual ? '<span class="badge-sit badge-efetivo" style="margin-right:4px">Atual</span>' : ''}
+                <span style="font-size:11px;color:#444">${nomeMes(reg._am.slice(4,6))}/${reg._am.slice(0,4)}</span>
+                ${temMudanca ? `<i class="material-icons" title="${tooltipMudancas}" style="font-size:13px;color:#fd7e14;vertical-align:middle;cursor:help">edit_note</i>` : ''}
+            </td>
+            <td style="font-size:11px">${reg.desccomi||'<span class="text-muted">—</span>'}</td>
+            <td style="font-size:11px">${reg.desc_funcao_gratif_gte||'<span class="text-muted">—</span>'}</td>
+            <td class="text-center" style="font-size:11px">${reg.carga_horaria||'-'}h</td>
+            <td style="font-size:11px">${reg.sigla_instituicao_dotacao||'-'}</td>
+            <td style="font-size:11px">${reg.sigla_instituicao_lotacao||'-'}</td>
+            <td class="text-center">${badgeSit(reg.descsitserv)}</td>
+        </tr>`;
+    }).join('');
+
+    const totalCarregados = [...getMesesDisponiveis()].filter(am => cacheDeltaHistorico.has(am) || am === MES_BASE).length;
+    const totalMeses = getMesesDisponiveis().length;
+
+    return `
+        <div class="mb-2 d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <span style="font-size:11px;color:#555">
+                <i class="material-icons" style="font-size:12px;vertical-align:middle">history</i>
+                <strong>${historico.length}</strong> competências &nbsp;|&nbsp; ${totalCarregados}/${totalMeses} meses no cache
+            </span>
+            <span style="font-size:11px;color:#fd7e14">
+                <i class="material-icons" style="font-size:12px;vertical-align:middle">edit_note</i>
+                Laranja = alteração naquele mês
+            </span>
+        </div>
+        <div class="table-container" style="max-height:400px;overflow-y:auto">
+            <table class="table" style="font-size:11px">
+                <thead style="position:sticky;top:0;z-index:1">
+                    <tr>
+                        <th style="background:#20445d;white-space:nowrap">Competência</th>
+                        <th style="background:#20445d">Cargo Comissão</th>
+                        <th style="background:#20445d">Função Gratificada</th>
+                        <th style="background:#20445d">C.H.</th>
+                        <th style="background:#20445d">Inst. Dotação</th>
+                        <th style="background:#20445d">Inst. Lotação</th>
+                        <th style="background:#20445d">Situação</th>
+                    </tr>
+                </thead>
+                <tbody>${linhas}</tbody>
+            </table>
+        </div>`;
+}
+
+function abrirModal(idx) {
+    const s = servidoresFiltrados[idx];
+    if (!s) return;
+
+    // Monta o modal imediatamente com a aba Dados e histórico parcial (cache atual)
+    const html = `
+      <div style="background:#20445d;color:white;padding:12px 16px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
+        <i class="material-icons" style="font-size:36px;opacity:0.8">account_circle</i>
+        <div>
+          <div style="font-size:16px;font-weight:700">${v(s.nome)}</div>
+          <div style="font-size:12px;opacity:0.85">MASP: <strong>${v(s.masp)}</strong> &nbsp;|&nbsp; ADM: <strong>${v(s.adm)}</strong> &nbsp;|&nbsp; ${badgeSit(s.descsitserv)}</div>
+        </div>
+      </div>
+      <ul class="nav nav-tabs mb-3" style="border-bottom:2px solid #dee2e6">
+        <li class="nav-item"><button class="nav-link active" id="tab-dados-btn" onclick="switchModalTab('dados')" style="font-size:13px;padding:6px 16px"><i class="material-icons" style="font-size:14px;vertical-align:middle">person</i> Dados</button></li>
+        <li class="nav-item"><button class="nav-link" id="tab-hist-btn" onclick="switchModalTab('hist')" style="font-size:13px;padding:6px 16px"><i class="material-icons" style="font-size:14px;vertical-align:middle">history</i> Histórico</button></li>
+      </ul>
+
+      <!-- PAINEL DADOS -->
+      <div id="modal-tab-dados">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="info-section">
+              <h6>👤 DADOS PESSOAIS</h6>
+              <div class="info-row"><div class="info-label">Nome:</div><div class="info-value">${v(s.nome)}</div></div>
+              <div class="info-row"><div class="info-label">MASP:</div><div class="info-value">${v(s.masp)}</div></div>
+              <div class="info-row"><div class="info-label">ADM:</div><div class="info-value">${v(s.adm)}</div></div>
+            </div>
+            <div class="info-section">
+              <h6>📋 DADOS FUNCIONAIS</h6>
+              <div class="info-row"><div class="info-label">Cargo Efetivo:</div><div class="info-value">${v(s.nmefetivo)}</div></div>
+              <div class="info-row"><div class="info-label">Sigla Efetivo:</div><div class="info-value">${v(s.siglaefetivo)}</div></div>
+              <div class="info-row"><div class="info-label">Cargo Comissão:</div><div class="info-value">${v(s.desccomi)}</div></div>
+              <div class="info-row"><div class="info-label">Cód. Comissão:</div><div class="info-value">${v(s.cdcomi)}</div></div>
+              <div class="info-row"><div class="info-label">Função Gratificada:</div><div class="info-value">${v(s.desc_funcao_gratif_gte)}</div></div>
+              <div class="info-row"><div class="info-label">Cód. Função:</div><div class="info-value">${v(s.cd_funcao_gratif_gte)}</div></div>
+              <div class="info-row"><div class="info-label">Carga Horária:</div><div class="info-value">${v(s.carga_horaria)}h</div></div>
+              <div class="info-row"><div class="info-label">Situação:</div><div class="info-value">${badgeSit(s.descsitserv)}</div></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-section">
+              <h6>🏢 ORGANIZAÇÃO</h6>
+              <div class="info-row"><div class="info-label">Inst. Dotação (sigla):</div><div class="info-value">${v(s.sigla_instituicao_dotacao)}</div></div>
+              <div class="info-row"><div class="info-label">Inst. Dotação:</div><div class="info-value">${v(s.desc_instituicao_dotacao)}</div></div>
+              <div class="info-row"><div class="info-label">Cód. Dotação:</div><div class="info-value">${v(s.cd_instituicao_dotacao)}</div></div>
+              <div class="info-row"><div class="info-label">Inst. Lotação (sigla):</div><div class="info-value">${v(s.sigla_instituicao_lotacao)}</div></div>
+              <div class="info-row"><div class="info-label">Inst. Lotação:</div><div class="info-value">${v(s.desc_instituicao_lotacao)}</div></div>
+              <div class="info-row"><div class="info-label">Cód. Lotação:</div><div class="info-value">${v(s.cd_instituicao_lotacao)}</div></div>
+            </div>
+            <div class="info-section">
+              <h6>📅 DATAS</h6>
+              <div class="info-row"><div class="info-label">Data de Início:</div><div class="info-value">${formatarData(s.id_data_inicio)}</div></div>
+              <div class="info-row"><div class="info-label">Data de Aposentadoria:</div><div class="info-value">${formatarData(s.id_data_aposentadoria)}</div></div>
+              <div class="info-row"><div class="info-label">Data de Desligamento:</div><div class="info-value">${formatarData(s.id_data_desligamento)}</div></div>
+              <div class="info-row"><div class="info-label">Referência (mais recente):</div><div class="info-value">${v(s.ano_mes)}</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAINEL HISTÓRICO — preenchido após carga dos meses -->
+      <div id="modal-tab-hist" style="display:none">
+        <div id="hist-loading" class="text-center py-4">
+          <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+          <span id="hist-loading-txt" style="font-size:13px;color:#20445d">Carregando histórico…</span>
+          <div class="progress mt-2 mx-auto" style="max-width:300px;height:6px">
+            <div id="hist-progress-bar" class="progress-bar" style="width:0%;background:#20445d"></div>
+          </div>
+        </div>
+        <div id="hist-tabela" style="display:none"></div>
+      </div>`;
+
+    document.getElementById('modalContent').innerHTML = html;
+    const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+    modal.show();
+
+    // Carrega todos os meses em background (sem bloquear o dashboard)
+    // e vai atualizando o painel do histórico conforme chegam os dados
+    const masp = s.masp; const adm = s.adm;
+    carregarTodosMesesHistorico(masp, adm, (pct) => {
+        const bar = document.getElementById('hist-progress-bar');
+        const txt = document.getElementById('hist-loading-txt');
+        if (bar) bar.style.width = pct + '%';
+        if (txt) txt.textContent = pct < 100 ? `Carregando meses… ${pct}%` : 'Montando histórico…';
+        if (pct === 100) {
+            setTimeout(() => {
+                const loading = document.getElementById('hist-loading');
+                const tabela  = document.getElementById('hist-tabela');
+                if (loading) loading.style.display = 'none';
+                if (tabela)  { tabela.style.display = ''; tabela.innerHTML = renderHistoricoTabela(masp, adm); }
+            }, 100);
         }
-        
-        function proximaPagina() { carregarPaginaServidores(currentPage + 1); }
-        function paginaAnterior() { carregarPaginaServidores(currentPage - 1); }
-        function voltarParaOrgaos() {
-            document.getElementById("viewServidores").style.display = "none";
-            document.getElementById("viewOrgaos").style.display = "block";
-        }
-        
-        document.getElementById("buscaOrgao").addEventListener("keyup", () => { if(orgaos.length) renderOrgaos(orgaos); });
-        document.addEventListener("DOMContentLoaded", () => carregarOrgaos());
-    </script>
+    });
+}
+
+function switchModalTab(tab) {
+    document.getElementById('modal-tab-dados').style.display = tab === 'dados' ? '' : 'none';
+    document.getElementById('modal-tab-hist').style.display  = tab === 'hist'  ? '' : 'none';
+    document.getElementById('tab-dados-btn').classList.toggle('active', tab === 'dados');
+    document.getElementById('tab-hist-btn').classList.toggle('active', tab === 'hist');
+}
+
+function exportarConsultaCSV() {
+    const csv = Papa.unparse(servidoresFiltrados, {delimiter:';'});
+    const blob = new Blob(['\uFEFF'+csv], {type:'text/csv'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = `servidores_consulta_${filtroConsultaAnoMes.ano}${filtroConsultaAnoMes.mes}.csv`; a.click();
+}
+
+function exportarConsultaPDF() {
+    const {jsPDF} = window.jspdf;
+    const doc = new jsPDF({orientation:'landscape'});
+    doc.setFontSize(12);
+    doc.text(`Relação Nominal de Servidores — ${nomeMes(filtroConsultaAnoMes.mes)}/${filtroConsultaAnoMes.ano}`, 14, 10);
+    const colunas = ['MASP','ADM','Nome','Cargo Efetivo','Inst. Dotação','Inst. Lotação','Situação','Data Início'];
+    const linhas = servidoresFiltrados.slice(0,500).map(s=>[s.masp,s.adm,s.nome,s.nmefetivo,s.sigla_instituicao_dotacao,s.sigla_instituicao_lotacao,s.descsitserv,formatarData(s.id_data_inicio)]);
+    doc.autoTable({head:[colunas],body:linhas,startY:16,styles:{fontSize:8},headStyles:{fillColor:[32,68,93]}});
+    doc.save(`servidores_${filtroConsultaAnoMes.ano}${filtroConsultaAnoMes.mes}.pdf`);
+}
+
+// ==================== DOWNLOADS ====================
+function renderDownloads() {
+    const meses = getMesesDisponiveis();
+    const html = `
+    <div class="filter-container text-center p-4">
+      <i class="material-icons" style="font-size:64px;color:#20445d">cloud_download</i>
+      <h4 class="fw-bold mt-3" style="color:#20445d">Portal de Dados Abertos</h4>
+      <p class="text-muted">Acesse os dados completos de Relação Nominal de Servidores do Estado de Minas Gerais</p>
+      <a href="https://dados.mg.gov.br/" target="_blank" class="btn-pesquisa mt-2">
+        <i class="material-icons" style="font-size:16px">open_in_new</i> Acessar Portal Dados MG
+      </a>
+      <a href="https://github.com/transparencia-mg/portal_relacao_nominal_servidores" target="_blank" class="btn-export mt-2 ms-2" style="height:38px">
+        <i class="material-icons" style="font-size:16px">code</i> Repositório GitHub
+      </a>
+    </div>
+
+    <div class="filter-container mt-3">
+      <h5 class="fw-bold mb-3"><i class="material-icons me-2">folder_open</i>Arquivos CSV por Competência</h5>
+      <p class="text-muted mb-3" style="font-size:13px">Clique no link para baixar diretamente o arquivo CSV de cada mês. Os dados de 2022 são particionados em 9 arquivos.</p>
+      <div class="row g-2">
+        ${meses.map(am=>{
+          const urls = getFileUrls(am);
+          const label = `${nomeMes(am.slice(4,6))}/${am.slice(0,4)}`;
+          return urls.length > 1 ?
+            urls.map((url,i)=>`<div class="col-6 col-md-3 col-lg-2"><a href="${url}" target="_blank" class="btn-export d-block text-center" style="padding:8px 4px"><i class="material-icons" style="font-size:13px">description</i> ${label} (pt.${i+1})</a></div>`).join('') :
+            `<div class="col-6 col-md-3 col-lg-2"><a href="${urls[0]}" target="_blank" class="btn-export d-block text-center" style="padding:8px 4px"><i class="material-icons" style="font-size:13px">description</i> ${label}</a></div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="filter-container mt-3">
+      <h5 class="fw-bold mb-3"><i class="material-icons me-2">info</i>Metadados — Dicionário de Variáveis</h5>
+      <div class="table-container">
+        <table class="table metadata-table">
+          <thead><tr><th>Campo</th><th>Descrição</th><th>Tipo</th></tr></thead>
+          <tbody>
+            <tr><td><code>ano_mes</code></td><td>Competência de referência no formato YYYYMM</td><td>Texto</td></tr>
+            <tr><td><code>masp</code></td><td>Matrícula do servidor (chave de identificação)</td><td>Texto</td></tr>
+            <tr><td><code>adm</code></td><td>Código de administração (junto com MASP forma a chave única)</td><td>Texto</td></tr>
+            <tr><td><code>nome</code></td><td>Nome completo do servidor</td><td>Texto</td></tr>
+            <tr><td><code>siglaefetivo</code></td><td>Sigla do cargo efetivo</td><td>Texto</td></tr>
+            <tr><td><code>nmefetivo</code></td><td>Descrição do cargo efetivo</td><td>Texto</td></tr>
+            <tr><td><code>cdcomi</code></td><td>Código do cargo em comissão</td><td>Texto</td></tr>
+            <tr><td><code>desccomi</code></td><td>Descrição do cargo em comissão</td><td>Texto</td></tr>
+            <tr><td><code>cd_funcao_gratif_gte</code></td><td>Código da função gratificada/GTE</td><td>Texto</td></tr>
+            <tr><td><code>desc_funcao_gratif_gte</code></td><td>Descrição da função gratificada/GTE</td><td>Texto</td></tr>
+            <tr><td><code>carga_horaria</code></td><td>Carga horária semanal (horas)</td><td>Numérico</td></tr>
+            <tr><td><code>cd_instituicao_dotacao</code></td><td>Código do órgão de dotação orçamentária</td><td>Texto</td></tr>
+            <tr><td><code>sigla_instituicao_dotacao</code></td><td>Sigla do órgão de dotação</td><td>Texto</td></tr>
+            <tr><td><code>desc_instituicao_dotacao</code></td><td>Nome do órgão de dotação</td><td>Texto</td></tr>
+            <tr><td><code>cd_instituicao_lotacao</code></td><td>Código do órgão de lotação</td><td>Texto</td></tr>
+            <tr><td><code>sigla_instituicao_lotacao</code></td><td>Sigla do órgão de lotação</td><td>Texto</td></tr>
+            <tr><td><code>desc_instituicao_lotacao</code></td><td>Nome do órgão de lotação</td><td>Texto</td></tr>
+            <tr><td><code>descsitserv</code></td><td>Situação funcional do servidor</td><td>Texto</td></tr>
+            <tr><td><code>id_data_inicio</code></td><td>Data de início do vínculo</td><td>Data (YYYY-MM-DD)</td></tr>
+            <tr><td><code>id_data_aposentadoria</code></td><td>Data de aposentadoria</td><td>Data (YYYY-MM-DD)</td></tr>
+            <tr><td><code>id_data_desligamento</code></td><td>Data de desligamento</td><td>Data (YYYY-MM-DD)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+    document.getElementById('downloads-content').innerHTML = html;
+}
+
+// ==================== EVENTOS ====================
+document.addEventListener('click', e => {
+    if (!e.target.closest('#colSelectorPopup') && !e.target.closest('.btn-export[onclick*="toggleColSelector"]'))
+        document.querySelectorAll('.column-selector-popup').forEach(p => p.classList.remove('show'));
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // Carga inicial RÁPIDA: apenas Jan/2022 (base) + Fev/2026 (mais atual) = ~2 requisições em vez de 50+
+    await cargaInicial();
+    renderVisaoGeral();
+    renderDownloads();
+    document.querySelector('[data-bs-target="#consulta"]').addEventListener('shown.bs.tab', () => {
+        renderConsulta();
+    });
+});
+
+// iframe resize
+(function() {
+    function sendHeight() {
+        const h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+        try { window.parent.postMessage({ iframeHeight: h + 30, iframeResize: true }, '*'); } catch(e) {}
+    }
+    if (window.ResizeObserver) new ResizeObserver(sendHeight).observe(document.body);
+    else { window.addEventListener('resize', sendHeight); setInterval(sendHeight, 2000); }
+    sendHeight();
+})();
+</script>
 </body>
 </html>
