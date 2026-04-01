@@ -528,6 +528,7 @@ async function cargaInicial() {
 // ==================== VISÃO GERAL ====================
 function renderVisaoGeral() {
     const dados = Array.from(todosServidores.values());
+    const totalServs = dados.length;
 
     // Agrupar por órgão (desc_instituicao_dotacao)
     const orgaos = {};
