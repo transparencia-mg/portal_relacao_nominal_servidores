@@ -14,101 +14,307 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* ==================== VARIÁVEIS ==================== */
         :root {
             --primary-dark: #1a3a5c;
             --primary-darker: #0f2a44;
             --accent-red: #b93c42;
+            --accent-bright: #db233f;
             --background-light: #f5f7fa;
+            --success-green: #198754;
+            --warning-yellow: #ffc107;
+            --info-blue: #17a2b8;
         }
+
+        /* ==================== RESET GLOBAL ==================== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--background-light); padding-bottom: 15px; }
-        html, body { overflow: visible !important; height: auto !important; }
-        .dashboard-container { width: 100%; max-width: 98% !important; padding: 0 12px; margin: 0 auto; }
-        .main-container, .container.dashboard-spacing, .tab-content, .table-container { height: auto !important; min-height: auto !important; overflow: visible !important; position: relative; }
+        html, body { overflow: visible !important; height: auto !important; width: 100%; }
+        body {
+            font-family: 'Open Sans', 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-light);
+            padding-bottom: 20px;
+            font-size: 13px;
+        }
+
+        /* ==================== LAYOUT ==================== */
+        .dashboard-container { width: 100%; max-width: 98% !important; padding: 0 14px; margin: 0 auto; }
+        .main-container, .tab-content, .tab-pane { height: auto !important; min-height: auto !important; overflow: visible !important; position: relative; }
         .table-container { overflow-x: auto !important; border-radius: 10px; background: white; box-shadow: 0 3px 12px rgba(0,0,0,0.06); }
+
+        /* ==================== NAV TABS ==================== */
         .nav-tabs-container { background: transparent; padding: 10px 0; margin: 15px 0; }
-        .nav-tabs { border: none !important; gap: 10px; flex-wrap: wrap; }
-        .nav-tabs .nav-link { border: none !important; background: #ffffff !important; border-radius: 10px !important; padding: 10px 24px !important; font-weight: 600; font-size: 14px; color: #1a3a5c !important; display: inline-flex !important; align-items: center; gap: 8px; }
-        .nav-tabs .nav-link.active { background: #234c63 !important; color: #fff !important; }
-        .filter-container { background: white; border-radius: 10px; box-shadow: 0 3px 12px rgba(0,0,0,0.08); padding: 20px; margin-bottom: 20px; }
-        .filter-label { font-size: 12px; font-weight: 600; color: #1a3a5c; margin-bottom: 4px; text-transform: uppercase; }
-        .form-control, .form-select { border: 2px solid #e9ecef; border-radius: 6px; padding: 6px 10px; font-size: 13px; }
-        .form-control:focus, .form-select:focus { border-color: var(--accent-red); box-shadow: 0 0 0 2px rgba(185,60,66,0.15); }
-        .btn-pesquisa, .btn-limpar { border: none; padding: 8px 20px; font-weight: 600; border-radius: 6px; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; height: 38px; }
+        .nav-tabs { border: none !important; gap: 8px; flex-wrap: wrap; }
+        .nav-tabs .nav-link {
+            border: none !important;
+            background: #ffffff !important;
+            border-radius: 10px !important;
+            padding: 8px 20px !important;
+            font-weight: 600;
+            font-size: 13px;
+            color: #1a3a5c !important;
+            display: inline-flex !important;
+            align-items: center;
+            gap: 6px;
+            transition: all .2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .nav-tabs .nav-link:hover { background: #e6e9ed !important; }
+        .nav-tabs .nav-link.active { background: #234c63 !important; color: #fff !important; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .nav-tabs .material-icons { font-size: 17px !important; }
+
+        /* ==================== FILTROS ==================== */
+        .filter-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            padding: 18px 20px;
+            margin-bottom: 18px;
+        }
+        .filter-label { font-size: 11px; font-weight: 700; color: #1a3a5c; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+        .form-control, .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 13px;
+            height: 38px;
+            transition: border-color .2s;
+        }
+        .form-control:focus, .form-select:focus { border-color: var(--accent-red); box-shadow: 0 0 0 2px rgba(185,60,66,0.12); outline: none; }
+
+        /* ==================== BOTÕES ==================== */
+        .btn-pesquisa, .btn-limpar {
+            border: none;
+            padding: 0 18px;
+            font-weight: 600;
+            border-radius: 6px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            height: 38px;
+            transition: all .2s ease;
+        }
         .btn-pesquisa { background: #20445d; color: white; }
-        .btn-pesquisa:hover { background: var(--accent-red); }
+        .btn-pesquisa:hover { background: var(--accent-red); transform: translateY(-1px); }
         .btn-limpar { background: white; border: 2px solid var(--primary-darker); color: var(--primary-darker); }
         .btn-limpar:hover { background-color: #132837; color: white; border-color: #132837; }
-        .btn-export { background: #eeeff5; border: 1px solid #d6dee6; color: #1a3a5c; padding: 5px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
-        .btn-export:hover { background-color: #1a3a5c; color: white; }
-        .btn-action { padding: 5px; border-radius: 6px; border: 1.5px solid #1a3a5c; background: white; color: #1a3a5c; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+        .btn-export {
+            background: #eeeff5;
+            border: 1px solid #d6dee6;
+            color: #1a3a5c;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            height: 30px;
+            transition: all .2s;
+        }
+        .btn-export:hover { background-color: #1a3a5c; color: white; border-color: #1a3a5c; }
+        .btn-action {
+            padding: 4px;
+            border-radius: 6px;
+            border: 1.5px solid #1a3a5c;
+            background: white;
+            color: #1a3a5c;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all .2s;
+        }
         .btn-action:hover { background-color: #1a3a5c; color: white; }
-        .metric-card { background: white; border-radius: 8px; border: 1px solid #e5e9ef; box-shadow: 0 3px 12px rgba(0,0,0,0.06); margin-bottom: 20px; }
-        .metric-header { background: #20445d; color: white; font-size: 13px; font-weight: 600; padding: 8px 15px; border-radius: 8px 8px 0 0; }
-        .metric-body { padding: 10px 15px; }
-        .metric-value { font-size: 22px; font-weight: 700; color: #1a3a5c; }
-        .metric-sub { font-size: 11px; color: #6c757d; margin-top: 2px; }
-        .summary-card { background: white; border-radius: 10px; border-left: 5px solid #20445d; box-shadow: 0 3px 12px rgba(0,0,0,0.07); padding: 16px 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px; }
-        .summary-card .card-icon { font-size: 32px; color: #20445d; }
-        .summary-card .card-info .card-value { font-size: 26px; font-weight: 700; color: #1a3a5c; }
-        .summary-card .card-info .card-label { font-size: 12px; color: #6c757d; font-weight: 500; text-transform: uppercase; }
-        .summary-card.red { border-left-color: var(--accent-red); }
-        .summary-card.red .card-icon, .summary-card.red .card-info .card-value { color: var(--accent-red); }
+
+        /* ==================== CARDS MÉTRICAS ==================== */
+        .summary-card {
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid #20445d;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: box-shadow .2s;
+        }
+        .summary-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+        .summary-card .card-icon { font-size: 26px; color: #20445d; flex-shrink: 0; }
+        .summary-card .card-info .card-value { font-size: 22px; font-weight: 700; color: #1a3a5c; line-height: 1.1; }
+        .summary-card .card-info .card-sublabel { font-size: 10px; color: #94a3b8; font-weight: 500; margin-top: 1px; }
+        .summary-card .card-info .card-label { font-size: 11px; color: #6c757d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+        .summary-card.blue { border-left-color: #20445d; }
+        .summary-card.blue .card-icon, .summary-card.blue .card-info .card-value { color: #20445d; }
         .summary-card.green { border-left-color: #198754; }
         .summary-card.green .card-icon, .summary-card.green .card-info .card-value { color: #198754; }
+        .summary-card.amber { border-left-color: #d97706; }
+        .summary-card.amber .card-icon, .summary-card.amber .card-info .card-value { color: #d97706; }
+        .summary-card.red { border-left-color: var(--accent-red); }
+        .summary-card.red .card-icon, .summary-card.red .card-info .card-value { color: var(--accent-red); }
+        /* keep legacy .orange for compat */
         .summary-card.orange { border-left-color: #fd7e14; }
         .summary-card.orange .card-icon, .summary-card.orange .card-info .card-value { color: #fd7e14; }
+
+        /* ==================== GRÁFICOS ==================== */
+        .chart-card { background: white; border-radius: 10px; border: 1px solid #e5e9ef; box-shadow: 0 3px 12px rgba(0,0,0,0.06); padding: 16px 18px; margin-bottom: 18px; }
+        .chart-card h6 { font-weight: 700; color: #1a3a5c; margin-bottom: 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 5px; }
+        .chart-wrapper { position: relative; height: 255px; }
+
+        /* ==================== TABELAS ==================== */
         .table { width: 100%; font-size: 12px; border-collapse: collapse; }
-        .table th { background-color: #54697b; color: white; padding: 10px 8px; font-weight: 600; white-space: nowrap; border: 1px solid #d6dee6; cursor: pointer; user-select: none; text-align: center; }
+        .table th {
+            background-color: #54697b;
+            color: white;
+            padding: 9px 8px;
+            font-weight: 600;
+            white-space: nowrap;
+            border: 1px solid #d6dee6;
+            cursor: pointer;
+            user-select: none;
+            text-align: center;
+            font-size: 11.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
         .table th:hover { background-color: #6a7f8e; }
         .table th.asc:after { content: ' ↑'; }
         .table th.desc:after { content: ' ↓'; }
-        .table td { padding: 8px; border: 1px solid #d6dee6; vertical-align: middle; }
+        .table td { padding: 7px 8px; border: 1px solid #d6dee6; vertical-align: middle; font-size: 12px; }
         .table td.text-center { text-align: center; }
         .table tbody tr:hover { background-color: rgba(41,67,90,0.04); }
-        .table-footer-total td { background-color: #f8f9fa; font-weight: 700; }
+        .table-footer-total td { background-color: #f0f4f8; font-weight: 700; font-size: 12px; }
         .metadata-table th { background-color: #20445d; color: white; font-size: 12px; }
         .metadata-table td { font-size: 12px; }
-        .pagination-container { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: white; border: 1px solid #dee2e6; border-top: none; border-radius: 0 0 10px 10px; flex-wrap: wrap; gap: 10px; }
-        .items-per-page { height: 32px; min-width: 120px; border-radius: 6px; border: 1px solid #d6dee6; padding: 4px 8px; font-size: 12px; }
-        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
-        .toolbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .search-input-small { width: 220px; font-size: 12px; padding: 6px 12px; border-radius: 6px; border: 1px solid #d6dee6; }
+
+        /* ==================== NOME CLICÁVEL NA TABELA ==================== */
+        .nome-link {
+            color: #006a82;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .nome-link:hover { color: var(--accent-red); text-decoration: underline; }
         .orgao-link { color: #006a82; text-decoration: none; font-weight: 600; cursor: pointer; }
         .orgao-link:hover { color: var(--accent-red); text-decoration: underline; }
-        .select-with-search { position: relative; }
-        .select-with-search input { width: 100%; padding: 6px 10px; border: 2px solid #e9ecef; border-radius: 6px; font-size: 13px; }
-        .select-options { display: none; position: absolute; top: 100%; left: 0; right: 0; max-height: 200px; overflow-y: auto; background: white; border: 1px solid #dee2e6; border-radius: 6px; z-index: 1000; }
-        .select-options.show { display: block; }
-        .select-option { padding: 7px 10px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
-        .select-option:hover, .select-option.selected { background-color: #e8f0fe; }
-        .column-selector-icon { cursor: pointer; color: white; font-size: 18px; vertical-align: middle; margin-left: 5px; }
-        .column-selector-popup { display: none; position: absolute; background: white; border: 1px solid #dee2e6; border-radius: 8px; z-index: 2000; padding: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); min-width: 220px; top: 40px; left: 0; }
-        .column-selector-popup.show { display: block; }
-        .column-selector-popup label { display: block; padding: 4px 8px; cursor: pointer; font-size: 13px; border-radius: 4px; }
-        .column-selector-popup label:hover { background: #f0f4f8; }
-        .info-section { background: #f8f9fa; border-radius: 8px; padding: 14px; margin-bottom: 14px; }
-        .info-section h6 { font-weight: 700; color: #1a3a5c; margin-bottom: 10px; font-size: 13px; border-bottom: 2px solid #dee2e6; padding-bottom: 6px; }
-        .info-row { display: flex; padding: 5px 0; border-bottom: 1px solid #e9ecef; }
-        .info-label { width: 42%; font-weight: 600; color: #495057; font-size: 12px; }
-        .info-value { width: 58%; color: #212529; font-size: 12px; }
+
+        /* ==================== PAGINAÇÃO ==================== */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .items-per-page {
+            height: 30px;
+            min-width: 110px;
+            border-radius: 6px;
+            border: 1px solid #d6dee6;
+            padding: 4px 8px;
+            font-size: 12px;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* ==================== TOOLBAR ==================== */
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+        .toolbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .toolbar-title { color: #20445d; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+        .search-input-small { width: 200px; font-size: 12px; padding: 5px 12px; border-radius: 6px; border: 1px solid #d6dee6; height: 30px; outline: none; }
+        .search-input-small:focus { border-color: var(--accent-red); }
+
+        /* ==================== MODAL ==================== */
+        .modal-header { background: #20445d !important; color: white !important; padding: 14px 20px; border-bottom: none; }
+        .modal-header .modal-title { color: white !important; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .modal-header .btn-close { filter: brightness(0) invert(1); opacity: 1; }
+        .modal-server-banner {
+            background: linear-gradient(135deg, #20445d 0%, #162f42 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .modal-server-banner .server-name { font-size: 14px; font-weight: 700; line-height: 1.2; }
+        .modal-server-banner .server-meta { font-size: 11px; opacity: 0.88; margin-top: 3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .modal-nav-tabs { border-bottom: 2px solid #dee2e6; margin-bottom: 14px; }
+        .modal-nav-tabs .nav-link {
+            font-size: 12px;
+            padding: 6px 14px;
+            color: #495057;
+            border: none;
+            border-bottom: 3px solid transparent;
+            border-radius: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+        }
+        .modal-nav-tabs .nav-link.active { color: #20445d; border-bottom-color: #20445d; background: none; }
+        .info-section { background: #f8f9fa; border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; border: 1px solid #e9ecef; }
+        .info-section h6 {
+            font-weight: 700;
+            color: #1a3a5c;
+            margin-bottom: 8px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 5px;
+        }
+        .info-row { display: flex; padding: 4px 0; border-bottom: 1px solid #f0f0f0; }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { width: 42%; font-weight: 600; color: #6c757d; font-size: 11px; }
+        .info-value { width: 58%; color: #212529; font-size: 11px; font-weight: 500; word-break: break-word; }
+
+        /* ==================== HISTÓRICO ==================== */
+        .hist-legend { font-size: 11px; color: #555; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+
+        /* ==================== OUTROS ==================== */
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.93); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 12px; }
         .loading-progress { font-size: 13px; color: #20445d; font-weight: 600; }
-        .chart-card { background: white; border-radius: 10px; border: 1px solid #e5e9ef; box-shadow: 0 3px 12px rgba(0,0,0,0.06); padding: 18px; margin-bottom: 20px; }
-        .chart-card h6 { font-weight: 700; color: #1a3a5c; margin-bottom: 14px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .chart-wrapper { position: relative; height: 260px; }
+        .select-with-search { position: relative; }
+        .select-with-search input { width: 100%; padding: 6px 10px; border: 2px solid #e9ecef; border-radius: 6px; font-size: 13px; }
+        .select-options { display: none; position: absolute; top: 100%; left: 0; right: 0; max-height: 200px; overflow-y: auto; background: white; border: 1px solid #dee2e6; border-radius: 6px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .select-options.show { display: block; }
+        .select-option { padding: 7px 10px; cursor: pointer; font-size: 12px; border-bottom: 1px solid #f0f0f0; }
+        .select-option:hover, .select-option.selected { background-color: #e8f0fe; }
+        .column-selector-popup { display: none; position: absolute; background: white; border: 1px solid #dee2e6; border-radius: 8px; z-index: 2000; padding: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.15); min-width: 220px; top: 36px; right: 0; left: auto; max-height: 280px; overflow-y: auto; }
+        .column-selector-popup.show { display: block; }
+        .column-selector-popup label { display: block; padding: 4px 8px; cursor: pointer; font-size: 12px; border-radius: 4px; }
+        .column-selector-popup label:hover { background: #f0f4f8; }
         .autocomplete-wrapper { position: relative; }
-        .autocomplete-list { display: none; position: absolute; top: 100%; left: 0; right: 0; max-height: 220px; overflow-y: auto; background: white; border: 1px solid #dee2e6; border-radius: 6px; z-index: 1050; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+        .autocomplete-list { display: none; position: absolute; top: 100%; left: 0; right: 0; max-height: 200px; overflow-y: auto; background: white; border: 1px solid #dee2e6; border-radius: 6px; z-index: 1050; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
         .autocomplete-list.show { display: block; }
-        .autocomplete-item { padding: 7px 10px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+        .autocomplete-item { padding: 6px 10px; cursor: pointer; font-size: 12px; border-bottom: 1px solid #f0f0f0; }
         .autocomplete-item:hover, .autocomplete-item.active { background: #e8f0fe; }
-        .badge-sit { padding: 3px 7px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .badge-sit { padding: 2px 7px; border-radius: 4px; font-size: 10.5px; font-weight: 600; display: inline-block; }
         .badge-efetivo { background: #d4edda; color: #155724; }
         .badge-aposentado { background: #fff3cd; color: #856404; }
         .badge-desligado { background: #f8d7da; color: #721c24; }
         .badge-outro { background: #e2e3e5; color: #383d41; }
-        @media (max-width: 768px) { .dashboard-container { padding: 0 8px; } .toolbar { flex-direction: column; align-items: stretch; } .search-input-small { width: 100%; } .info-label { width: 45%; } .info-value { width: 55%; } }
+
+        @media (max-width: 768px) {
+            .dashboard-container { padding: 0 8px; }
+            .toolbar { flex-direction: column; align-items: stretch; }
+            .search-input-small { width: 100%; }
+            .info-label { width: 45%; }
+            .info-value { width: 55%; }
+        }
     </style>
 </head>
 <body>
@@ -335,9 +541,16 @@ function renderVisaoGeral() {
         else orgaos[orgao].outros++;
     }
 
-    const totalServs = dados.length;
-    const totalEfetivos = dados.filter(s => (s.descsitserv||'').toUpperCase().includes('EFETIVO')).length;
+    // Agrupamentos de situação para os cards
+    const totalAtivos = dados.filter(s => {
+        const sit = (s.descsitserv||'').toUpperCase();
+        return sit.includes('EFETIVO') || sit.includes('ATIVO') || sit.includes('RECRUTAMENTO');
+    }).length;
     const totalAposentados = dados.filter(s => (s.descsitserv||'').toUpperCase().includes('APOSENTADO')).length;
+    const totalTemporarios = dados.filter(s => {
+        const sit = (s.descsitserv||'').toUpperCase();
+        return sit.includes('TEMPORÁRIO') || sit.includes('TEMPORARIO') || sit.includes('CONVOCADO');
+    }).length;
     const totalOrgaos = Object.keys(orgaos).length;
     const situacoes = {};
     for (const s of dados) { const sit = s.descsitserv || 'Não informado'; situacoes[sit] = (situacoes[sit]||0)+1; }
@@ -382,10 +595,10 @@ function renderVisaoGeral() {
           </select>
         </div>
         <div class="col-auto d-flex gap-2">
-          <button class="btn-pesquisa" onclick="aplicarFiltroVisao()"><i class="material-icons" style="font-size:16px">search</i> Aplicar</button>
+          <button class="btn-pesquisa" onclick="aplicarFiltroVisao()"><i class="material-icons" style="font-size:15px">search</i> Aplicar</button>
         </div>
         <div class="col-auto ms-auto">
-          <small class="text-muted fw-semibold"><i class="material-icons" style="font-size:14px;vertical-align:middle">calendar_today</i> Referência: <strong>${mesAno}</strong></small>
+          <small class="text-muted fw-semibold"><i class="material-icons" style="font-size:13px;vertical-align:middle">calendar_today</i> Referência: <strong>${mesAno}</strong></small>
         </div>
       </div>
     </div>
@@ -393,38 +606,42 @@ function renderVisaoGeral() {
     <!-- CARDS MÉTRICAS -->
     <div class="row g-3 mb-3">
       <div class="col-6 col-md-3">
-        <div class="summary-card">
+        <div class="summary-card blue">
           <i class="material-icons card-icon">people</i>
           <div class="card-info">
             <div class="card-value">${totalServs.toLocaleString('pt-BR')}</div>
             <div class="card-label">Total de Servidores</div>
+            <div class="card-sublabel">${totalOrgaos} órgãos / entidades</div>
           </div>
         </div>
       </div>
       <div class="col-6 col-md-3">
         <div class="summary-card green">
-          <i class="material-icons card-icon">verified_user</i>
+          <i class="material-icons card-icon">badge</i>
           <div class="card-info">
-            <div class="card-value">${totalEfetivos.toLocaleString('pt-BR')}</div>
-            <div class="card-label">Efetivos / Ativos</div>
+            <div class="card-value">${totalAtivos.toLocaleString('pt-BR')}</div>
+            <div class="card-label">Ativos / Recrutamento</div>
+            <div class="card-sublabel">Efetivos + Recrutamento Amplo</div>
           </div>
         </div>
       </div>
       <div class="col-6 col-md-3">
-        <div class="summary-card orange">
-          <i class="material-icons card-icon">elderly</i>
+        <div class="summary-card amber">
+          <i class="material-icons card-icon">history_edu</i>
           <div class="card-info">
             <div class="card-value">${totalAposentados.toLocaleString('pt-BR')}</div>
             <div class="card-label">Aposentados</div>
+            <div class="card-sublabel">${totalServs>0?(totalAposentados/totalServs*100).toFixed(1)+'% do total':''}</div>
           </div>
         </div>
       </div>
       <div class="col-6 col-md-3">
         <div class="summary-card red">
-          <i class="material-icons card-icon">business</i>
+          <i class="material-icons card-icon">schedule</i>
           <div class="card-info">
-            <div class="card-value">${totalOrgaos.toLocaleString('pt-BR')}</div>
-            <div class="card-label">Órgãos / Entidades</div>
+            <div class="card-value">${totalTemporarios.toLocaleString('pt-BR')}</div>
+            <div class="card-label">Temporários / Convocados</div>
+            <div class="card-sublabel">Contrato Temporário + Convocado</div>
           </div>
         </div>
       </div>
@@ -448,11 +665,11 @@ function renderVisaoGeral() {
 
     <!-- TABELA ÓRGÃOS -->
     <div class="toolbar">
-      <div><strong style="color:#20445d;font-size:14px"><i class="material-icons" style="font-size:16px;vertical-align:middle">table_chart</i> Resumo por Órgão</strong>
-        <span class="text-muted ms-2" style="font-size:12px">${listaOrgaos.length} órgãos encontrados</span></div>
+      <div class="toolbar-title"><i class="material-icons" style="font-size:16px">table_chart</i> Resumo por Órgão
+        <span class="text-muted ms-2" style="font-size:11px;font-weight:400">${listaOrgaos.length} órgãos</span></div>
       <div class="toolbar-right">
         <input class="search-input-small" id="buscaOrgao" placeholder="Buscar órgão..." oninput="filtrarTabOrgaos(this.value)">
-        <button class="btn-export" onclick="exportarVisaoCSV()"><i class="material-icons" style="font-size:14px">download</i> CSV</button>
+        <button class="btn-export" onclick="exportarVisaoCSV()"><i class="material-icons" style="font-size:13px">download</i> CSV</button>
       </div>
     </div>
     <div class="table-container">
@@ -481,9 +698,9 @@ function renderVisaoGeral() {
         <tfoot><tr class="table-footer-total">
           <td><strong>TOTAL GERAL</strong></td>
           <td class="text-center fw-bold">${totalServs.toLocaleString('pt-BR')}</td>
-          <td class="text-center fw-bold">${totalEfetivos.toLocaleString('pt-BR')}</td>
+          <td class="text-center fw-bold">${listaOrgaos.reduce((a,o)=>a+o.efetivos,0).toLocaleString('pt-BR')}</td>
           <td class="text-center fw-bold">${totalAposentados.toLocaleString('pt-BR')}</td>
-          <td class="text-center fw-bold">${(totalServs-totalEfetivos-totalAposentados).toLocaleString('pt-BR')}</td>
+          <td class="text-center fw-bold">${listaOrgaos.reduce((a,o)=>a+o.outros,0).toLocaleString('pt-BR')}</td>
           <td></td>
         </tr></tfoot>
       </table>
@@ -660,9 +877,8 @@ function renderConsulta() {
 
     <!-- TOOLBAR -->
     <div class="toolbar">
-      <div>
-        <strong style="color:#20445d;font-size:14px"><i class="material-icons" style="font-size:16px;vertical-align:middle">list</i> Lista de Servidores</strong>
-        <span class="text-muted ms-2" style="font-size:12px">${total.toLocaleString('pt-BR')} registros</span>
+      <div class="toolbar-title"><i class="material-icons" style="font-size:16px">list</i> Lista de Servidores
+        <span class="text-muted ms-2" style="font-size:11px;font-weight:400">${total.toLocaleString('pt-BR')} registros</span>
       </div>
       <div class="toolbar-right">
         <input class="search-input-small" placeholder="Busca rápida..." value="${buscaConsulta}" oninput="buscaConsulta=this.value;paginaConsulta=1;renderConsulta()">
@@ -695,6 +911,7 @@ function renderConsulta() {
               let val = s[c] || '-';
               if (c==='descsitserv') val = badgeSit(s[c]);
               else if (c.includes('data') || c.includes('id_data')) val = formatarData(s[c]);
+              else if (c==='nome') val = `<a class="nome-link" onclick="abrirModal(${inicio+idx})" title="Ver detalhes">${val}</a>`;
               return `<td class="text-center">${val}</td>`;
             }).join('')}
             <td class="text-center">
@@ -901,13 +1118,12 @@ function renderHistoricoTabela(masp, adm) {
     const totalMeses = getMesesDisponiveis().length;
 
     return `
-        <div class="mb-2 d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <span style="font-size:11px;color:#555">
-                <i class="material-icons" style="font-size:12px;vertical-align:middle">history</i>
+        <div class="hist-legend">
+            <span><i class="material-icons" style="font-size:11px;vertical-align:middle">history</i>
                 <strong>${historico.length}</strong> competências &nbsp;|&nbsp; ${totalCarregados}/${totalMeses} meses no cache
             </span>
-            <span style="font-size:11px;color:#fd7e14">
-                <i class="material-icons" style="font-size:12px;vertical-align:middle">edit_note</i>
+            <span style="color:#fd7e14">
+                <i class="material-icons" style="font-size:11px;vertical-align:middle">edit_note</i>
                 Laranja = alteração naquele mês
             </span>
         </div>
@@ -935,67 +1151,73 @@ function abrirModal(idx) {
 
     // Monta o modal imediatamente com a aba Dados e histórico parcial (cache atual)
     const html = `
-      <div style="background:#20445d;color:white;padding:12px 16px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
-        <i class="material-icons" style="font-size:36px;opacity:0.8">account_circle</i>
+      <div class="modal-server-banner">
+        <i class="material-icons" style="font-size:32px;opacity:0.7">account_circle</i>
         <div>
-          <div style="font-size:16px;font-weight:700">${v(s.nome)}</div>
-          <div style="font-size:12px;opacity:0.85">MASP: <strong>${v(s.masp)}</strong> &nbsp;|&nbsp; ADM: <strong>${v(s.adm)}</strong> &nbsp;|&nbsp; ${badgeSit(s.descsitserv)}</div>
+          <div class="server-name">${v(s.nome)}</div>
+          <div class="server-meta">
+            <span><strong>MASP:</strong> ${v(s.masp)}</span>
+            <span>|</span>
+            <span><strong>ADM:</strong> ${v(s.adm)}</span>
+            <span>|</span>
+            ${badgeSit(s.descsitserv)}
+          </div>
         </div>
       </div>
-      <ul class="nav nav-tabs mb-3" style="border-bottom:2px solid #dee2e6">
-        <li class="nav-item"><button class="nav-link active" id="tab-dados-btn" onclick="switchModalTab('dados')" style="font-size:13px;padding:6px 16px"><i class="material-icons" style="font-size:14px;vertical-align:middle">person</i> Dados</button></li>
-        <li class="nav-item"><button class="nav-link" id="tab-hist-btn" onclick="switchModalTab('hist')" style="font-size:13px;padding:6px 16px"><i class="material-icons" style="font-size:14px;vertical-align:middle">history</i> Histórico</button></li>
+      <ul class="nav modal-nav-tabs mb-3">
+        <li class="nav-item"><button class="nav-link active" id="tab-dados-btn" onclick="switchModalTab('dados')"><i class="material-icons" style="font-size:13px;vertical-align:middle">person</i> Dados</button></li>
+        <li class="nav-item"><button class="nav-link" id="tab-hist-btn" onclick="switchModalTab('hist')"><i class="material-icons" style="font-size:13px;vertical-align:middle">history</i> Histórico</button></li>
       </ul>
 
       <!-- PAINEL DADOS -->
       <div id="modal-tab-dados">
-        <div class="row g-3">
+        <div class="row g-2">
           <div class="col-md-6">
             <div class="info-section">
-              <h6>👤 DADOS PESSOAIS</h6>
-              <div class="info-row"><div class="info-label">Nome:</div><div class="info-value">${v(s.nome)}</div></div>
-              <div class="info-row"><div class="info-label">MASP:</div><div class="info-value">${v(s.masp)}</div></div>
-              <div class="info-row"><div class="info-label">ADM:</div><div class="info-value">${v(s.adm)}</div></div>
+              <h6>Dados Pessoais</h6>
+              <div class="info-row"><div class="info-label">Nome</div><div class="info-value">${v(s.nome)}</div></div>
+              <div class="info-row"><div class="info-label">MASP</div><div class="info-value">${v(s.masp)}</div></div>
+              <div class="info-row"><div class="info-label">ADM</div><div class="info-value">${v(s.adm)}</div></div>
             </div>
             <div class="info-section">
-              <h6>📋 DADOS FUNCIONAIS</h6>
-              <div class="info-row"><div class="info-label">Cargo Efetivo:</div><div class="info-value">${v(s.nmefetivo)}</div></div>
-              <div class="info-row"><div class="info-label">Sigla Efetivo:</div><div class="info-value">${v(s.siglaefetivo)}</div></div>
-              <div class="info-row"><div class="info-label">Cargo Comissão:</div><div class="info-value">${v(s.desccomi)}</div></div>
-              <div class="info-row"><div class="info-label">Cód. Comissão:</div><div class="info-value">${v(s.cdcomi)}</div></div>
-              <div class="info-row"><div class="info-label">Função Gratificada:</div><div class="info-value">${v(s.desc_funcao_gratif_gte)}</div></div>
-              <div class="info-row"><div class="info-label">Cód. Função:</div><div class="info-value">${v(s.cd_funcao_gratif_gte)}</div></div>
-              <div class="info-row"><div class="info-label">Carga Horária:</div><div class="info-value">${v(s.carga_horaria)}h</div></div>
-              <div class="info-row"><div class="info-label">Situação:</div><div class="info-value">${badgeSit(s.descsitserv)}</div></div>
+              <h6>Dados Funcionais</h6>
+              <div class="info-row"><div class="info-label">Cargo Efetivo</div><div class="info-value">${v(s.nmefetivo)}</div></div>
+              <div class="info-row"><div class="info-label">Sigla Efetivo</div><div class="info-value">${v(s.siglaefetivo)}</div></div>
+              <div class="info-row"><div class="info-label">Cargo Comissão</div><div class="info-value">${v(s.desccomi)}</div></div>
+              <div class="info-row"><div class="info-label">Cód. Comissão</div><div class="info-value">${v(s.cdcomi)}</div></div>
+              <div class="info-row"><div class="info-label">Função Gratificada</div><div class="info-value">${v(s.desc_funcao_gratif_gte)}</div></div>
+              <div class="info-row"><div class="info-label">Cód. Função</div><div class="info-value">${v(s.cd_funcao_gratif_gte)}</div></div>
+              <div class="info-row"><div class="info-label">Carga Horária</div><div class="info-value">${v(s.carga_horaria)}h</div></div>
+              <div class="info-row"><div class="info-label">Situação</div><div class="info-value">${badgeSit(s.descsitserv)}</div></div>
             </div>
           </div>
           <div class="col-md-6">
             <div class="info-section">
-              <h6>🏢 ORGANIZAÇÃO</h6>
-              <div class="info-row"><div class="info-label">Inst. Dotação (sigla):</div><div class="info-value">${v(s.sigla_instituicao_dotacao)}</div></div>
-              <div class="info-row"><div class="info-label">Inst. Dotação:</div><div class="info-value">${v(s.desc_instituicao_dotacao)}</div></div>
-              <div class="info-row"><div class="info-label">Cód. Dotação:</div><div class="info-value">${v(s.cd_instituicao_dotacao)}</div></div>
-              <div class="info-row"><div class="info-label">Inst. Lotação (sigla):</div><div class="info-value">${v(s.sigla_instituicao_lotacao)}</div></div>
-              <div class="info-row"><div class="info-label">Inst. Lotação:</div><div class="info-value">${v(s.desc_instituicao_lotacao)}</div></div>
-              <div class="info-row"><div class="info-label">Cód. Lotação:</div><div class="info-value">${v(s.cd_instituicao_lotacao)}</div></div>
+              <h6>Organização</h6>
+              <div class="info-row"><div class="info-label">Inst. Dotação (sigla)</div><div class="info-value">${v(s.sigla_instituicao_dotacao)}</div></div>
+              <div class="info-row"><div class="info-label">Inst. Dotação</div><div class="info-value">${v(s.desc_instituicao_dotacao)}</div></div>
+              <div class="info-row"><div class="info-label">Cód. Dotação</div><div class="info-value">${v(s.cd_instituicao_dotacao)}</div></div>
+              <div class="info-row"><div class="info-label">Inst. Lotação (sigla)</div><div class="info-value">${v(s.sigla_instituicao_lotacao)}</div></div>
+              <div class="info-row"><div class="info-label">Inst. Lotação</div><div class="info-value">${v(s.desc_instituicao_lotacao)}</div></div>
+              <div class="info-row"><div class="info-label">Cód. Lotação</div><div class="info-value">${v(s.cd_instituicao_lotacao)}</div></div>
             </div>
             <div class="info-section">
-              <h6>📅 DATAS</h6>
-              <div class="info-row"><div class="info-label">Data de Início:</div><div class="info-value">${formatarData(s.id_data_inicio)}</div></div>
-              <div class="info-row"><div class="info-label">Data de Aposentadoria:</div><div class="info-value">${formatarData(s.id_data_aposentadoria)}</div></div>
-              <div class="info-row"><div class="info-label">Data de Desligamento:</div><div class="info-value">${formatarData(s.id_data_desligamento)}</div></div>
-              <div class="info-row"><div class="info-label">Referência (mais recente):</div><div class="info-value">${v(s.ano_mes)}</div></div>
+              <h6>Datas</h6>
+              <div class="info-row"><div class="info-label">Data de Início</div><div class="info-value">${formatarData(s.id_data_inicio)}</div></div>
+              <div class="info-row"><div class="info-label">Data de Aposentadoria</div><div class="info-value">${formatarData(s.id_data_aposentadoria)}</div></div>
+              <div class="info-row"><div class="info-label">Data de Desligamento</div><div class="info-value">${formatarData(s.id_data_desligamento)}</div></div>
+              <div class="info-row"><div class="info-label">Referência (mais recente)</div><div class="info-value">${v(s.ano_mes)}</div></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- PAINEL HISTÓRICO — preenchido após carga dos meses -->
+      <!-- PAINEL HISTÓRICO -->
       <div id="modal-tab-hist" style="display:none">
         <div id="hist-loading" class="text-center py-4">
           <div class="spinner-border spinner-border-sm text-primary me-2"></div>
-          <span id="hist-loading-txt" style="font-size:13px;color:#20445d">Carregando histórico…</span>
-          <div class="progress mt-2 mx-auto" style="max-width:300px;height:6px">
+          <span id="hist-loading-txt" style="font-size:12px;color:#20445d">Carregando histórico…</span>
+          <div class="progress mt-2 mx-auto" style="max-width:280px;height:5px">
             <div id="hist-progress-bar" class="progress-bar" style="width:0%;background:#20445d"></div>
           </div>
         </div>
