@@ -529,6 +529,9 @@ async function cargaInicial() {
 function renderVisaoGeral() {
     const dados = Array.from(todosServidores.values());
     const totalServs = dados.length;
+    // exemplo
+    document.getElementById('totalServidores').innerText = totalServs;
+}
 
     // Agrupar por órgão (desc_instituicao_dotacao)
     const orgaos = {};
