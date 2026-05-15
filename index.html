@@ -582,6 +582,12 @@
                     </button>
                 </li>
                 <li class="nav-item">
+                    <button class="nav-link" id="dicionario-tab"
+                        data-bs-toggle="tab" data-bs-target="#dicionario">
+                        <i class="material-icons">menu_book</i>Dicionário de Dados
+                    </button>
+                </li>
+                <li class="nav-item">
                     <button class="nav-link" id="downloads-tab"
                         data-bs-toggle="tab" data-bs-target="#downloads">
                         <i class="material-icons">download</i>Downloads
@@ -598,6 +604,16 @@
             </div>
         </div>
 
+        <!-- Indicador de carregamento em background -->
+        <div id="bg-progress-indicator" style="display:none;align-items:center;gap:10px;margin:-8px 0 12px 0;padding:6px 14px;background:#eaf2fb;border-radius:8px;font-size:11px;color:#1a3a5c;font-weight:600;">
+            <div class="spinner-border spinner-border-sm" role="status" style="color:#1a3a5c;width:14px;height:14px;border-width:2px;"></div>
+            <span id="bg-progress-txt">Atualizando dados…</span>
+            <div style="flex:1;background:#c8dff0;border-radius:4px;height:5px;min-width:80px;">
+                <div id="bg-progress-bar-inner" style="height:5px;background:#1a3a5c;border-radius:4px;width:0%;transition:width 0.3s;"></div>
+            </div>
+            <span style="font-size:10px;color:#5a7a9a;">Os dados serão mais precisos ao concluir</span>
+        </div>
+
         <!-- Conteúdo das abas -->
         <div class="tab-content" id="dashboardTabsContent">
             <div class="tab-pane fade show active" id="visao" role="tabpanel">
@@ -605,6 +621,9 @@
             </div>
             <div class="tab-pane fade" id="consulta" role="tabpanel">
                 <div id="consulta-content"></div>
+            </div>
+            <div class="tab-pane fade" id="dicionario" role="tabpanel">
+                <div id="dicionario-content"></div>
             </div>
             <div class="tab-pane fade" id="downloads" role="tabpanel">
                 <div id="downloads-content"></div>
@@ -822,34 +841,30 @@ async function setupAtualizacaoData() {
         if (!resp.ok) throw new Error('erro api');
         const arquivos = await resp.json();
 
-        // Filtra arquivos dados_serv_YYYYMM.csv e pega o mais recente pelo nome
         const csvFiles = arquivos
             .filter(f => f.name && f.name.match(/^dados_serv_\d{6}\.csv$/))
             .sort((a, b) => b.name.localeCompare(a.name));
 
         if (csvFiles.length > 0) {
             const arqMaisRecente = csvFiles[0].name;
-            // Atualiza MES_MAIS_ATUAL com o detectado
             const matchMes = arqMaisRecente.match(/dados_serv_(\d{6})\.csv/);
             if (matchMes) {
-                MES_MAIS_ATUAL = matchMes[1];
-                anoMesAtivo    = MES_MAIS_ATUAL;
-                filtroVisao    = { ano: MES_MAIS_ATUAL.slice(0,4), mes: MES_MAIS_ATUAL.slice(4,6) };
+                MES_MAIS_ATUAL       = matchMes[1];
+                anoMesAtivo          = MES_MAIS_ATUAL;
+                filtroVisao          = { ano: MES_MAIS_ATUAL.slice(0,4), mes: MES_MAIS_ATUAL.slice(4,6), orgao: '' };
                 filtroConsultaAnoMes = { ...filtroVisao };
             }
 
-            // Busca data do commit mais recente para esse arquivo
-            const commitResp = await fetch(
-                `https://api.github.com/repos/transparencia-mg/portal_relacao_nominal_servidores/commits?path=dataset/data/${arqMaisRecente}&per_page=1`
-            );
-            if (commitResp.ok) {
-                const commits = await commitResp.json();
-                if (commits && commits.length > 0) {
-                    el.textContent = ' ' + new Date(commits[0].commit.committer.date).toLocaleDateString('pt-BR');
-                    return;
-                }
-            }
-            el.textContent = ' ' + arqMaisRecente.replace('dados_serv_','').replace('.csv','');
+            // Busca data do commit em paralelo, sem bloquear o carregamento dos dados
+            fetch(`https://api.github.com/repos/transparencia-mg/portal_relacao_nominal_servidores/commits?path=dataset/data/${arqMaisRecente}&per_page=1`)
+                .then(r => r.ok ? r.json() : null)
+                .then(commits => {
+                    if (commits && commits.length > 0)
+                        el.textContent = ' ' + new Date(commits[0].commit.committer.date).toLocaleDateString('pt-BR');
+                    else
+                        el.textContent = ' ' + arqMaisRecente.replace('dados_serv_','').replace('.csv','');
+                })
+                .catch(() => { el.textContent = ' ' + arqMaisRecente.replace('dados_serv_','').replace('.csv',''); });
         } else {
             el.textContent = ' Não disponível';
         }
@@ -873,48 +888,137 @@ async function fetchCSV(url) {
     } catch(e) { return []; }
 }
 
+// Baixa um mês inteiro: jan/22 tem 9 partes em paralelo, demais têm 1 arquivo
 async function garantirMes(anoMes) {
     if (cacheRows.has(anoMes)) return;
     const urls = getFileUrls(anoMes);
-    const rows = [];
-    for (const url of urls) {
-        const r = await fetchCSV(url);
-        rows.push(...r);
+    // Todas as partes do mês em paralelo
+    const partes = await Promise.all(urls.map(url => fetchCSV(url)));
+    cacheRows.set(anoMes, partes.flat());
+}
+
+// Baixa vários meses em paralelo de uma só vez (sem limite de lote)
+async function garantirMeses(listaAnoMes) {
+    const faltando = listaAnoMes.filter(am => !cacheRows.has(am));
+    if (faltando.length === 0) return;
+    await Promise.all(faltando.map(am => garantirMes(am)));
+}
+
+// ============================================================
+// LÓGICA DE MERGE DELTA
+// ------------------------------------------------------------
+// Os arquivos mensais (fev/22 em diante) contêm APENAS os
+// registros que sofreram alguma alteração naquele mês — não
+// são snapshots completos. Para obter o estado de um servidor
+// em qualquer mês, é preciso:
+//   1. Partir da base completa de jan/22
+//   2. Aplicar cada delta mensal em ordem cronológica até o
+//      mês alvo, sobrescrevendo campo a campo quem mudou
+// ============================================================
+
+// Aplica um delta (arquivo mensal de alterações) sobre o mapa
+// atual de servidores, campo a campo: só sobrescreve um campo
+// se o valor no delta não for vazio.
+function aplicarDelta(mapaAtual, rowsDelta) {
+    for (const row of (rowsDelta || [])) {
+        const chave = `${row.masp}|${row.adm}`;
+        const base  = mapaAtual.get(chave) || {};
+        const merged = { ...base };
+        for (const campo of Object.keys(row)) {
+            const v = (row[campo] ?? '').toString().trim();
+            if (v !== '') merged[campo] = row[campo];
+        }
+        mapaAtual.set(chave, merged);
     }
-    cacheRows.set(anoMes, rows);
+}
+
+// Constrói o estado dos servidores aplicando todos os deltas
+// em cache desde jan/22 até anoMesAlvo (inclusive).
+function construirEstado(anoMesAlvo) {
+    const meses = getMesesDisponiveis(); // ordem cronológica
+    const resultado = new Map();
+
+    // 1. Base: jan/2022 (snapshot completo)
+    for (const row of (cacheRows.get(MES_BASE) || []))
+        resultado.set(`${row.masp}|${row.adm}`, { ...row });
+
+    // 2. Deltas mensais em ordem, até o mês alvo
+    for (const am of meses) {
+        if (am === MES_BASE) continue;
+        if (am > anoMesAlvo) break;                 // passou do alvo, para
+        if (!cacheRows.has(am)) continue;           // não baixado ainda, pula
+        aplicarDelta(resultado, cacheRows.get(am));
+    }
+    return resultado;
 }
 
 async function construirBaseAte(anoMesAlvo) {
-    if (!cacheRows.has(MES_BASE)) {
-        mostrarLoading(true, 'Carregando base (Jan/2022)…');
-        await garantirMes(MES_BASE);
-    }
-    if (!cacheRows.has(anoMesAlvo)) {
-        mostrarLoading(true, `Carregando ${nomeMes(anoMesAlvo.slice(4,6))}/${anoMesAlvo.slice(0,4)}…`);
-        await garantirMes(anoMesAlvo);
+    const mesesNecessarios = getMesesDisponiveis().filter(am => am <= anoMesAlvo);
+    const faltando = mesesNecessarios.filter(am => !cacheRows.has(am));
+    if (faltando.length > 0) {
+        mostrarLoading(true, 'Carregando dados…');
+        await garantirMeses(faltando);
     }
     mostrarLoading(true, 'Aplicando dados…');
-    todosServidores = new Map();
-    for (const row of (cacheRows.get(MES_BASE) || []))
-        todosServidores.set(`${row.masp}|${row.adm}`, row);
-    for (const row of (cacheRows.get(anoMesAlvo) || []))
-        todosServidores.set(`${row.masp}|${row.adm}`, row);
+    todosServidores = construirEstado(anoMesAlvo);
     anoMesAtivo = anoMesAlvo;
     mostrarLoading(false);
 }
 
+// Indicador de progresso do carregamento em background
+let backgroundProgress = 0;
+let backgroundTotal = 0;
+let backgroundConcluido = false;
+
+function atualizarIndicadorBackground() {
+    const el = document.getElementById('bg-progress-indicator');
+    if (!el) return;
+    if (backgroundConcluido) { el.style.display = 'none'; return; }
+    if (backgroundTotal > 0) {
+        const pct = Math.round((backgroundProgress / backgroundTotal) * 100);
+        el.style.display = 'flex';
+        el.querySelector('#bg-progress-txt').textContent = `Atualizando dados… ${pct}%`;
+        el.querySelector('#bg-progress-bar-inner').style.width = pct + '%';
+    }
+}
+
 async function cargaInicial() {
-    mostrarLoading(true, 'Carregando base (Jan/2022)… 1/2');
-    await garantirMes(MES_BASE);
-    mostrarLoading(true, `Carregando dados mais recentes (${nomeMes(MES_MAIS_ATUAL.slice(4,6))}/${MES_MAIS_ATUAL.slice(0,4)})… 2/2`);
-    await garantirMes(MES_MAIS_ATUAL);
-    todosServidores = new Map();
-    for (const row of (cacheRows.get(MES_BASE) || []))
-        todosServidores.set(`${row.masp}|${row.adm}`, row);
-    for (const row of (cacheRows.get(MES_MAIS_ATUAL) || []))
-        todosServidores.set(`${row.masp}|${row.adm}`, row);
+    // FASE 1: jan/22 + mês mais atual em paralelo → exibe imediatamente
+    mostrarLoading(true, 'Carregando dados…');
+    await garantirMeses([MES_BASE, MES_MAIS_ATUAL]);
+    todosServidores = construirEstado(MES_MAIS_ATUAL);
     anoMesAtivo = MES_MAIS_ATUAL;
     mostrarLoading(false);
+
+    // FASE 2: todos os deltas intermediários em background, todos em paralelo
+    setTimeout(carregarDeltasBackground, 50);
+}
+
+async function carregarDeltasBackground() {
+    const meses = getMesesDisponiveis().filter(am => am !== MES_BASE && am < MES_MAIS_ATUAL);
+    const faltando = meses.filter(am => !cacheRows.has(am));
+    if (faltando.length === 0) { backgroundConcluido = true; atualizarIndicadorBackground(); return; }
+
+    backgroundProgress = 0;
+    backgroundTotal = faltando.length;
+    backgroundConcluido = false;
+    atualizarIndicadorBackground();
+
+    // Dispara TODAS as requisições em paralelo de uma vez
+    const promises = faltando.map(am =>
+        garantirMes(am).then(() => {
+            backgroundProgress++;
+            atualizarIndicadorBackground();
+        })
+    );
+    await Promise.all(promises);
+
+    // Reconstrói com todos os deltas aplicados
+    backgroundConcluido = true;
+    atualizarIndicadorBackground();
+    todosServidores = construirEstado(anoMesAtivo);
+    renderVisaoGeral();
+    if (document.getElementById('consulta').classList.contains('show active')) renderConsulta();
 }
 
 // ============================================================
@@ -991,7 +1095,7 @@ function renderVisaoGeral() {
         </div>
         <div class="botoes-abaixo">
             <button class="btn-pesquisa" onclick="aplicarFiltroVisao()">
-                <i class="material-icons">search</i> Pesquisar
+                <i class="material-icons">search</i> Atualizar Filtros
             </button>
             <button class="btn-secondary-custom" onclick="limparFiltroVisao()">
                 <i class="material-icons">clear</i> Limpar
@@ -1420,7 +1524,7 @@ function renderConsulta() {
         </div>
         <div class="consulta-buttons-row">
             <button class="btn-pesquisa" onclick="aplicarFiltroConsulta()">
-                <i class="material-icons">search</i> Pesquisar
+                <i class="material-icons">search</i> Atualizar Filtros
             </button>
             <button class="btn-secondary-custom" onclick="limparFiltroConsulta()">
                 <i class="material-icons">clear</i> Limpar Filtros
@@ -1900,34 +2004,20 @@ function exportarModalCSV() {
 }
 
 // ============================================================
-// 9. DOWNLOADS
+// 9. DICIONÁRIO DE DADOS
 // ============================================================
-function renderDownloads() {
-    const meses = getMesesDisponiveis();
-    document.getElementById('downloads-content').innerHTML = `
+function renderDicionario() {
+    document.getElementById('dicionario-content').innerHTML = `
     <div class="filter-container">
-        <div class="filters-row">
-            <div class="filter-group" style="text-align:center;padding:10px 0;">
-                <i class="material-icons" style="font-size:48px;color:#20445d;">cloud_download</i>
-                <h5 style="margin-top:8px;margin-bottom:4px;">Portal de Dados Abertos</h5>
-                <p style="color:#6c757d;font-size:13px;margin-bottom:12px;">Acesse os dados completos de Relação Nominal de Servidores do Estado de Minas Gerais</p>
-                <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-                    <a href="https://dados.mg.gov.br/" target="_blank" class="btn-pesquisa">
-                        <i class="material-icons">open_in_new</i> Portal Dados MG
-                    </a>
-                </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+            <h5 style="margin:0;font-size:15px;">
+                <i class="material-icons" style="vertical-align:middle;margin-right:6px;">menu_book</i>
+                Dicionário de Variáveis — Relação Nominal de Servidores
+            </h5>
+            <div class="d-flex gap-2">
+                <button class="btn-export" onclick="baixarDicionarioCSV()"><i class="material-icons">description</i> CSV</button>
+                <button class="btn-export" onclick="baixarDicionarioPDF()"><i class="material-icons">print</i> PDF</button>
             </div>
-        </div>
-    </div>
-
-    <div class="filter-container">
-        <h5 style="border:none;margin-bottom:12px;font-size:15px;">
-            <i class="material-icons" style="vertical-align:middle;margin-right:6px;">info</i>
-            Metadados — Dicionário de Variáveis
-        </h5>
-        <div class="d-flex gap-2 mb-3">
-            <button class="btn-export" onclick="baixarDicionarioCSV()"><i class="material-icons">description</i> CSV</button>
-            <button class="btn-export" onclick="baixarDicionarioPDF()"><i class="material-icons">print</i> PDF</button>
         </div>
         <div class="table-container">
             <div class="table-fixed-header-container">
@@ -1963,6 +2053,29 @@ function renderDownloads() {
                         <tr><td><code>id_data_desligamento</code></td><td>Data de desligamento</td><td>Data (YYYY-MM-DD)</td></tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>`;
+    setTimeout(iframeUpdateHeight, 300);
+}
+
+// ============================================================
+// 10. DOWNLOADS
+// ============================================================
+function renderDownloads() {
+    const meses = getMesesDisponiveis();
+    document.getElementById('downloads-content').innerHTML = `
+    <div class="filter-container">
+        <div class="filters-row">
+            <div class="filter-group" style="text-align:center;padding:10px 0;">
+                <i class="material-icons" style="font-size:48px;color:#20445d;">cloud_download</i>
+                <h5 style="margin-top:8px;margin-bottom:4px;">Portal de Dados Abertos</h5>
+                <p style="color:#6c757d;font-size:13px;margin-bottom:12px;">Acesse os dados completos de Relação Nominal de Servidores do Estado de Minas Gerais</p>
+                <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                    <a href="https://dados.mg.gov.br/" target="_blank" class="btn-pesquisa">
+                        <i class="material-icons">open_in_new</i> Portal Dados MG
+                    </a>
+                </div>
             </div>
         </div>
     </div>`;
@@ -2041,14 +2154,18 @@ document.addEventListener('click', e => {
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Inicia detecção do mês mais atual em paralelo com a carga
-    setupAtualizacaoData();
+    // Detecta o mês mais atual ANTES de carregar os dados
+    await setupAtualizacaoData();
 
-    // Carga rápida: base (Jan/2022) + mês mais atual
+    // Carga inicial rápida (jan/22 + mês atual) + background para intermediários
     await cargaInicial();
 
-    renderVisaoGeral();
     renderDownloads();
+
+    // Dicionário renderiza ao clicar na aba (lazy)
+    document.querySelector('[data-bs-target="#dicionario"]').addEventListener('shown.bs.tab', () => {
+        renderDicionario();
+    });
 
     // Consulta renderiza ao clicar na aba (lazy)
     document.querySelector('[data-bs-target="#consulta"]').addEventListener('shown.bs.tab', () => {
