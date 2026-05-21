@@ -888,20 +888,127 @@ async function fetchCSV(url) {
     } catch(e) { return []; }
 }
 
-// Baixa um mês inteiro: jan/22 tem 9 partes em paralelo, demais têm 1 arquivo
 async function garantirMes(anoMes) {
     if (cacheRows.has(anoMes)) return;
     const urls = getFileUrls(anoMes);
-    // Todas as partes do mês em paralelo
     const partes = await Promise.all(urls.map(url => fetchCSV(url)));
     cacheRows.set(anoMes, partes.flat());
 }
 
-// Baixa vários meses em paralelo de uma só vez (sem limite de lote)
 async function garantirMeses(listaAnoMes) {
     const faltando = listaAnoMes.filter(am => !cacheRows.has(am));
     if (faltando.length === 0) return;
     await Promise.all(faltando.map(am => garantirMes(am)));
+}
+
+// ============================================================
+// CARREGAMENTO A PARTIR DO JSON CONSOLIDADO
+// ============================================================
+
+// Estrutura em memória após carregar o JSON:
+// jsonDados.meta, jsonDados.deltas, jsonDados.removidos
+let jsonDados = null;
+
+async function tentarCarregarEstadoAtual() {
+    try {
+        const url = BASE_URL + 'estado_atual.json';
+        const resp = await fetch(url);
+        if (!resp.ok) return false;
+        const data = await resp.json();
+        if (!data || !data.meta || !data.deltas) return false;
+
+        jsonDados = data;
+
+        // Atualiza metadados globais
+        MES_MAIS_ATUAL       = data.meta.mes_mais_atual;
+        anoMesAtivo          = MES_MAIS_ATUAL;
+        filtroVisao          = { ano: MES_MAIS_ATUAL.slice(0,4), mes: MES_MAIS_ATUAL.slice(4,6), orgao: '' };
+        filtroConsultaAnoMes = { ...filtroVisao };
+
+        const el = document.getElementById('data-atualizacao-header');
+        if (el && data.meta.gerado_em)
+            el.textContent = ' ' + data.meta.gerado_em.slice(0,10).split('-').reverse().join('/');
+
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+// Constrói o estado dos servidores até um mês alvo,
+// aplicando os deltas em sequência e respeitando remoções.
+function construirEstadoDoJSON(anoMesAlvo) {
+    if (!jsonDados) return new Map();
+
+    const meses = jsonDados.meta.meses.filter(m => m <= anoMesAlvo);
+    const estado = new Map();
+
+    for (const mes of meses) {
+        // Aplica alterações/novos do mês
+        const delta = jsonDados.deltas[mes] || {};
+        for (const [chave, reg] of Object.entries(delta)) {
+            if (estado.has(chave)) {
+                // Servidor existente: merge campo a campo
+                const atual = estado.get(chave);
+                for (const [k, v] of Object.entries(reg)) {
+                    if (v !== '' && v !== null) atual[k] = v;
+                }
+            } else {
+                // Servidor novo
+                estado.set(chave, { ...reg });
+            }
+        }
+        // Aplica remoções do mês (saíram do quadro)
+        const removidos = jsonDados.removidos[mes] || [];
+        for (const chave of removidos) {
+            estado.delete(chave);
+        }
+    }
+    return estado;
+}
+
+async function cargaInicial() {
+    mostrarLoading(true, 'Carregando dados…');
+
+    // Tenta o caminho rápido: JSON consolidado (1 requisição)
+    const usouJSON = await tentarCarregarEstadoAtual();
+
+    if (usouJSON) {
+        todosServidores = construirEstadoDoJSON(MES_MAIS_ATUAL);
+        anoMesAtivo = MES_MAIS_ATUAL;
+        mostrarLoading(false);
+        return;
+    }
+
+    // Fallback: lógica de deltas CSV (caso o JSON ainda não exista)
+    await garantirMeses([MES_BASE, MES_MAIS_ATUAL]);
+    todosServidores = construirEstado(MES_MAIS_ATUAL);
+    anoMesAtivo = MES_MAIS_ATUAL;
+    mostrarLoading(false);
+    setTimeout(carregarDeltasBackground, 50);
+}
+
+async function construirBaseAte(anoMesAlvo) {
+    // Se o JSON já está carregado, usa ele (instantâneo, sem requisições)
+    if (jsonDados) {
+        mostrarLoading(true, 'Aplicando dados…');
+        todosServidores = construirEstadoDoJSON(anoMesAlvo);
+        anoMesAtivo = anoMesAlvo;
+        mostrarLoading(false);
+        return;
+    }
+
+    // Fallback CSV
+    const mesesNecessarios = getMesesDisponiveis().filter(am => am <= anoMesAlvo);
+    const faltando = mesesNecessarios.filter(am => !cacheRows.has(am));
+    if (faltando.length > 0) {
+        mostrarLoading(true, 'Carregando dados…');
+        await garantirMeses(faltando);
+    }
+    mostrarLoading(true, 'Aplicando dados…');
+    todosServidores = construirEstado(anoMesAlvo);
+    anoMesAtivo = anoMesAlvo;
+    mostrarLoading(false);
 }
 
 // ============================================================
@@ -916,17 +1023,28 @@ async function garantirMeses(listaAnoMes) {
 //      mês alvo, sobrescrevendo campo a campo quem mudou
 // ============================================================
 
-// Aplica um delta (arquivo mensal de alterações) sobre o mapa
-// atual de servidores, campo a campo: só sobrescreve um campo
-// se o valor no delta não for vazio.
+// Aplica um delta CSV sobre o mapa atual.
+// Cada linha tem situacao_delta: NOVO | ALTERADO | REMOVIDO
+// Se o arquivo não tiver essa coluna (formato antigo), trata como NOVO/ALTERADO.
 function aplicarDelta(mapaAtual, rowsDelta) {
     for (const row of (rowsDelta || [])) {
-        const chave = `${row.masp}|${row.adm}`;
-        const base  = mapaAtual.get(chave) || {};
+        const chave = `${(row.masp||'').trim()}|${(row.adm||'').trim()}`;
+        if (!chave || chave === '|') continue;
+
+        const situacao = (row.situacao_delta || '').toUpperCase();
+
+        if (situacao === 'REMOVIDO') {
+            mapaAtual.delete(chave);
+            continue;
+        }
+
+        // NOVO, ALTERADO ou sem coluna (formato antigo)
+        const base = mapaAtual.get(chave) || {};
         const merged = { ...base };
-        for (const campo of Object.keys(row)) {
-            const v = (row[campo] ?? '').toString().trim();
-            if (v !== '') merged[campo] = row[campo];
+        for (const [campo, valor] of Object.entries(row)) {
+            if (campo === 'situacao_delta') continue;
+            const v = (valor ?? '').toString().trim();
+            if (v !== '' && v.toLowerCase() !== 'nan') merged[campo] = valor;
         }
         mapaAtual.set(chave, merged);
     }
