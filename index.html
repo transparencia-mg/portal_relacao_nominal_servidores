@@ -729,6 +729,7 @@ function getMesesDisponiveis() {
 // ============================================================
 const cacheRows = new Map();
 let todosServidores = new Map();
+let todosServidoresArray = null; // cache do Array.from(todosServidores.values())
 let servidoresFiltrados = [];
 let orgaoSelecionado = '';
 let anoMesAtivo = MES_MAIS_ATUAL;
@@ -794,6 +795,17 @@ function badgeSit(sit) {
 
 function v(val) { return val || '-'; }
 function escapar(s) { return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+// Debounce para busca na tabela de consulta (evita re-render a cada tecla)
+let _debounceTimer = null;
+function debounceConsulta(val) {
+    clearTimeout(_debounceTimer);
+    _debounceTimer = setTimeout(() => {
+        buscaConsulta = val;
+        paginaConsulta = 1;
+        renderConsulta();
+    }, 220);
+}
 
 function iframeUpdateHeight() {
     try {
@@ -946,16 +958,24 @@ function construirEstadoDoJSON(anoMesAlvo) {
     for (const mes of meses) {
         // Aplica alterações/novos do mês
         const delta = jsonDados.deltas[mes] || {};
-        for (const [chave, reg] of Object.entries(delta)) {
+        const chaves = Object.keys(delta);
+        for (let ci = 0; ci < chaves.length; ci++) {
+            const chave = chaves[ci];
+            const reg = delta[chave];
             if (estado.has(chave)) {
                 // Servidor existente: merge campo a campo
+                // IMPORTANTE: campos explicitamente presentes no delta (mesmo vazios)
+                // devem sobrescrever o valor anterior — permite zerar desccomi/cdcomi
+                // quando o servidor perde o cargo em comissão.
                 const atual = estado.get(chave);
-                for (const [k, v] of Object.entries(reg)) {
-                    if (v !== '' && v !== null) atual[k] = v;
+                const campos = Object.keys(reg);
+                for (let ki = 0; ki < campos.length; ki++) {
+                    const k = campos[ki];
+                    const v = reg[k];
+                    if (v !== null && v !== undefined) atual[k] = v;
                 }
             } else {
-                // Servidor novo
-                estado.set(chave, { ...reg });
+                estado.set(chave, Object.assign({}, reg));
             }
         }
         // Aplica remoções do mês (saíram do quadro)
@@ -983,6 +1003,7 @@ async function cargaInicial() {
     // Fallback: lógica de deltas CSV (caso o JSON ainda não exista)
     await garantirMeses([MES_BASE, MES_MAIS_ATUAL]);
     todosServidores = construirEstado(MES_MAIS_ATUAL);
+    todosServidoresArray = Array.from(todosServidores.values());
     anoMesAtivo = MES_MAIS_ATUAL;
     mostrarLoading(false);
     setTimeout(carregarDeltasBackground, 50);
@@ -993,6 +1014,7 @@ async function construirBaseAte(anoMesAlvo) {
     if (jsonDados) {
         mostrarLoading(true, 'Aplicando dados…');
         todosServidores = construirEstadoDoJSON(anoMesAlvo);
+        todosServidoresArray = Array.from(todosServidores.values());
         anoMesAtivo = anoMesAlvo;
         mostrarLoading(false);
         return;
@@ -1007,6 +1029,7 @@ async function construirBaseAte(anoMesAlvo) {
     }
     mostrarLoading(true, 'Aplicando dados…');
     todosServidores = construirEstado(anoMesAlvo);
+    todosServidoresArray = Array.from(todosServidores.values());
     anoMesAtivo = anoMesAlvo;
     mostrarLoading(false);
 }
@@ -1039,12 +1062,16 @@ function aplicarDelta(mapaAtual, rowsDelta) {
         }
 
         // NOVO, ALTERADO ou sem coluna (formato antigo)
-        const base = mapaAtual.get(chave) || {};
-        const merged = { ...base };
-        for (const [campo, valor] of Object.entries(row)) {
+        // Reutiliza o objeto existente para evitar alocações desnecessárias
+        const merged = mapaAtual.get(chave) || {};
+        const campos = Object.keys(row);
+        for (let fi = 0; fi < campos.length; fi++) {
+            const campo = campos[fi];
             if (campo === 'situacao_delta') continue;
-            const v = (valor ?? '').toString().trim();
-            if (v !== '' && v.toLowerCase() !== 'nan') merged[campo] = valor;
+            const v = (row[campo] ?? '').toString().trim();
+            // IMPORTANTE: aplica mesmo se vazio — permite zerar desccomi/cdcomi quando
+            // o servidor perde o cargo em comissão.
+            if (v.toLowerCase() !== 'nan') merged[campo] = v;
         }
         mapaAtual.set(chave, merged);
     }
@@ -1070,19 +1097,6 @@ function construirEstado(anoMesAlvo) {
     return resultado;
 }
 
-async function construirBaseAte(anoMesAlvo) {
-    const mesesNecessarios = getMesesDisponiveis().filter(am => am <= anoMesAlvo);
-    const faltando = mesesNecessarios.filter(am => !cacheRows.has(am));
-    if (faltando.length > 0) {
-        mostrarLoading(true, 'Carregando dados…');
-        await garantirMeses(faltando);
-    }
-    mostrarLoading(true, 'Aplicando dados…');
-    todosServidores = construirEstado(anoMesAlvo);
-    anoMesAtivo = anoMesAlvo;
-    mostrarLoading(false);
-}
-
 // Indicador de progresso do carregamento em background
 let backgroundProgress = 0;
 let backgroundTotal = 0;
@@ -1101,14 +1115,22 @@ function atualizarIndicadorBackground() {
 }
 
 async function cargaInicial() {
-    // FASE 1: jan/22 + mês mais atual em paralelo → exibe imediatamente
     mostrarLoading(true, 'Carregando dados…');
+    // Caminho rápido: JSON consolidado (1 requisição)
+    const usouJSON = await tentarCarregarEstadoAtual();
+    if (usouJSON) {
+        todosServidores = construirEstadoDoJSON(MES_MAIS_ATUAL);
+        todosServidoresArray = Array.from(todosServidores.values());
+        anoMesAtivo = MES_MAIS_ATUAL;
+        mostrarLoading(false);
+        return;
+    }
+    // Fallback CSV
     await garantirMeses([MES_BASE, MES_MAIS_ATUAL]);
     todosServidores = construirEstado(MES_MAIS_ATUAL);
+    todosServidoresArray = Array.from(todosServidores.values());
     anoMesAtivo = MES_MAIS_ATUAL;
     mostrarLoading(false);
-
-    // FASE 2: todos os deltas intermediários em background, todos em paralelo
     setTimeout(carregarDeltasBackground, 50);
 }
 
@@ -1122,19 +1144,23 @@ async function carregarDeltasBackground() {
     backgroundConcluido = false;
     atualizarIndicadorBackground();
 
-    // Dispara TODAS as requisições em paralelo de uma vez
-    const promises = faltando.map(am =>
-        garantirMes(am).then(() => {
-            backgroundProgress++;
-            atualizarIndicadorBackground();
-        })
-    );
-    await Promise.all(promises);
+    // Limita a 6 requisições simultâneas para não saturar a rede do browser
+    const CONCORRENCIA = 6;
+    for (let i = 0; i < faltando.length; i += CONCORRENCIA) {
+        const lote = faltando.slice(i, i + CONCORRENCIA);
+        await Promise.all(lote.map(am =>
+            garantirMes(am).then(() => {
+                backgroundProgress++;
+                atualizarIndicadorBackground();
+            })
+        ));
+    }
 
     // Reconstrói com todos os deltas aplicados
     backgroundConcluido = true;
     atualizarIndicadorBackground();
     todosServidores = construirEstado(anoMesAtivo);
+    todosServidoresArray = Array.from(todosServidores.values());
     renderVisaoGeral();
     if (document.getElementById('consulta').classList.contains('show active')) renderConsulta();
 }
@@ -1143,28 +1169,34 @@ async function carregarDeltasBackground() {
 // 6. VISÃO GERAL
 // ============================================================
 function renderVisaoGeral() {
-    const dados = Array.from(todosServidores.values());
+    const dados = todosServidoresArray || Array.from(todosServidores.values());
     const totalServs = dados.length;
 
     const orgaos = {};
-    for (const s of dados) {
+    for (let di = 0; di < dados.length; di++) {
+        const s = dados[di];
         const orgao = s.desc_instituicao_dotacao || s.sigla_instituicao_dotacao || 'NÃO INFORMADO';
-        const sigla = s.sigla_instituicao_dotacao || orgao;
-        if (!orgaos[orgao]) orgaos[orgao] = { total: 0, efetivos: 0, aposentados: 0, outros: 0, sigla };
-        orgaos[orgao].total++;
+        let entry = orgaos[orgao];
+        if (!entry) { entry = { total: 0, efetivos: 0, aposentados: 0, outros: 0, sigla: s.sigla_instituicao_dotacao || orgao }; orgaos[orgao] = entry; }
+        entry.total++;
         const sit = (s.descsitserv || '').toUpperCase();
-        if (sit.includes('EFETIVO')) orgaos[orgao].efetivos++;
-        else if (sit.includes('APOSENTADO')) orgaos[orgao].aposentados++;
-        else orgaos[orgao].outros++;
+        if (sit.includes('EFETIVO')) entry.efetivos++;
+        else if (sit.includes('APOSENTADO')) entry.aposentados++;
+        else entry.outros++;
     }
 
-    const totalAtivos      = dados.filter(s => { const sit=(s.descsitserv||'').toUpperCase(); return sit.includes('EFETIVO')||sit.includes('ATIVO')||sit.includes('RECRUTAMENTO'); }).length;
-    const totalAposentados = dados.filter(s => (s.descsitserv||'').toUpperCase().includes('APOSENTADO')).length;
-    const totalTemporarios = dados.filter(s => { const sit=(s.descsitserv||'').toUpperCase(); return sit.includes('TEMPORÁRIO')||sit.includes('TEMPORARIO')||sit.includes('CONVOCADO'); }).length;
-    const totalOrgaos = Object.keys(orgaos).length;
-
+    // Totais calculados no mesmo loop de orgaos acima (evita múltiplas passagens)
+    let totalAtivos = 0, totalAposentados = 0, totalTemporarios = 0;
     const situacoes = {};
-    for (const s of dados) { const sit = s.descsitserv || 'Não informado'; situacoes[sit] = (situacoes[sit]||0)+1; }
+    for (const s of dados) {
+        const sit = (s.descsitserv || '').toUpperCase();
+        if (sit.includes('EFETIVO') || sit.includes('ATIVO') || sit.includes('RECRUTAMENTO')) totalAtivos++;
+        else if (sit.includes('APOSENTADO')) totalAposentados++;
+        else if (sit.includes('TEMPORÁRIO') || sit.includes('TEMPORARIO') || sit.includes('CONVOCADO')) totalTemporarios++;
+        const sitLabel = s.descsitserv || 'Não informado';
+        situacoes[sitLabel] = (situacoes[sitLabel] || 0) + 1;
+    }
+    const totalOrgaos = Object.keys(orgaos).length;
 
     const mesAno = `${nomeMes(filtroVisao.mes)}/${filtroVisao.ano}`;
 
@@ -1420,45 +1452,57 @@ function renderVisaoGeral() {
 
     // Gráficos
     setTimeout(() => {
-        // Pizza — situação
+        // Pizza — situação (atualiza sem destruir o canvas quando possível)
         const ctxS = document.getElementById('chartSit');
         if (ctxS) {
-            if (chartSituacao) chartSituacao.destroy();
             const labels = topSitLabels;
             const vals   = labels.map(l => situacoes[l]);
-            chartSituacao = new Chart(ctxS, {
-                type: 'doughnut',
-                data: { labels, datasets: [{ data: vals, backgroundColor: chartPalette.slice(0,labels.length), borderWidth: 2 }] },
-                options: { responsive: true, maintainAspectRatio: false, cutout: '60%', radius: '90%', plugins: { legend: { display: false } } }
-            });
+            if (chartSituacao) {
+                chartSituacao.data.labels = labels;
+                chartSituacao.data.datasets[0].data = vals;
+                chartSituacao.data.datasets[0].backgroundColor = chartPalette.slice(0, labels.length);
+                chartSituacao.update('none');
+            } else {
+                chartSituacao = new Chart(ctxS, {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: vals, backgroundColor: chartPalette.slice(0,labels.length), borderWidth: 2 }] },
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '60%', radius: '90%', plugins: { legend: { display: false } } }
+                });
+            }
             document.getElementById('legendSit').innerHTML = labels.map((l,i) =>
                 `<div class="legend-item"><span class="legend-color" style="background:${chartPalette[i]}"></span><span>${l}</span></div>`
             ).join('');
         }
 
-        // Barras — órgãos
+        // Barras — órgãos (atualiza sem destruir o canvas quando possível)
         const ctxO = document.getElementById('chartOrg');
         if (ctxO) {
-            if (chartOrgaoVis) chartOrgaoVis.destroy();
-            const labels = topOrgaos.map(o => o.sigla || o.nome.substring(0,12));
-            chartOrgaoVis = new Chart(ctxO, {
-                type: 'bar',
-                data: {
-                    labels,
-                    datasets: [{ data: topOrgaos.map(o=>o.total), backgroundColor: chartPalette, barThickness: 28, borderRadius: 4 }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { callbacks: { title: (items) => topOrgaos[items[0].dataIndex].nome } }
+            const labelsOrg = topOrgaos.map(o => o.sigla || o.nome.substring(0,12));
+            if (chartOrgaoVis) {
+                chartOrgaoVis.data.labels = labelsOrg;
+                chartOrgaoVis.data.datasets[0].data = topOrgaos.map(o=>o.total);
+                chartOrgaoVis.options.plugins.tooltip.callbacks.title = (items) => topOrgaos[items[0].dataIndex].nome;
+                chartOrgaoVis.update('none');
+            } else {
+                chartOrgaoVis = new Chart(ctxO, {
+                    type: 'bar',
+                    data: {
+                        labels: labelsOrg,
+                        datasets: [{ data: topOrgaos.map(o=>o.total), backgroundColor: chartPalette, barThickness: 28, borderRadius: 4 }]
                     },
-                    scales: {
-                        x: { grid: { display: false }, ticks: { maxRotation: 30, minRotation: 0, autoSkip: false, font: { size: 9 } } },
-                        y: { grid: { display: false }, beginAtZero: true }
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { callbacks: { title: (items) => topOrgaos[items[0].dataIndex].nome } }
+                        },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { maxRotation: 30, minRotation: 0, autoSkip: false, font: { size: 9 } } },
+                            y: { grid: { display: false }, beginAtZero: true }
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }, 100);
 
@@ -1503,7 +1547,7 @@ function limparFiltroVisao() {
 
 // Exportar Visão CSV
 function exportarVisaoCSV() {
-    const dados = Array.from(todosServidores.values());
+    const dados = todosServidoresArray || Array.from(todosServidores.values());
     const csv = Papa.unparse(dados, {delimiter:';'});
     const blob = new Blob(['\uFEFF'+csv], {type:'text/csv'});
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
@@ -1517,7 +1561,7 @@ function exportarVisaoPDF() {
     doc.setFontSize(11);
     doc.text(`Relação Nominal de Servidores — ${nomeMes(filtroVisao.mes)}/${filtroVisao.ano}`, 14, 10);
 
-    const dados = Array.from(todosServidores.values());
+    const dados = todosServidoresArray || Array.from(todosServidores.values());
     const orgaos = {};
     for (const s of dados) {
         const orgao = s.desc_instituicao_dotacao || s.sigla_instituicao_dotacao || 'NÃO INFORMADO';
@@ -1557,7 +1601,7 @@ function irParaOrgao(orgao) {
 // 7. CONSULTA INDIVIDUAL
 // ============================================================
 function renderConsulta() {
-    const dados = Array.from(todosServidores.values());
+    const dados = todosServidoresArray || Array.from(todosServidores.values());
 
     let filtrado = dados.filter(s => {
         if (filtroConsulta.masp       && !(s.masp||'').toLowerCase().includes(filtroConsulta.masp.toLowerCase())) return false;
@@ -1668,7 +1712,7 @@ function renderConsulta() {
             <div class="table-search-container">
                 <i class="material-icons" style="font-size:14px;color:#94a3b8;">search</i>
                 <input class="table-search-input" placeholder="Busca rápida..." value="${buscaConsulta}"
-                    oninput="buscaConsulta=this.value;paginaConsulta=1;renderConsulta()">
+                    oninput="debounceConsulta(this.value)">
             </div>
             <div style="position:relative">
                 <button class="btn-export" onclick="toggleColSelector()">
@@ -1748,8 +1792,11 @@ function renderConsulta() {
         </button>
     </div>`;
 
-    document.getElementById('consulta-content').innerHTML = html;
-    setTimeout(iframeUpdateHeight, 300);
+    // Usa requestAnimationFrame para não bloquear o paint do browser durante re-renders
+    requestAnimationFrame(() => {
+        document.getElementById('consulta-content').innerHTML = html;
+        setTimeout(iframeUpdateHeight, 300);
+    });
 }
 
 function mudarPagConsulta(p) {
