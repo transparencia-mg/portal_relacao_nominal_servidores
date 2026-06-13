@@ -807,13 +807,11 @@ function debounceConsulta(val) {
     }, 220);
 }
 
+// Delega ao enviador unico e debounced definido no observer de resize
+// do iframe (seção 11), evitando dois mecanismos concorrentes de
+// postMessage que causavam o efeito de "abre/aborta/reinicia" no mobile.
 function iframeUpdateHeight() {
-    try {
-        const h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) + 10;
-        if (window.parent && window.parent !== window) {
-            window.parent.postMessage({ iframeHeight: h, height: h, type: 'resize' }, '*');
-        }
-    } catch(e) {}
+    if (window.__iframeSendHeight) window.__iframeSendHeight();
 }
 
 function mostrarToast() {
@@ -923,9 +921,11 @@ let jsonDados = null;
 
 async function tentarCarregarEstadoAtual() {
     try {
+        mostrarLoading(true, 'Baixando dados consolidados…');
         const url = BASE_URL + 'estado_atual.json';
         const resp = await fetch(url);
         if (!resp.ok) return false;
+        mostrarLoading(true, 'Processando dados…');
         const data = await resp.json();
         if (!data || !data.meta || !data.deltas) return false;
 
@@ -985,28 +985,6 @@ function construirEstadoDoJSON(anoMesAlvo) {
         }
     }
     return estado;
-}
-
-async function cargaInicial() {
-    mostrarLoading(true, 'Carregando dados…');
-
-    // Tenta o caminho rápido: JSON consolidado (1 requisição)
-    const usouJSON = await tentarCarregarEstadoAtual();
-
-    if (usouJSON) {
-        todosServidores = construirEstadoDoJSON(MES_MAIS_ATUAL);
-        anoMesAtivo = MES_MAIS_ATUAL;
-        mostrarLoading(false);
-        return;
-    }
-
-    // Fallback: lógica de deltas CSV (caso o JSON ainda não exista)
-    await garantirMeses([MES_BASE, MES_MAIS_ATUAL]);
-    todosServidores = construirEstado(MES_MAIS_ATUAL);
-    todosServidoresArray = Array.from(todosServidores.values());
-    anoMesAtivo = MES_MAIS_ATUAL;
-    mostrarLoading(false);
-    setTimeout(carregarDeltasBackground, 50);
 }
 
 async function construirBaseAte(anoMesAlvo) {
@@ -1116,21 +1094,31 @@ function atualizarIndicadorBackground() {
 
 async function cargaInicial() {
     mostrarLoading(true, 'Carregando dados…');
+
     // Caminho rápido: JSON consolidado (1 requisição)
     const usouJSON = await tentarCarregarEstadoAtual();
+
     if (usouJSON) {
+        // Constrói o estado do mês mais atual e já exibe a prévia,
+        // mesmo que o processamento completo (todos os meses do JSON)
+        // ainda esteja em curso em máquinas mais lentas.
         todosServidores = construirEstadoDoJSON(MES_MAIS_ATUAL);
         todosServidoresArray = Array.from(todosServidores.values());
         anoMesAtivo = MES_MAIS_ATUAL;
         mostrarLoading(false);
+        renderVisaoGeral();
         return;
     }
-    // Fallback CSV
+
+    // Fallback CSV: carrega jan/22 + mês mais atual primeiro (mínimo
+    // necessário para montar a prévia), exibe imediatamente, e segue
+    // baixando o restante em background com a barra de progresso.
     await garantirMeses([MES_BASE, MES_MAIS_ATUAL]);
     todosServidores = construirEstado(MES_MAIS_ATUAL);
     todosServidoresArray = Array.from(todosServidores.values());
     anoMesAtivo = MES_MAIS_ATUAL;
     mostrarLoading(false);
+    renderVisaoGeral();
     setTimeout(carregarDeltasBackground, 50);
 }
 
@@ -2345,14 +2333,38 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ============================================================
 // 11. IFRAME RESIZE OBSERVER
 // ============================================================
+window.__iframeSendHeight = null;
 (function () {
-    function sendHeight() {
+    let lastH = 0;
+    let debounceTimer = null;
+
+    function sendHeightNow() {
         const h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) + 10;
+        // Evita reenviar a mesma altura repetidamente (corta o loop de
+        // resize no iframe do mobile: o pai reage, o layout reflui,
+        // o observer dispara de novo com a mesma altura, etc.)
+        if (Math.abs(h - lastH) < 2) return;
+        lastH = h;
         try { window.parent.postMessage({ iframeHeight: h, iframeResize: true, type: 'resize' }, '*'); } catch(e) {}
     }
+
+    // Agrupa mudanças de altura que ocorrem em sequência rápida
+    // (ex.: esconder overlay de loading + renderizar visão geral +
+    // atualizar gráficos) em um único envio, após o layout
+    // estabilizar.
+    function sendHeight() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(sendHeightNow, 150);
+    }
+
+    window.__iframeSendHeight = sendHeight;
+
     if (window.ResizeObserver) new ResizeObserver(sendHeight).observe(document.body);
     else { window.addEventListener('resize', sendHeight); setInterval(sendHeight, 2000); }
-    sendHeight();
+
+    // Envio inicial sem debounce, para o pai já ter uma altura de
+    // referência o quanto antes.
+    sendHeightNow();
 })();
 
 </script>
