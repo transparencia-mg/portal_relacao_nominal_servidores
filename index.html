@@ -1431,6 +1431,17 @@ function renderVisaoGeral() {
         </button>
     </div>`;
 
+    // O innerHTML abaixo recria os elementos <canvas> dos gráficos
+    // (chartSit/chartOrg) do zero a cada chamada de renderVisaoGeral().
+    // Como isso destrói os nós DOM antigos, as instâncias do Chart.js
+    // guardadas em chartSituacao/chartOrgaoVis ficam "presas" a canvases
+    // que não existem mais na página. Sem destruí-las aqui, o código
+    // abaixo tentava apenas ATUALIZAR esses gráficos órfãos (que ficam
+    // invisíveis) em vez de criar novos gráficos nos canvases recém
+    // inseridos — por isso os gráficos sumiam após a primeira renderização.
+    if (chartSituacao) { chartSituacao.destroy(); chartSituacao = null; }
+    if (chartOrgaoVis) { chartOrgaoVis.destroy(); chartOrgaoVis = null; }
+
     document.getElementById('visao-content').innerHTML = html;
 
     // Tooltips
@@ -1440,7 +1451,7 @@ function renderVisaoGeral() {
 
     // Gráficos
     setTimeout(() => {
-        // Pizza — situação (atualiza sem destruir o canvas quando possível)
+        // Pizza — situação (o canvas é sempre novo, então sempre cria)
         const ctxS = document.getElementById('chartSit');
         if (ctxS) {
             const labels = topSitLabels;
@@ -1462,7 +1473,7 @@ function renderVisaoGeral() {
             ).join('');
         }
 
-        // Barras — órgãos (atualiza sem destruir o canvas quando possível)
+        // Barras — órgãos (o canvas é sempre novo, então sempre cria)
         const ctxO = document.getElementById('chartOrg');
         if (ctxO) {
             const labelsOrg = topOrgaos.map(o => o.sigla || o.nome.substring(0,12));
