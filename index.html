@@ -908,7 +908,13 @@ async function garantirMes(anoMes) {
 async function garantirMeses(listaAnoMes) {
     const faltando = listaAnoMes.filter(am => !cacheRows.has(am));
     if (faltando.length === 0) return;
-    await Promise.all(faltando.map(am => garantirMes(am)));
+    // Baixa em lotes limitados (em vez de tudo de uma vez) para não estourar
+    // memória/rede do dispositivo — especialmente importante no celular.
+    const CONCORRENCIA = 4;
+    for (let i = 0; i < faltando.length; i += CONCORRENCIA) {
+        const lote = faltando.slice(i, i + CONCORRENCIA);
+        await Promise.all(lote.map(am => garantirMes(am)));
+    }
 }
 
 // ============================================================
@@ -1111,15 +1117,26 @@ async function cargaInicial() {
     }
 
     // Fallback CSV: carrega jan/22 + mês mais atual primeiro (mínimo
-    // necessário para montar a prévia), exibe imediatamente, e segue
-    // baixando o restante em background com a barra de progresso.
+    // necessário para montar a prévia) e exibe imediatamente.
+    //
+    // IMPORTANTE: o carregamento automático de TODO o histórico restante
+    // (~46 meses, mais de 700MB somados) foi desativado aqui de propósito.
+    // O arquivo consolidado "estado_atual.json" que deveria tornar isso
+    // desnecessário não está disponível no momento (404), e baixar +
+    // processar 700MB de CSV na memória do navegador é exatamente o que
+    // travava a página no celular perto de 60-70% do carregamento.
+    //
+    // Os meses adicionais agora são baixados SOB DEMANDA — apenas quando o
+    // usuário efetivamente troca o filtro de mês/ano (ver aplicarFiltroVisao
+    // e aplicarFiltroConsulta, que já chamam construirBaseAte com uma barra
+    // de carregamento própria e visível).
     await garantirMeses([MES_BASE, MES_MAIS_ATUAL]);
     todosServidores = construirEstado(MES_MAIS_ATUAL);
     todosServidoresArray = Array.from(todosServidores.values());
     anoMesAtivo = MES_MAIS_ATUAL;
     mostrarLoading(false);
     renderVisaoGeral();
-    setTimeout(carregarDeltasBackground, 50);
+    backgroundConcluido = true; // não há mais sincronização automática em segundo plano
 }
 
 async function carregarDeltasBackground() {
