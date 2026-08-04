@@ -1885,6 +1885,19 @@ const cacheDeltaHistorico = new Map();
 async function garantirDeltaHistorico(anoMes) {
     if (cacheDeltaHistorico.has(anoMes)) return;
     if (anoMes === MES_BASE) { cacheDeltaHistorico.set(anoMes, null); return; }
+
+    // Caminho rápido: se o JSON consolidado já foi carregado, os deltas de
+    // TODOS os meses já estão em memória — não baixa nenhum CSV extra.
+    // (Antes disso, o histórico baixava ~50 arquivos CSV inteiros do GitHub
+    // toda vez que o usuário abria a ficha de um servidor, o que sobrecarregava
+    // a memória do navegador no celular e derrubava a página.)
+    if (jsonDados) {
+        const delta = jsonDados.deltas[anoMes] || {};
+        const idx = new Map(Object.entries(delta));
+        cacheDeltaHistorico.set(anoMes, idx);
+        return;
+    }
+
     if (cacheRows.has(anoMes)) {
         const idx = new Map();
         for (const r of cacheRows.get(anoMes)) idx.set(`${r.masp}|${r.adm}`, r);
@@ -1913,8 +1926,15 @@ function expandirHistorico(masp, adm) {
     const meses = getMesesDisponiveis();
     const resultado = [];
     let ultimoReg = null;
-    const baseRows = cacheRows.get(MES_BASE) || [];
-    const regBase = baseRows.find(r => String(r.masp)===String(masp) && String(r.adm)===String(adm));
+
+    let regBase = null;
+    if (jsonDados) {
+        const deltaBase = jsonDados.deltas[MES_BASE] || {};
+        regBase = deltaBase[chave] || null;
+    } else {
+        const baseRows = cacheRows.get(MES_BASE) || [];
+        regBase = baseRows.find(r => String(r.masp)===String(masp) && String(r.adm)===String(adm));
+    }
     if (regBase) { ultimoReg = regBase; resultado.push({...regBase, _am: MES_BASE, _alterou: false}); }
     for (const am of meses) {
         if (am === MES_BASE) continue;
@@ -1931,11 +1951,22 @@ async function carregarTodosMesesHistorico(masp, adm, onProgress) {
     const meses = getMesesDisponiveis().filter(am => am !== MES_BASE);
     const faltando = meses.filter(am => !cacheDeltaHistorico.has(am));
     if (faltando.length === 0) { onProgress(100); return; }
+
+    // No caminho rápido (JSON já carregado) não há requisições de rede a fazer,
+    // então processa tudo de uma vez — é apenas leitura de memória.
+    if (jsonDados) {
+        for (const am of faltando) await garantirDeltaHistorico(am);
+        onProgress(100);
+        return;
+    }
+
     const LOTE = 5;
     let feitos = 0;
     for (let i = 0; i < faltando.length; i += LOTE) {
         const lote = faltando.slice(i, i+LOTE);
-        await Promise.all(lote.map(am => garantirDeltaHistorico(am)));
+        // allSettled: uma falha de rede em um mês não derruba o carregamento
+        // dos demais nem trava a barra de progresso.
+        await Promise.allSettled(lote.map(am => garantirDeltaHistorico(am)));
         feitos += lote.length;
         onProgress(Math.round((feitos / faltando.length) * 100));
     }
@@ -2108,6 +2139,9 @@ function abrirModal(idx) {
                 }
             }, 100);
         }
+    }).catch(() => {
+        const txt = document.getElementById('hist-loading-txt');
+        if (txt) txt.textContent = 'Não foi possível carregar o histórico. Verifique sua conexão e tente novamente.';
     });
 }
 
