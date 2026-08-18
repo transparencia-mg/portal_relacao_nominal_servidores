@@ -3422,4 +3422,175 @@ resources:
           type: string
     scheme: file
     title: Insira um título humanamente legível para este recurso.
+  - description: Insira a descrição/explicação detalhada deste recurso.
+    dialect:
+      delimiter: ;
+    encoding: utf-8-sig
+    format: csv
+    hashing: md5
+    name: dados_serv_202605
+    path: data/dados_serv_202605.csv
+    profile: tabular-data-resource
+    schema:
+      fields:
+        - name: ano_mes
+          type: integer
+        - name: masp
+          type: integer
+        - name: adm
+          type: integer
+        - name: nome
+          type: string
+        - name: siglaefetivo
+          type: string
+        - name: nmefetivo
+          type: string
+        - name: cdcomi
+          type: any
+        - name: desccomi
+          type: any
+        - name: cd_funcao_gratif_gte
+          type: any
+        - name: desc_funcao_gratif_gte
+          type: any
+        - name: carga_horaria
+          type: integer
+        - name: cd_instituicao_dotacao
+          type: integer
+        - name: sigla_instituicao_dotacao
+          type: string
+        - name: desc_instituicao_dotacao
+          type: string
+        - name: cd_instituicao_lotacao
+          type: integer
+        - name: sigla_instituicao_lotacao
+          type: string
+        - name: desc_instituicao_lotacao
+          type: string
+        - name: descsitserv
+          type: string
+        - name: data_inicio
+          type: date
+        - name: data_aposentadoria
+          type: any
+        - name: data_desligamento
+          type: any
+        - name: situacao_delta
+          type: string
+    scheme: file
+    title: Insira um título humanamente legível para este recurso.
+  - description: Insira a descrição/explicação detalhada deste recurso.
+    dialect:
+      delimiter: ;
+    encoding: utf-8-sig
+    format: csv
+    hashing: md5
+    name: dados_serv_202606
+    path: data/dados_serv_202606.csv
+    profile: tabular-data-resource
+    schema:
+      fields:
+        - name: ano_mes
+          type: integer
+        - name: masp
+          type: integer
+        - name: adm
+          type: integer
+        - name: nome
+          type: string
+        - name: siglaefetivo
+          type: string
+        - name: nmefetivo
+          type: string
+        - name: cdcomi
+          type: any
+        - name: desccomi
+          type: any
+        - name: cd_funcao_gratif_gte
+          type: any
+        - name: desc_funcao_gratif_gte
+          type: any
+        - name: carga_horaria
+          type: integer
+        - name: cd_instituicao_dotacao
+          type: integer
+        - name: sigla_instituicao_dotacao
+          type: string
+        - name: desc_instituicao_dotacao
+          type: string
+        - name: cd_instituicao_lotacao
+          type: integer
+        - name: sigla_instituicao_lotacao
+          type: string
+        - name: desc_instituicao_lotacao
+          type: string
+        - name: descsitserv
+          type: string
+        - name: data_inicio
+          type: date
+        - name: data_aposentadoria
+          type: any
+        - name: data_desligamento
+          type: any
+        - name: situacao_delta
+          type: string
+    scheme: file
+    title: Insira um título humanamente legível para este recurso.
+  - description: Insira a descrição/explicação detalhada deste recurso.
+    dialect:
+      delimiter: ;
+    encoding: utf-8-sig
+    format: csv
+    hashing: md5
+    name: dados_serv_202607
+    path: data/dados_serv_202607.csv
+    profile: tabular-data-resource
+    schema:
+      fields:
+        - name: ano_mes
+          type: integer
+        - name: masp
+          type: integer
+        - name: adm
+          type: integer
+        - name: nome
+          type: string
+        - name: siglaefetivo
+          type: string
+        - name: nmefetivo
+          type: string
+        - name: cdcomi
+          type: any
+        - name: desccomi
+          type: any
+        - name: cd_funcao_gratif_gte
+          type: any
+        - name: desc_funcao_gratif_gte
+          type: any
+        - name: carga_horaria
+          type: integer
+        - name: cd_instituicao_dotacao
+          type: integer
+        - name: sigla_instituicao_dotacao
+          type: string
+        - name: desc_instituicao_dotacao
+          type: string
+        - name: cd_instituicao_lotacao
+          type: integer
+        - name: sigla_instituicao_lotacao
+          type: string
+        - name: desc_instituicao_lotacao
+          type: string
+        - name: descsitserv
+          type: string
+        - name: data_inicio
+          type: date
+        - name: data_aposentadoria
+          type: any
+        - name: data_desligamento
+          type: any
+        - name: situacao_delta
+          type: string
+    scheme: file
+    title: Insira um título humanamente legível para este recurso.
 title: Portal_relacao_nominal_servidores
