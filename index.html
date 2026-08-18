@@ -925,46 +925,6 @@ async function garantirMeses(listaAnoMes) {
 // jsonDados.meta, jsonDados.deltas, jsonDados.removidos
 let jsonDados = null;
 
-// ============================================================
-// SNAPSHOT ATUAL (novo formato — leve)
-// ------------------------------------------------------------
-// Formato: { meta: { mes_mais_atual, gerado_em, total_servidores },
-//            servidores: { "masp|adm": {...campos}, ... } }
-// Diferente do jsonDados (deltas) acima: aqui o estado já vem
-// PRONTO (todos os deltas desde jan/2022 já aplicados no momento
-// da geração), então não precisamos varrer nada em tempo de
-// execução — só transformar em Map(). Muito mais leve que guardar
-// o histórico inteiro de deltas (~2GB) num único JSON.
-// ============================================================
-let estadoAtualSnapshot = null;
-
-async function tentarCarregarSnapshotAtual() {
-    try {
-        mostrarLoading(true, 'Baixando dados consolidados…');
-        const url = BASE_URL + 'estado_atual.json';
-        const resp = await fetch(url);
-        if (!resp.ok) return false;
-        mostrarLoading(true, 'Processando dados…');
-        const data = await resp.json();
-        if (!data || !data.meta || !data.servidores) return false;
-
-        estadoAtualSnapshot = data;
-
-        MES_MAIS_ATUAL       = data.meta.mes_mais_atual;
-        anoMesAtivo          = MES_MAIS_ATUAL;
-        filtroVisao          = { ano: MES_MAIS_ATUAL.slice(0,4), mes: MES_MAIS_ATUAL.slice(4,6), orgao: '' };
-        filtroConsultaAnoMes = { ...filtroVisao };
-
-        const el = document.getElementById('data-atualizacao-header');
-        if (el && data.meta.gerado_em)
-            el.textContent = ' ' + data.meta.gerado_em.slice(0,10).split('-').reverse().join('/');
-
-        return true;
-    } catch(e) {
-        return false;
-    }
-}
-
 async function tentarCarregarEstadoAtual() {
     try {
         mostrarLoading(true, 'Baixando dados consolidados…');
@@ -1141,23 +1101,13 @@ function atualizarIndicadorBackground() {
 async function cargaInicial() {
     mostrarLoading(true, 'Carregando dados…');
 
-    // Caminho rápido 1: snapshot leve já resolvido (1 requisição, sem
-    // precisar aplicar deltas em memória — ver tentarCarregarSnapshotAtual).
-    const usouSnapshot = await tentarCarregarSnapshotAtual();
-
-    if (usouSnapshot) {
-        todosServidores = new Map(Object.entries(estadoAtualSnapshot.servidores));
-        todosServidoresArray = Array.from(todosServidores.values());
-        anoMesAtivo = MES_MAIS_ATUAL;
-        mostrarLoading(false);
-        renderVisaoGeral();
-        return;
-    }
-
-    // Caminho rápido 2 (legado): JSON consolidado com deltas mês a mês.
+    // Caminho rápido: JSON consolidado (1 requisição)
     const usouJSON = await tentarCarregarEstadoAtual();
 
     if (usouJSON) {
+        // Constrói o estado do mês mais atual e já exibe a prévia,
+        // mesmo que o processamento completo (todos os meses do JSON)
+        // ainda esteja em curso em máquinas mais lentas.
         todosServidores = construirEstadoDoJSON(MES_MAIS_ATUAL);
         todosServidoresArray = Array.from(todosServidores.values());
         anoMesAtivo = MES_MAIS_ATUAL;
@@ -1166,17 +1116,24 @@ async function cargaInicial() {
         return;
     }
 
-    // Fallback final: nenhum JSON consolidado disponível (404 em ambos).
+    // Fallback CSV: carrega jan/22 + mês mais atual primeiro (mínimo
+    // necessário para montar a prévia) e exibe imediatamente.
     //
-    // IMPORTANTE: antes, esse fallback só baixava jan/22 + mês mais atual,
-    // o que SUBESTIMAVA o total de servidores (ignorava todo mundo que
-    // entrou no quadro entre jan/22 e o mês atual sem sofrer alteração no
-    // mês corrente). Isso foi corrigido: agora usamos construirBaseAte,
-    // que baixa e aplica a cadeia INTEIRA de deltas até o mês mais atual —
-    // mais lento (pode levar bastante tempo/dados no celular), porém com o
-    // total correto. É só um fallback de emergência: o ideal é sempre ter
-    // o estado_atual.json publicado para evitar cair aqui.
-    await construirBaseAte(MES_MAIS_ATUAL);
+    // IMPORTANTE: o carregamento automático de TODO o histórico restante
+    // (~46 meses, mais de 700MB somados) foi desativado aqui de propósito.
+    // O arquivo consolidado "estado_atual.json" que deveria tornar isso
+    // desnecessário não está disponível no momento (404), e baixar +
+    // processar 700MB de CSV na memória do navegador é exatamente o que
+    // travava a página no celular perto de 60-70% do carregamento.
+    //
+    // Os meses adicionais agora são baixados SOB DEMANDA — apenas quando o
+    // usuário efetivamente troca o filtro de mês/ano (ver aplicarFiltroVisao
+    // e aplicarFiltroConsulta, que já chamam construirBaseAte com uma barra
+    // de carregamento própria e visível).
+    await garantirMeses([MES_BASE, MES_MAIS_ATUAL]);
+    todosServidores = construirEstado(MES_MAIS_ATUAL);
+    todosServidoresArray = Array.from(todosServidores.values());
+    anoMesAtivo = MES_MAIS_ATUAL;
     mostrarLoading(false);
     renderVisaoGeral();
     backgroundConcluido = true; // não há mais sincronização automática em segundo plano
