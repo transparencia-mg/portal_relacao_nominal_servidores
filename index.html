@@ -733,6 +733,12 @@ let todosServidoresArray = null; // cache do Array.from(todosServidores.values()
 let servidoresFiltrados = [];
 let orgaoSelecionado = '';
 let anoMesAtivo = MES_MAIS_ATUAL;
+// Indica se o estado atualmente em memória foi construído a partir de
+// TODOS os deltas desde MES_BASE (confiável) ou de um atalho parcial
+// (ex.: só base + mês atual, usado como prévia rápida antes do JSON/
+// sincronização completa terminarem). Enquanto for false, filtros que
+// pedem o mesmo mês já "ativo" precisam reconstruir mesmo assim.
+let estadoCompleto = false;
 
 let filtroVisao   = { ano: '2026', mes: '02', orgao: '' };
 let filtroConsulta = { masp: '', nome: '', nmefetivo: '', instDotacao: '', instLotacao: '', situacao: '' };
@@ -1000,6 +1006,7 @@ async function construirBaseAte(anoMesAlvo) {
         todosServidores = construirEstadoDoJSON(anoMesAlvo);
         todosServidoresArray = Array.from(todosServidores.values());
         anoMesAtivo = anoMesAlvo;
+        estadoCompleto = true; // JSON consolidado sempre traz o histórico completo
         mostrarLoading(false);
         return;
     }
@@ -1015,6 +1022,7 @@ async function construirBaseAte(anoMesAlvo) {
     todosServidores = construirEstado(anoMesAlvo);
     todosServidoresArray = Array.from(todosServidores.values());
     anoMesAtivo = anoMesAlvo;
+    estadoCompleto = true; // todos os meses de MES_BASE até anoMesAlvo foram baixados e aplicados
     mostrarLoading(false);
 }
 
@@ -1117,26 +1125,32 @@ async function cargaInicial() {
     }
 
     // Fallback CSV: carrega jan/22 + mês mais atual primeiro (mínimo
-    // necessário para montar a prévia) e exibe imediatamente.
+    // necessário para montar uma PRÉVIA) e exibe imediatamente, para não
+    // travar a página no celular esperando o histórico inteiro.
     //
-    // IMPORTANTE: o carregamento automático de TODO o histórico restante
-    // (~46 meses, mais de 700MB somados) foi desativado aqui de propósito.
-    // O arquivo consolidado "estado_atual.json" que deveria tornar isso
-    // desnecessário não está disponível no momento (404), e baixar +
-    // processar 700MB de CSV na memória do navegador é exatamente o que
-    // travava a página no celular perto de 60-70% do carregamento.
+    // ATENÇÃO — esse estado inicial é PARCIAL e não deve ser considerado
+    // definitivo: como pula os deltas intermediários (fev/22 até o mês
+    // anterior ao atual), servidores removidos nesse meio-tempo continuam
+    // aparecendo, e os totais ficam sub/super contados. Por isso
+    // `estadoCompleto` fica false e disparamos imediatamente o
+    // carregamento completo em segundo plano (carregarDeltasBackground),
+    // que baixa os meses restantes e reconstrói o estado corretamente
+    // assim que terminar — sem bloquear a primeira renderização.
     //
-    // Os meses adicionais agora são baixados SOB DEMANDA — apenas quando o
-    // usuário efetivamente troca o filtro de mês/ano (ver aplicarFiltroVisao
-    // e aplicarFiltroConsulta, que já chamam construirBaseAte com uma barra
-    // de carregamento própria e visível).
+    // O ideal é que "estado_atual.json" (ver tentarCarregarEstadoAtual)
+    // esteja sempre publicado e atualizado no repositório: nesse caso o
+    // caminho acima (jsonDados) é usado e este fallback nem é acionado.
     await garantirMeses([MES_BASE, MES_MAIS_ATUAL]);
     todosServidores = construirEstado(MES_MAIS_ATUAL);
     todosServidoresArray = Array.from(todosServidores.values());
     anoMesAtivo = MES_MAIS_ATUAL;
+    estadoCompleto = false; // prévia parcial — ainda faltam meses intermediários
     mostrarLoading(false);
     renderVisaoGeral();
-    backgroundConcluido = true; // não há mais sincronização automática em segundo plano
+
+    // Completa o histórico em segundo plano (sem travar a UI) e
+    // reconstrói/re-renderiza automaticamente quando terminar.
+    carregarDeltasBackground();
 }
 
 async function carregarDeltasBackground() {
@@ -1166,6 +1180,7 @@ async function carregarDeltasBackground() {
     atualizarIndicadorBackground();
     todosServidores = construirEstado(anoMesAtivo);
     todosServidoresArray = Array.from(todosServidores.values());
+    estadoCompleto = true; // agora sim: todos os meses desde MES_BASE foram aplicados
     renderVisaoGeral();
     if (document.getElementById('consulta').classList.contains('show active')) renderConsulta();
 }
@@ -1549,7 +1564,10 @@ async function aplicarFiltroVisao() {
     filtroVisao.mes = document.getElementById('vg-mes').value;
     filtroVisao.orgao = document.getElementById('vg-orgao') ? document.getElementById('vg-orgao').value : '';
     const anoMes = filtroVisao.ano + filtroVisao.mes;
-    if (anoMes === anoMesAtivo) { renderVisaoGeral(); return; }
+    // Só pula a reconstrução se o mês já for o ativo E o estado já estiver
+    // completo (todos os deltas aplicados). Se ainda for uma prévia parcial
+    // (ver cargaInicial), reconstrói mesmo estando "no mesmo mês".
+    if (anoMes === anoMesAtivo && estadoCompleto) { renderVisaoGeral(); return; }
     await construirBaseAte(anoMes);
     paginaVisao = 1;
     renderVisaoGeral();
@@ -1840,7 +1858,7 @@ async function aplicarFiltroConsulta() {
     filtroConsulta.instLotacao = '';
     filtroConsulta.situacao   = document.getElementById('ci-situacao').value;
     filtroConsultaAnoMes = { ano: novoAno, mes: novoMes };
-    if (novoAnoMes !== anoMesAtivo) {
+    if (novoAnoMes !== anoMesAtivo || !estadoCompleto) {
         filtroVisao = { ...filtroVisao, ano: novoAno, mes: novoMes };
         await construirBaseAte(novoAnoMes);
     }
