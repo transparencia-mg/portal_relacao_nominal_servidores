@@ -2,8 +2,7 @@ name: portal_relacao_nominal_servidores
 owner_org: ''
 profile: data-package
 resources:
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -58,9 +57,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Janeiro de 2022 parte 1
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -115,9 +113,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Janeiro de 2022 parte 2
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -172,9 +169,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Janeiro de 2022 parte 3
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -229,9 +225,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Janeiro de 2022 parte 4
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -286,9 +281,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Janeiro de 2022 parte 5
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -343,9 +337,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Janeiro de 2022 parte 6
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -400,9 +393,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Janeiro de 2022 parte 7
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -457,9 +449,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Janeiro de 2022 parte 8
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -514,9 +505,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Janeiro de 2022 parte 9
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -571,9 +561,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Fevereiro de 2022
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -628,9 +617,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Março de 2022
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -685,9 +673,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Abril de 2022
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -742,9 +729,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Maio de 2022
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -799,9 +785,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Junho de 2022
+  - description: dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -856,9 +841,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Julho de 2022
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -913,9 +897,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Agosto de 2022
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -970,9 +953,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Setembro de 2022
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1027,9 +1009,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Outubro de 2022
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1084,9 +1065,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Novembro de 2022
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1141,9 +1121,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Dezembro de 2022
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1198,9 +1177,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Janeiro de 2023
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1255,9 +1233,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Fevereiro de 2023
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1312,9 +1289,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Março de 2023
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1369,9 +1345,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Abril de 2023
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1426,9 +1401,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Maio de 2023
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1483,9 +1457,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Junho de 2023
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1540,9 +1513,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Julho de 2023
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1597,9 +1569,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Agosto de 2023
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1654,9 +1625,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Setembro de 2023
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1711,9 +1681,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Outubro de 2023
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1768,9 +1737,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Novembro de 2023
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1825,9 +1793,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Dezembro de 2023
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1882,9 +1849,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Janeiro de 2024
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1939,9 +1905,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Fevereiro de 2024
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -1996,9 +1961,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Março de 2024
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2053,9 +2017,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Abril de 2024
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2110,9 +2073,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Maio de 2024
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2167,9 +2129,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Junho de 2024
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2224,9 +2185,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Julho de 2024
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2281,9 +2241,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Agosto de 2024
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2338,9 +2297,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Setembro de 2024
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2395,9 +2353,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Outubro de 2024
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2452,9 +2409,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Novembro de 2024
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2509,9 +2465,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Dezembro de 2024
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2566,9 +2521,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Janeiro de 2025
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2623,9 +2577,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Fevereiro de 2025
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2680,9 +2633,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Março de 2025
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2737,9 +2689,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Abril de 2025
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2794,9 +2745,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Maio de 2025
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2851,9 +2801,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Junho de 2025
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2908,9 +2857,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Julho de 2025
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -2965,9 +2913,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Agosto de 2025
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -3022,9 +2969,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Setembro de 2025
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -3079,9 +3025,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Outubro de 2025
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -3136,9 +3081,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Novembro de 2025
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -3193,9 +3137,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Dezembro de 2025
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -3250,9 +3193,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Janeiro de 2026
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -3307,9 +3249,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Fevereiro de 2026
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -3364,9 +3305,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Março de 2026
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -3421,9 +3361,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Abril de 2026
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -3478,9 +3417,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Maio de 2026
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -3535,9 +3473,8 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-  - description: Insira a descrição/explicação detalhada deste recurso.
-    dialect:
+    title: Dados Servidores Junho de 2026
+  - dialect:
       delimiter: ;
     encoding: utf-8-sig
     format: csv
@@ -3592,5 +3529,117 @@ resources:
         - name: situacao_delta
           type: string
     scheme: file
-    title: Insira um título humanamente legível para este recurso.
-title: Portal_relacao_nominal_servidores
+    title: Dados Servidores Julho de 2026
+  - dialect:
+      delimiter: ;
+    encoding: utf-8-sig
+    format: csv
+    hashing: md5
+    name: dados_serv_202608
+    path: data/dados_serv_202608.csv
+    profile: tabular-data-resource
+    schema:
+      fields:
+        - name: ano_mes
+          type: integer
+        - name: masp
+          type: integer
+        - name: adm
+          type: integer
+        - name: nome
+          type: string
+        - name: siglaefetivo
+          type: string
+        - name: nmefetivo
+          type: string
+        - name: cdcomi
+          type: any
+        - name: desccomi
+          type: any
+        - name: cd_funcao_gratif_gte
+          type: any
+        - name: desc_funcao_gratif_gte
+          type: any
+        - name: carga_horaria
+          type: integer
+        - name: cd_instituicao_dotacao
+          type: integer
+        - name: sigla_instituicao_dotacao
+          type: string
+        - name: desc_instituicao_dotacao
+          type: string
+        - name: cd_instituicao_lotacao
+          type: integer
+        - name: sigla_instituicao_lotacao
+          type: string
+        - name: desc_instituicao_lotacao
+          type: string
+        - name: descsitserv
+          type: string
+        - name: data_inicio
+          type: date
+        - name: data_aposentadoria
+          type: any
+        - name: data_desligamento
+          type: any
+        - name: situacao_delta
+          type: string
+    scheme: file
+    title: Dados Servidores Agosto de 2026
+  - dialect:
+      delimiter: ;
+    encoding: utf-8-sig
+    format: csv
+    hashing: md5
+    name: dados_serv_202609
+    path: data/dados_serv_202609.csv
+    profile: tabular-data-resource
+    schema:
+      fields:
+        - name: ano_mes
+          type: integer
+        - name: masp
+          type: integer
+        - name: adm
+          type: integer
+        - name: nome
+          type: string
+        - name: siglaefetivo
+          type: string
+        - name: nmefetivo
+          type: string
+        - name: cdcomi
+          type: any
+        - name: desccomi
+          type: any
+        - name: cd_funcao_gratif_gte
+          type: any
+        - name: desc_funcao_gratif_gte
+          type: any
+        - name: carga_horaria
+          type: integer
+        - name: cd_instituicao_dotacao
+          type: integer
+        - name: sigla_instituicao_dotacao
+          type: string
+        - name: desc_instituicao_dotacao
+          type: string
+        - name: cd_instituicao_lotacao
+          type: integer
+        - name: sigla_instituicao_lotacao
+          type: string
+        - name: desc_instituicao_lotacao
+          type: string
+        - name: descsitserv
+          type: string
+        - name: data_inicio
+          type: date
+        - name: data_aposentadoria
+          type: any
+        - name: data_desligamento
+          type: any
+        - name: situacao_delta
+          type: string
+    scheme: file
+    title: Dados Servidores Setembro de 2026
+title: Relação Nominal de Servidores
