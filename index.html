@@ -741,7 +741,7 @@ let anoMesAtivo = MES_MAIS_ATUAL;
 let estadoCompleto = false;
 
 let filtroVisao   = { ano: '2026', mes: '02', orgao: '' };
-let filtroConsulta = { masp: '', nome: '', nmefetivo: '', instDotacao: '', instLotacao: '', situacao: '' };
+let filtroConsulta = { masp: '', nome: '', nmefetivo: '', instDotacao: '', instLotacao: '', orgaoLotacao: '', situacao: '' };
 let filtroConsultaAnoMes = { ano: '2026', mes: '02' };
 
 let paginaVisao = 1, itensPorPaginaVisao = 25;
@@ -800,6 +800,40 @@ function badgeSit(sit) {
 }
 
 function v(val) { return val || '-'; }
+// ============================================================
+// DICIONÁRIO DE DADOS (fonte única para tela, CSV e PDF)
+// campoNovo = nome usado nos arquivos a partir de abr/2026
+// ============================================================
+const DICIONARIO = [
+    { campo:'ano_mes', campoNovo:'', descricao:'Competência de referência no formato AAAAMM', tipo:'Texto' },
+    { campo:'masp', campoNovo:'', descricao:'Matrícula do servidor (chave de identificação)', tipo:'Texto' },
+    { campo:'adm', campoNovo:'', descricao:'Código de administração (junto com MASP forma a chave única)', tipo:'Texto' },
+    { campo:'nome', campoNovo:'', descricao:'Nome completo do servidor', tipo:'Texto' },
+    { campo:'siglaefetivo', campoNovo:'', descricao:'Sigla do cargo efetivo', tipo:'Texto' },
+    { campo:'nmefetivo', campoNovo:'', descricao:'Descrição do cargo efetivo', tipo:'Texto' },
+    { campo:'cdcomi', campoNovo:'', descricao:'Código do cargo em comissão', tipo:'Texto' },
+    { campo:'desccomi', campoNovo:'', descricao:'Descrição do cargo em comissão', tipo:'Texto' },
+    { campo:'cd_funcao_gratif_gte', campoNovo:'', descricao:'Código da função gratificada/GTE', tipo:'Texto' },
+    { campo:'desc_funcao_gratif_gte', campoNovo:'', descricao:'Descrição da função gratificada/GTE', tipo:'Texto' },
+    { campo:'carga_horaria', campoNovo:'', descricao:'Carga horária semanal (horas)', tipo:'Numérico' },
+    { campo:'cd_instituicao_dotacao', campoNovo:'', descricao:'Código do órgão de dotação orçamentária', tipo:'Texto' },
+    { campo:'sigla_instituicao_dotacao', campoNovo:'orgao_sigla_dotacao', descricao:'Sigla do órgão de dotação', tipo:'Texto' },
+    { campo:'desc_instituicao_dotacao', campoNovo:'instituicao_dotacao', descricao:'Nome do órgão de dotação', tipo:'Texto' },
+    { campo:'cd_instituicao_lotacao', campoNovo:'', descricao:'Código do órgão de lotação (0 = sem lotação informada)', tipo:'Texto' },
+    { campo:'sigla_instituicao_lotacao', campoNovo:'orgao_sigla_lotacao', descricao:'Sigla do órgão de lotação', tipo:'Texto' },
+    { campo:'desc_instituicao_lotacao', campoNovo:'instituicao_lotacao', descricao:'Nome do órgão de lotação (usado no agrupamento da Visão Geral)', tipo:'Texto' },
+    { campo:'descsitserv', campoNovo:'', descricao:'Situação funcional do servidor', tipo:'Texto' },
+    { campo:'id_data_inicio', campoNovo:'data_inicio', descricao:'Data de início do vínculo', tipo:'Data (AAAA-MM-DD até mar/2026; DD/MM/AAAA a partir de abr/2026)' },
+    { campo:'id_data_aposentadoria', campoNovo:'data_aposentadoria', descricao:'Data de aposentadoria', tipo:'Data (AAAA-MM-DD até mar/2026; DD/MM/AAAA a partir de abr/2026)' },
+    { campo:'id_data_desligamento', campoNovo:'data_desligamento', descricao:'Data de desligamento', tipo:'Data (AAAA-MM-DD até mar/2026; DD/MM/AAAA a partir de abr/2026)' },
+    { campo:'situacao_delta', campoNovo:'', descricao:'Tipo de movimentação no mês: NOVO, ALTERADO ou REMOVIDO (jan/2022 = base)', tipo:'Texto' }
+];
+
+// Órgão de lotação usado no agrupamento da Visão Geral e no filtro exato da Consulta
+const SEM_LOTACAO = 'SEM LOTAÇÃO INFORMADA';
+function orgaoLotacao(s) {
+    return (s.desc_instituicao_lotacao || '').trim() || (s.sigla_instituicao_lotacao || '').trim() || SEM_LOTACAO;
+}
 function escapar(s) { return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
 
 // Debounce para busca na tabela de consulta (evita re-render a cada tecla)
@@ -892,6 +926,32 @@ async function setupAtualizacaoData() {
 // ============================================================
 // 5. CARREGAMENTO DE DADOS
 // ============================================================
+// A partir de abr/2026 os CSVs mudaram o nome de algumas colunas e o
+// formato das datas (dd/mm/aaaa). Aqui tudo é convertido para o padrão
+// antigo, que é o que o restante do painel usa.
+const MAPA_COLUNAS = {
+    orgao_sigla_dotacao: 'sigla_instituicao_dotacao',
+    instituicao_dotacao: 'desc_instituicao_dotacao',
+    orgao_sigla_lotacao: 'sigla_instituicao_lotacao',
+    instituicao_lotacao: 'desc_instituicao_lotacao',
+    data_inicio:         'id_data_inicio',
+    data_aposentadoria:  'id_data_aposentadoria',
+    data_desligamento:   'id_data_desligamento'
+};
+function normalizarCabecalho(h) {
+    const limpo = String(h).replace(/^\uFEFF/, '').trim();
+    return MAPA_COLUNAS[limpo] || limpo;
+}
+function normalizarData(v) {
+    const m = String(v || '').trim().match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+    return m ? `${m[3]}-${m[2]}-${m[1]}` : v;
+}
+function normalizarLinha(row) {
+    for (const c of ['id_data_inicio','id_data_aposentadoria','id_data_desligamento'])
+        if (row[c]) row[c] = normalizarData(row[c]);
+    return row;
+}
+
 async function fetchCSV(url) {
     try {
         const resp = await fetch(url);
@@ -899,7 +959,8 @@ async function fetchCSV(url) {
         const text = await resp.text();
         return new Promise(resolve => {
             Papa.parse(text, { header: true, delimiter: ';', skipEmptyLines: true,
-                complete: r => resolve(r.data) });
+                transformHeader: h => normalizarCabecalho(h),
+                complete: r => resolve(r.data.map(normalizarLinha)) });
         });
     } catch(e) { return []; }
 }
@@ -1195,9 +1256,9 @@ function renderVisaoGeral() {
     const orgaos = {};
     for (let di = 0; di < dados.length; di++) {
         const s = dados[di];
-        const orgao = s.desc_instituicao_dotacao || s.sigla_instituicao_dotacao || 'NÃO INFORMADO';
+        const orgao = orgaoLotacao(s);
         let entry = orgaos[orgao];
-        if (!entry) { entry = { total: 0, efetivos: 0, aposentados: 0, outros: 0, sigla: s.sigla_instituicao_dotacao || orgao }; orgaos[orgao] = entry; }
+        if (!entry) { entry = { total: 0, efetivos: 0, aposentados: 0, outros: 0, sigla: (s.sigla_instituicao_lotacao || '').trim() || orgao }; orgaos[orgao] = entry; }
         entry.total++;
         const sit = (s.descsitserv || '').toUpperCase();
         if (sit.includes('EFETIVO')) entry.efetivos++;
@@ -1384,7 +1445,7 @@ function renderVisaoGeral() {
                 <thead>
                     <tr>
                         <th class="sortable-header" onclick="ordenarVisao('orgao')">
-                            Órgão / Dotação
+                            Órgão / Lotação
                             <i class="material-icons">${ordenacaoVisao.col==='orgao'?(ordenacaoVisao.dir==='asc'?'arrow_upward':'arrow_downward'):'unfold_more'}</i>
                         </th>
                         <th class="sortable-header text-center" onclick="ordenarVisao('total')">
@@ -1598,7 +1659,7 @@ function exportarVisaoPDF() {
     const dados = todosServidoresArray || Array.from(todosServidores.values());
     const orgaos = {};
     for (const s of dados) {
-        const orgao = s.desc_instituicao_dotacao || s.sigla_instituicao_dotacao || 'NÃO INFORMADO';
+        const orgao = orgaoLotacao(s);
         if (!orgaos[orgao]) orgaos[orgao] = { total: 0, efetivos: 0, aposentados: 0, outros: 0 };
         orgaos[orgao].total++;
         const sit = (s.descsitserv||'').toUpperCase();
@@ -1609,7 +1670,7 @@ function exportarVisaoPDF() {
     const rows = Object.entries(orgaos).map(([nome,info]) => [nome, info.total, info.efetivos, info.aposentados, info.outros]);
     doc.autoTable({
         startY: 16,
-        head: [['Órgão','Total','Efetivos','Aposentados','Outros']],
+        head: [['Órgão de Lotação','Total','Efetivos','Aposentados','Outros']],
         body: rows,
         foot: [['TOTAL GERAL', rows.reduce((a,r)=>a+r[1],0), rows.reduce((a,r)=>a+r[2],0), rows.reduce((a,r)=>a+r[3],0), rows.reduce((a,r)=>a+r[4],0)]],
         headStyles: { fillColor: [32,68,93] },
@@ -1624,7 +1685,8 @@ function exportarVisaoPDF() {
 
 function irParaOrgao(orgao) {
     orgaoSelecionado = orgao;
-    filtroConsulta = { nome:'', nmefetivo:'', instDotacao: orgao, instLotacao:'', situacao:'' };
+    filtroConsulta = { masp:'', nome:'', nmefetivo:'', instDotacao:'', instLotacao:'', orgaoLotacao: orgao, situacao:'' };
+    buscaConsulta = '';
     filtroConsultaAnoMes = { ...filtroVisao };
     paginaConsulta = 1;
     document.querySelector('[data-bs-target="#consulta"]').click();
@@ -1648,6 +1710,7 @@ function renderConsulta() {
             !(s.sigla_instituicao_lotacao||'').toLowerCase().includes(filtroConsulta.instDotacao.toLowerCase())) return false;
         if (filtroConsulta.instLotacao && !(s.desc_instituicao_lotacao||'').toLowerCase().includes(filtroConsulta.instLotacao.toLowerCase()) &&
             !(s.sigla_instituicao_lotacao||'').toLowerCase().includes(filtroConsulta.instLotacao.toLowerCase())) return false;
+        if (filtroConsulta.orgaoLotacao && orgaoLotacao(s) !== filtroConsulta.orgaoLotacao) return false;
         if (filtroConsulta.situacao   && !(s.descsitserv||'').toLowerCase().includes(filtroConsulta.situacao.toLowerCase())) return false;
         if (buscaConsulta) {
             const busca = buscaConsulta.toLowerCase();
@@ -1676,6 +1739,9 @@ function renderConsulta() {
     const colsOrdem = ['masp','adm','nome','siglaefetivo','nmefetivo','cdcomi','desccomi','cd_funcao_gratif_gte','desc_funcao_gratif_gte','carga_horaria','cd_instituicao_dotacao','sigla_instituicao_dotacao','desc_instituicao_dotacao','cd_instituicao_lotacao','sigla_instituicao_lotacao','desc_instituicao_lotacao','descsitserv','id_data_inicio','id_data_aposentadoria','id_data_desligamento'];
     const colLabels = {masp:'MASP',adm:'ADM',nome:'Nome',siglaefetivo:'Sigla Efetivo',nmefetivo:'Cargo Efetivo',cdcomi:'Cód. Comissão',desccomi:'Cargo Comissão',cd_funcao_gratif_gte:'Cód. Função',desc_funcao_gratif_gte:'Função Gratificada',carga_horaria:'C.H.',cd_instituicao_dotacao:'Cód. Dotação',sigla_instituicao_dotacao:'Inst. Dotação',desc_instituicao_dotacao:'Desc. Inst. Dotação',cd_instituicao_lotacao:'Cód. Lotação',sigla_instituicao_lotacao:'Inst. Lotação',desc_instituicao_lotacao:'Desc. Inst. Lotação',descsitserv:'Situação',id_data_inicio:'Data Início',id_data_aposentadoria:'Data Aposent.',id_data_desligamento:'Data Deslig.'};
     const colsVis = colsOrdem.filter(c => colunasConsulta[c]);
+    const listaOrgaosLotacao = [...new Set(dados.map(orgaoLotacao))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    if (filtroConsulta.orgaoLotacao && !listaOrgaosLotacao.includes(filtroConsulta.orgaoLotacao))
+        listaOrgaosLotacao.unshift(filtroConsulta.orgaoLotacao);
 
     const html = `
     <!-- FILTROS -->
@@ -1709,6 +1775,13 @@ function renderConsulta() {
             <div class="consulta-filter-group">
                 <label class="filter-label">Órgão</label>
                 <input class="form-control" id="ci-dotacao" placeholder="Órgão dotação/lotação..." value="${filtroConsulta.instDotacao}">
+            </div>
+            <div class="consulta-filter-group">
+                <label class="filter-label">Órgão de Lotação</label>
+                <select class="form-select modern-select" id="ci-lotacao">
+                    <option value="">Todos</option>
+                    ${listaOrgaosLotacao.map(o=>`<option value="${o.replace(/"/g,'&quot;')}" ${filtroConsulta.orgaoLotacao===o?'selected':''}>${o}</option>`).join('')}
+                </select>
             </div>
             <div class="consulta-filter-group">
                 <label class="filter-label">Situação</label>
@@ -1856,6 +1929,7 @@ async function aplicarFiltroConsulta() {
     filtroConsulta.nmefetivo  = document.getElementById('ci-nmefetivo').value;
     filtroConsulta.instDotacao = document.getElementById('ci-dotacao').value;
     filtroConsulta.instLotacao = '';
+    filtroConsulta.orgaoLotacao = document.getElementById('ci-lotacao') ? document.getElementById('ci-lotacao').value : '';
     filtroConsulta.situacao   = document.getElementById('ci-situacao').value;
     filtroConsultaAnoMes = { ano: novoAno, mes: novoMes };
     if (novoAnoMes !== anoMesAtivo || !estadoCompleto) {
@@ -1867,7 +1941,7 @@ async function aplicarFiltroConsulta() {
 }
 
 function limparFiltroConsulta() {
-    filtroConsulta = { masp:'', nome:'', nmefetivo:'', instDotacao:'', instLotacao:'', situacao:'' };
+    filtroConsulta = { masp:'', nome:'', nmefetivo:'', instDotacao:'', instLotacao:'', orgaoLotacao:'', situacao:'' };
     orgaoSelecionado = '';
     buscaConsulta = '';
     paginaConsulta = 1;
@@ -2252,38 +2326,25 @@ function renderDicionario() {
                 <button class="btn-export" onclick="baixarDicionarioPDF()"><i class="material-icons">print</i> PDF</button>
             </div>
         </div>
+        <div class="alert alert-info" style="font-size:13px;">
+            <strong>Atenção:</strong> a partir da competência <strong>abril/2026</strong> alguns campos dos arquivos CSV mudaram de nome
+            e as datas passaram do formato <code>AAAA-MM-DD</code> para <code>DD/MM/AAAA</code>.
+            O painel converte automaticamente os nomes novos para os antigos. Ao trabalhar diretamente com os arquivos,
+            considere as duas versões de nome indicadas abaixo.
+        </div>
         <div class="table-container">
             <div class="table-fixed-header-container">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Campo</th>
+                            <th>Campo (até mar/2026)</th>
+                            <th>Nome no arquivo (a partir de abr/2026)</th>
                             <th>Descrição</th>
                             <th>Tipo</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td><code>ano_mes</code></td><td>Competência de referência no formato YYYYMM</td><td>Texto</td></tr>
-                        <tr><td><code>masp</code></td><td>Matrícula do servidor (chave de identificação)</td><td>Texto</td></tr>
-                        <tr><td><code>adm</code></td><td>Código de administração (junto com MASP forma a chave única)</td><td>Texto</td></tr>
-                        <tr><td><code>nome</code></td><td>Nome completo do servidor</td><td>Texto</td></tr>
-                        <tr><td><code>siglaefetivo</code></td><td>Sigla do cargo efetivo</td><td>Texto</td></tr>
-                        <tr><td><code>nmefetivo</code></td><td>Descrição do cargo efetivo</td><td>Texto</td></tr>
-                        <tr><td><code>cdcomi</code></td><td>Código do cargo em comissão</td><td>Texto</td></tr>
-                        <tr><td><code>desccomi</code></td><td>Descrição do cargo em comissão</td><td>Texto</td></tr>
-                        <tr><td><code>cd_funcao_gratif_gte</code></td><td>Código da função gratificada/GTE</td><td>Texto</td></tr>
-                        <tr><td><code>desc_funcao_gratif_gte</code></td><td>Descrição da função gratificada/GTE</td><td>Texto</td></tr>
-                        <tr><td><code>carga_horaria</code></td><td>Carga horária semanal (horas)</td><td>Numérico</td></tr>
-                        <tr><td><code>cd_instituicao_dotacao</code></td><td>Código do órgão de dotação orçamentária</td><td>Texto</td></tr>
-                        <tr><td><code>sigla_instituicao_dotacao</code></td><td>Sigla do órgão de dotação</td><td>Texto</td></tr>
-                        <tr><td><code>desc_instituicao_dotacao</code></td><td>Nome do órgão de dotação</td><td>Texto</td></tr>
-                        <tr><td><code>cd_instituicao_lotacao</code></td><td>Código do órgão de lotação</td><td>Texto</td></tr>
-                        <tr><td><code>sigla_instituicao_lotacao</code></td><td>Sigla do órgão de lotação</td><td>Texto</td></tr>
-                        <tr><td><code>desc_instituicao_lotacao</code></td><td>Nome do órgão de lotação</td><td>Texto</td></tr>
-                        <tr><td><code>descsitserv</code></td><td>Situação funcional do servidor</td><td>Texto</td></tr>
-                        <tr><td><code>id_data_inicio</code></td><td>Data de início do vínculo</td><td>Data (YYYY-MM-DD)</td></tr>
-                        <tr><td><code>id_data_aposentadoria</code></td><td>Data de aposentadoria</td><td>Data (YYYY-MM-DD)</td></tr>
-                        <tr><td><code>id_data_desligamento</code></td><td>Data de desligamento</td><td>Data (YYYY-MM-DD)</td></tr>
+                        ${DICIONARIO.map(d=>`<tr><td><code>${d.campo}</code></td><td>${d.campoNovo?`<code>${d.campoNovo}</code>`:'<span class="text-muted">— (sem alteração)</span>'}</td><td>${d.descricao}</td><td>${d.tipo}</td></tr>`).join('')}
                     </tbody>
                 </table>
             </div>
@@ -2317,30 +2378,8 @@ function renderDownloads() {
 }
 
 function baixarDicionarioCSV() {
-    const linhas = [
-        ['Campo','Descrição','Tipo'],
-        ['ano_mes','Competência de referência no formato YYYYMM','Texto'],
-        ['masp','Matrícula do servidor','Texto'],
-        ['adm','Código de administração','Texto'],
-        ['nome','Nome completo do servidor','Texto'],
-        ['siglaefetivo','Sigla do cargo efetivo','Texto'],
-        ['nmefetivo','Descrição do cargo efetivo','Texto'],
-        ['cdcomi','Código do cargo em comissão','Texto'],
-        ['desccomi','Descrição do cargo em comissão','Texto'],
-        ['cd_funcao_gratif_gte','Código da função gratificada/GTE','Texto'],
-        ['desc_funcao_gratif_gte','Descrição da função gratificada/GTE','Texto'],
-        ['carga_horaria','Carga horária semanal (horas)','Numérico'],
-        ['cd_instituicao_dotacao','Código do órgão de dotação','Texto'],
-        ['sigla_instituicao_dotacao','Sigla do órgão de dotação','Texto'],
-        ['desc_instituicao_dotacao','Nome do órgão de dotação','Texto'],
-        ['cd_instituicao_lotacao','Código do órgão de lotação','Texto'],
-        ['sigla_instituicao_lotacao','Sigla do órgão de lotação','Texto'],
-        ['desc_instituicao_lotacao','Nome do órgão de lotação','Texto'],
-        ['descsitserv','Situação funcional do servidor','Texto'],
-        ['id_data_inicio','Data de início do vínculo','Data (YYYY-MM-DD)'],
-        ['id_data_aposentadoria','Data de aposentadoria','Data (YYYY-MM-DD)'],
-        ['id_data_desligamento','Data de desligamento','Data (YYYY-MM-DD)']
-    ];
+    const linhas = [['Campo (até mar/2026)','Nome no arquivo (a partir de abr/2026)','Descrição','Tipo'],
+        ...DICIONARIO.map(d=>[d.campo, d.campoNovo||'(sem alteração)', d.descricao, d.tipo])];
     const csv = linhas.map(l=>l.join(';')).join('\n');
     const blob = new Blob(['\uFEFF'+csv], {type:'text/csv'});
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
@@ -2352,27 +2391,13 @@ function baixarDicionarioPDF() {
     const doc = new jsPDF();
     doc.setFontSize(14);
     doc.text('Dicionário de Dados — Relação Nominal de Servidores', 14, 15);
+    doc.setFontSize(8);
+    doc.text('A partir de abr/2026 alguns campos mudaram de nome e as datas passaram para DD/MM/AAAA.', 14, 21);
     doc.autoTable({
         startY: 25,
-        head: [['Campo','Descrição','Tipo']],
-        body: [
-            ['masp','Matrícula do servidor','Texto'],
-            ['adm','Código de administração','Texto'],
-            ['nome','Nome completo do servidor','Texto'],
-            ['siglaefetivo','Sigla do cargo efetivo','Texto'],
-            ['nmefetivo','Descrição do cargo efetivo','Texto'],
-            ['desccomi','Descrição do cargo em comissão','Texto'],
-            ['desc_funcao_gratif_gte','Descrição da função gratificada/GTE','Texto'],
-            ['carga_horaria','Carga horária semanal (horas)','Numérico'],
-            ['sigla_instituicao_dotacao','Sigla do órgão de dotação','Texto'],
-            ['desc_instituicao_dotacao','Nome do órgão de dotação','Texto'],
-            ['sigla_instituicao_lotacao','Sigla do órgão de lotação','Texto'],
-            ['desc_instituicao_lotacao','Nome do órgão de lotação','Texto'],
-            ['descsitserv','Situação funcional do servidor','Texto'],
-            ['id_data_inicio','Data de início do vínculo','Data (YYYY-MM-DD)'],
-            ['id_data_aposentadoria','Data de aposentadoria','Data (YYYY-MM-DD)'],
-            ['id_data_desligamento','Data de desligamento','Data (YYYY-MM-DD)']
-        ],
+        head: [['Campo (até mar/2026)','Nome a partir de abr/2026','Descrição','Tipo']],
+        body: DICIONARIO.map(d=>[d.campo, d.campoNovo||'—', d.descricao, d.tipo]),
+        styles: { fontSize: 8 },
         headStyles: { fillColor: [32,68,93] }
     });
     doc.save('dicionario_relacao_nominal.pdf');
