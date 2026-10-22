@@ -927,8 +927,12 @@ async function setupAtualizacaoData() {
 // 5. CARREGAMENTO DE DADOS
 // ============================================================
 // A partir de abr/2026 os CSVs mudaram o nome de algumas colunas e o
-// formato das datas (dd/mm/aaaa). Aqui tudo é convertido para o padrão
-// antigo, que é o que o restante do painel usa.
+// formato das datas (dd/mm/aaaa). Atenção: o arquivo de abr/2026 traz AS DUAS
+// versões das colunas (as novas preenchidas nas linhas NOVO/ALTERADO e as
+// antigas, no fim do arquivo, preenchidas só nas linhas REMOVIDO). Por isso
+// não basta renomear o cabeçalho: é preciso mesclar, ficando com o valor que
+// estiver preenchido. Tudo é convertido para o padrão antigo, que é o que o
+// restante do painel usa.
 const MAPA_COLUNAS = {
     orgao_sigla_dotacao: 'sigla_instituicao_dotacao',
     instituicao_dotacao: 'desc_instituicao_dotacao',
@@ -939,14 +943,20 @@ const MAPA_COLUNAS = {
     data_desligamento:   'id_data_desligamento'
 };
 function normalizarCabecalho(h) {
-    const limpo = String(h).replace(/^\uFEFF/, '').trim();
-    return MAPA_COLUNAS[limpo] || limpo;
+    return String(h).replace(/^\uFEFF/, '').trim();
 }
 function normalizarData(v) {
     const m = String(v || '').trim().match(/^(\d{2})\/(\d{2})\/(\d{4})/);
     return m ? `${m[3]}-${m[2]}-${m[1]}` : v;
 }
 function normalizarLinha(row) {
+    for (const novo in MAPA_COLUNAS) {
+        if (!(novo in row)) continue;
+        const antigo = MAPA_COLUNAS[novo];
+        const vNovo = (row[novo] ?? '').toString().trim();
+        row[antigo] = vNovo || (row[antigo] ?? '');
+        delete row[novo];
+    }
     for (const c of ['id_data_inicio','id_data_aposentadoria','id_data_desligamento'])
         if (row[c]) row[c] = normalizarData(row[c]);
     return row;
